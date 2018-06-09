@@ -19,34 +19,6 @@
       <button onclick="shortStringClick()">Short string</button>
     </p>
     <script src="../../dist/main.js"></script>
-    <script>
-      let playground = undefined;
-      let text = undefined;
-
-      function checkEnv() {
-        const cfn = window.cfn;
-        if (!cfn) {
-          throw new Error('cf-neptune not found, please build the project and try again');
-        }
-      }
-
-      function longStringClick() {
-        text.text = 'This is a looooooooooooooooong string 🦁🦁🦁';
-      }
-
-      function shortStringClick() {
-        text.text = 'A';
-      }
-
-      document.addEventListener('DOMContentLoaded', () => {
-        checkEnv();
-        
-        text = new cfn.Text('cf-neptune');
-        const root = document.getElementById('playground');
-        playground = cfn.Playground.create(root, {width: 300, height: 100}, text);
-        playground.layout();
-      });
-
-    </script>
+    <script src="./text.js"></script>
   </body>
 </html>
