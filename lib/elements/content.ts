@@ -10,6 +10,10 @@ export default class NPTContent extends NEElement {
   ) {
     super();
 
+    if (!size) {
+      throw new Error('The size argument cannot be empty');
+    }
+
     const raw = SVGHelper.createElement('svg') as SVGSVGElement;
     SVGHelper.setSize(raw, this.size);
     raw.classList.add('npt-content');
