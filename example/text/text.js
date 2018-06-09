@@ -4,15 +4,17 @@ let textElement = undefined;
 function checkEnv() {
   const cfn = window.cfn;
   if (!cfn) {
-    throw new Error('cf-neptune not found, please build the project and try again');
+    alert('cf-neptune not found, please build the project and try again');
   }
 }
 
 function longStringClick() {
+  checkEnv();
   textElement.text = 'This is a looooooooooooooooong string 🦁🦁🦁';
 }
 
 function shortStringClick() {
+  checkEnv();
   textElement.text = 'A';
 }
 
