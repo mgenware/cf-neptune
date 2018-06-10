@@ -1,11 +1,15 @@
 import { NEElement, SVGHelper, NESize } from '../element';
 
+const DefaultBorderWidth  = 1;
+const DefaultRadius       = 4;
+const DefaultPadding      = 5;
+
 export default class NPTContent extends NEElement {
   private raw: SVGSVGElement;
   private rawContainer: SVGSVGElement;
   private rawBorder: SVGRectElement;
 
-  private _padding: number = 5;
+  private _padding: number = DefaultPadding;
   private _content: NEElement|undefined;
 
   constructor(
@@ -24,9 +28,9 @@ export default class NPTContent extends NEElement {
     const rawBorder = SVGHelper.createElement('rect') as SVGRectElement;
     rawBorder.setAttribute('fill', 'none');
     rawBorder.setAttribute('stroke', '#808080');
-    rawBorder.setAttribute('rx', '4');
-    rawBorder.setAttribute('ry', '4');
-    rawBorder.setAttribute('stroke-width', '1');
+    rawBorder.setAttribute('rx', `${DefaultRadius}`);
+    rawBorder.setAttribute('ry', `${DefaultRadius}`);
+    rawBorder.setAttribute('stroke-width', `${DefaultBorderWidth}`);
     raw.appendChild(rawBorder);
     this.rawBorder = rawBorder;
 
@@ -84,7 +88,7 @@ export default class NPTContent extends NEElement {
     };
 
     // Border
-    SVGHelper.setRect(rawBorder, SVGHelper.rectInflate(rootRect, -1, -1));
+    SVGHelper.setRect(rawBorder, SVGHelper.rectInflate(rootRect, -DefaultBorderWidth, -DefaultBorderWidth));
 
     // Container
     SVGHelper.setRect(rawContainer, SVGHelper.rectInflate(rootRect, -padding, -padding));
