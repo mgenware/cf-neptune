@@ -13,7 +13,7 @@ function newContentElement() {
   const cfn = window.cfn;
   counter++;
   const textElement = new cfn.Text('level: ' + counter);
-  const newContent = new cfn.Content({ width: 300, height: 100 });
+  const newContent = new cfn.Atom({ width: 300, height: 100 });
   newContent.content = textElement;
   return newContent;
 }

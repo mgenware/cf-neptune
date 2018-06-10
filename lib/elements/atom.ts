@@ -4,7 +4,7 @@ const DefaultBorderWidth  = 1;
 const DefaultRadius       = 4;
 const DefaultPadding      = 5;
 
-export default class NPTContent extends NEElement {
+export default class NEAtom extends NEElement {
   private raw: SVGSVGElement;
   private rawContainer: SVGSVGElement;
   private rawBorder: SVGRectElement;

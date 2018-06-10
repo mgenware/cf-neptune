@@ -1,8 +1,8 @@
-import Content from './content';
+import NEAtom from './atom';
 import { SVGHelper, NESize, NEElement } from '../element';
 
-export default class Playground extends Content {
-  static create(domElement: HTMLElement, size: NESize, neElement: NEElement): Playground {
+export default class NEPlayground extends NEAtom {
+  static create(domElement: HTMLElement, size: NESize, neElement: NEElement): NEPlayground {
     if (!domElement) {
       throw new Error('The domElement is required');
     }
@@ -10,7 +10,7 @@ export default class Playground extends Content {
       throw new Error('The neElement is required');
     }
 
-    const p = new Playground(size);
+    const p = new NEPlayground(size);
     p.content = neElement;
     domElement.appendChild(p.rawElement());
     p.layout();
