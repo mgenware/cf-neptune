@@ -47,6 +47,11 @@ export class SVGHelper {
     svg.setAttribute('viewBox', `${rect.x} ${rect.y} ${rect.width} ${rect.height}`);
   }
 
+  static setPosition(element: SVGGraphicsElement, x: number, y: number) {
+    element.setAttribute('x', `${x}`);
+    element.setAttribute('y', `${y}`);
+  }
+
   static rectInflate(rect: SVGRect, x: number, y: number): DOMRect {
     return new DOMRect(rect.x + x, rect.y + y, rect.width + x * 2, rect.height + y * 2);
   }

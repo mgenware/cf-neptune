@@ -2,7 +2,7 @@ import { NEElement, SVGHelper, EmptyRect, NESize } from '../element';
 
 export default class NPTContent extends NEElement {
   private raw: SVGSVGElement;
-  private _padding: number = 20;
+  private _padding: number = 5;
   private _content: NEElement|undefined;
 
   constructor(
@@ -61,24 +61,25 @@ export default class NPTContent extends NEElement {
   }
 
   layout(): SVGRect {
-    const { content } = this;
+    const { content, raw, size, padding } = this;
     if (!content) {
       return EmptyRect;
     }
 
-    const { size, padding } = this;
-    const contentRect = content.layout();
-    SVGHelper.setViewBox(this.raw, {
-      x: -padding,
-      y: -padding,
-      width: contentRect.width + padding * 2,
-      height: contentRect.height + padding * 2,
-    });
-    return {
+    const contentLayoutRect = content.layout();
+    const contentRect = {
       x: 0,
       y: 0,
       width: size.width,
       height: size.height,
     };
+
+    SVGHelper.setViewBox(raw, {
+      x: contentLayoutRect.x - padding,
+      y: contentLayoutRect.y - padding,
+      width: contentLayoutRect.width + padding * 2,
+      height: contentLayoutRect.height + padding * 2,
+    });
+    return contentRect;
   }
 }
