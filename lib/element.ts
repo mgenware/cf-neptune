@@ -52,8 +52,13 @@ export class SVGHelper {
     element.setAttribute('y', `${y}`);
   }
 
+  static setRect(element: SVGGraphicsElement, rect: SVGRect) {
+    this.setPosition(element, rect.x, rect.y);
+    this.setSize(element, rect);
+  }
+
   static rectInflate(rect: SVGRect, x: number, y: number): DOMRect {
-    return new DOMRect(rect.x + x, rect.y + y, rect.width + x * 2, rect.height + y * 2);
+    return new DOMRect(rect.x - x, rect.y - y, rect.width + x * 2, rect.height + y * 2);
   }
 
   static createElement(tagName: string): SVGGraphicsElement {

@@ -1,7 +1,10 @@
-import { NEElement, SVGHelper, EmptyRect, NESize } from '../element';
+import { NEElement, SVGHelper, NESize } from '../element';
 
 export default class NPTContent extends NEElement {
   private raw: SVGSVGElement;
+  private rawContainer: SVGSVGElement;
+  private rawBorder: SVGRectElement;
+
   private _padding: number = 5;
   private _content: NEElement|undefined;
 
@@ -16,9 +19,18 @@ export default class NPTContent extends NEElement {
 
     const raw = SVGHelper.createElement('svg') as SVGSVGElement;
     SVGHelper.setSize(raw, this.size);
-    raw.classList.add('npt-content');
-
     this.raw = raw;
+
+    const rawBorder = SVGHelper.createElement('rect') as SVGRectElement;
+    rawBorder.setAttribute('fill', 'none');
+    rawBorder.setAttribute('stroke', '#ededed');
+    rawBorder.setAttribute('stroke-width', '1');
+    raw.appendChild(rawBorder);
+    this.rawBorder = rawBorder;
+
+    const rawContainer = SVGHelper.createElement('svg') as SVGSVGElement;
+    raw.appendChild(rawContainer);
+    this.rawContainer = rawContainer;
   }
 
   // padding property
@@ -43,11 +55,11 @@ export default class NPTContent extends NEElement {
     }
 
     if (this._content) {
-      this.raw.removeChild(this._content.rawElement());
+      this.rawContainer.removeChild(this._content.rawElement());
     }
 
     if (content) {
-      this.raw.appendChild(content.rawElement());
+      this.rawContainer.appendChild(content.rawElement());
       content.sizeChanged = () => {
         this.layout();
       };
@@ -61,25 +73,27 @@ export default class NPTContent extends NEElement {
   }
 
   layout(): SVGRect {
-    const { content, raw, size, padding } = this;
-    if (!content) {
-      return EmptyRect;
-    }
-
-    const contentLayoutRect = content.layout();
-    const contentRect = {
+    const { content, rawContainer, size, padding, rawBorder } = this;
+    const rootRect = {
       x: 0,
       y: 0,
       width: size.width,
       height: size.height,
     };
 
-    SVGHelper.setViewBox(raw, {
-      x: contentLayoutRect.x - padding,
-      y: contentLayoutRect.y - padding,
-      width: contentLayoutRect.width + padding * 2,
-      height: contentLayoutRect.height + padding * 2,
-    });
-    return contentRect;
+    // Border
+    SVGHelper.setRect(rawBorder, SVGHelper.rectInflate(rootRect, -1, -1));
+
+    // Container
+    SVGHelper.setRect(rawContainer, SVGHelper.rectInflate(rootRect, -padding, -padding));
+
+    // Content
+    if (!content) {
+      return rootRect;
+    }
+
+    const contentLayoutRect = content.layout();
+    SVGHelper.setViewBox(rawContainer, contentLayoutRect);
+    return rootRect;
   }
 }
