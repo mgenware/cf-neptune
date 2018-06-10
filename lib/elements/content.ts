@@ -23,7 +23,9 @@ export default class NPTContent extends NEElement {
 
     const rawBorder = SVGHelper.createElement('rect') as SVGRectElement;
     rawBorder.setAttribute('fill', 'none');
-    rawBorder.setAttribute('stroke', '#ededed');
+    rawBorder.setAttribute('stroke', '#808080');
+    rawBorder.setAttribute('rx', '4');
+    rawBorder.setAttribute('ry', '4');
     rawBorder.setAttribute('stroke-width', '1');
     raw.appendChild(rawBorder);
     this.rawBorder = rawBorder;
