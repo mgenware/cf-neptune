@@ -2,16 +2,16 @@ import NEAtom from './atom';
 import { SVGHelper, NESize, NEElement } from '../element';
 
 export default class NEPlayground extends NEAtom {
-  static create(domElement: HTMLElement, size: NESize, neElement: NEElement): NEPlayground {
+  static create(domElement: HTMLElement, size: NESize, element: NEElement): NEPlayground {
     if (!domElement) {
       throw new Error('The domElement is required');
     }
-    if (!neElement) {
-      throw new Error('The neElement is required');
+    if (!element) {
+      throw new Error('The element is required');
     }
 
     const p = new NEPlayground(size);
-    p.content = neElement;
+    p.appendChild(element);
     domElement.appendChild(p.rawElement());
     p.layout();
     return p;

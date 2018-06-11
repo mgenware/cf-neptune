@@ -5,12 +5,12 @@ const DefaultRadius       = 4;
 const DefaultPadding      = 5;
 
 export default class NEAtom extends NEElement {
-  private raw: SVGSVGElement;
+  private rawRoot: SVGSVGElement;
   private rawContainer: SVGSVGElement;
   private rawBorder: SVGRectElement;
 
   private _padding: number = DefaultPadding;
-  private _content: NEElement|undefined;
+  private _children: NEElement[] = [];
 
   constructor(
     public size: NESize,
@@ -21,9 +21,9 @@ export default class NEAtom extends NEElement {
       throw new Error('The size argument cannot be empty');
     }
 
-    const raw = SVGHelper.createElement('svg') as SVGSVGElement;
-    SVGHelper.setSize(raw, this.size);
-    this.raw = raw;
+    const rawRoot = SVGHelper.createElement('svg') as SVGSVGElement;
+    SVGHelper.setSize(rawRoot, this.size);
+    this.rawRoot = rawRoot;
 
     const rawBorder = SVGHelper.createElement('rect') as SVGRectElement;
     rawBorder.setAttribute('fill', 'none');
@@ -31,11 +31,11 @@ export default class NEAtom extends NEElement {
     rawBorder.setAttribute('rx', `${DefaultRadius}`);
     rawBorder.setAttribute('ry', `${DefaultRadius}`);
     rawBorder.setAttribute('stroke-width', `${DefaultBorderWidth}`);
-    raw.appendChild(rawBorder);
+    rawRoot.appendChild(rawBorder);
     this.rawBorder = rawBorder;
 
     const rawContainer = SVGHelper.createElement('svg') as SVGSVGElement;
-    raw.appendChild(rawContainer);
+    rawRoot.appendChild(rawContainer);
     this.rawContainer = rawContainer;
   }
 
@@ -50,36 +50,12 @@ export default class NEAtom extends NEElement {
     }
   }
 
-  // content property
-  get content(): NEElement|undefined {
-    return this._content;
-  }
-
-  set content(content: NEElement|undefined) {
-    if (this._content === content) {
-      return;
-    }
-
-    if (this._content) {
-      this.rawContainer.removeChild(this._content.rawElement());
-    }
-
-    if (content) {
-      this.rawContainer.appendChild(content.rawElement());
-      content.sizeChanged = () => {
-        this.layout();
-      };
-    }
-    this._content = content;
-    this.layout();
-  }
-
   rawElement(): SVGGraphicsElement {
-    return this.raw;
+    return this.rawRoot;
   }
 
   layout(): SVGRect {
-    const { content, rawContainer, size, padding, rawBorder } = this;
+    const { rawContainer, size, padding, rawBorder } = this;
     const rootRect = {
       x: 0,
       y: 0,
@@ -93,13 +69,43 @@ export default class NEAtom extends NEElement {
     // Container
     SVGHelper.setRect(rawContainer, SVGHelper.rectInflate(rootRect, -padding, -padding));
 
-    // Content
-    if (!content) {
-      return rootRect;
+    // Layout children
+    for (const child of this._children) {
+      child.layout();
     }
 
-    const contentLayoutRect = content.layout();
+    // Set the viewBox
+    const contentLayoutRect = rawContainer.getBBox();
     SVGHelper.setViewBox(rawContainer, contentLayoutRect);
     return rootRect;
+  }
+
+  // ------- Children manipulations -------
+  appendChild(child: NEElement) {
+    this._children.push(child);
+    this.rawContainer.appendChild(child.rawElement());
+    this.onChildAdded(child);
+    this.layout();
+  }
+
+  removeChild(child: NEElement): number {
+    const index = this._children.indexOf(child);
+    if (index !== -1) {
+      this._children.splice(index, 1);
+      this.rawContainer.removeChild(child.rawElement());
+      this.onChildRemoved(child);
+    }
+    this.layout();
+    return index;
+  }
+
+  private onChildAdded(child: NEElement) {
+    child.sizeChanged = () => {
+      this.layout();
+    };
+  }
+
+  private onChildRemoved(child: NEElement) {
+    child.sizeChanged = undefined;
   }
 }

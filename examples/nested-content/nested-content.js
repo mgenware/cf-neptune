@@ -9,20 +9,21 @@ function checkEnv() {
   }
 }
 
-function newContentElement() {  
+function newAtomElement() {  
   const cfn = window.cfn;
   counter++;
   const textElement = new cfn.Text('level: ' + counter);
   const newContent = new cfn.Atom({ width: 300, height: 100 });
-  newContent.content = textElement;
+  newContent.appendChild(textElement);
   return newContent;
 }
 
 function pushClick() {
   checkEnv();
 
-  currentElement.content = newContentElement();
-  currentElement = currentElement.content;
+  const newElement = newAtomElement();
+  currentElement.appendChild(newElement);
+  currentElement = newElement;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -30,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   const cfn = window.cfn;
   const root = document.getElementById('playground');
-  const element = newContentElement();
+  const element = newAtomElement();
   playground = cfn.Playground.create(root, {width: 300, height: 100}, element);
   playground.layout();
 
