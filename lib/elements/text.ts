@@ -1,6 +1,6 @@
-import { NEElement, SVGHelper } from '../element';
+import { NEPElement, SVGHelper } from '../element';
 
-export default class NEText extends NEElement {
+export default class NEPText extends NEPElement {
   private raw: SVGTextElement;
 
   constructor(text?: string) {

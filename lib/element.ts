@@ -1,9 +1,9 @@
-export interface NESize {
+export interface NEPSize {
   width: number;
   height: number;
 }
 
-export interface NEPoint {
+export interface NEPPoint {
   x: number;
   y: number;
 }
@@ -15,13 +15,13 @@ export const EmptyRect: SVGRect = {
   y: 0,
 };
 
-export const EmptySize: NESize = {
+export const EmptySize: NEPSize = {
   width: 0,
   height: 0,
 };
 
-export class NEElement {
-  sizeChanged: ((sender: NEElement) => void)|undefined;
+export class NEPElement {
+  sizeChanged: ((sender: NEPElement) => void)|undefined;
 
   rawElement(): SVGGraphicsElement {
     throw new Error('not implemented yet');
@@ -43,7 +43,7 @@ export class SVGHelper {
     return 'http://www.w3.org/2000/svg';
   }
 
-  static setSize(element: SVGElement, size: NESize) {
+  static setSize(element: SVGElement, size: NEPSize) {
     element.setAttribute('width', `${size.width}`);
     element.setAttribute('height', `${size.height}`);
   }

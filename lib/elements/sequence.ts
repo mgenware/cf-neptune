@@ -1,12 +1,12 @@
-import { NEElement, SVGHelper, NESize, NEPoint } from '../element';
+import { NEPElement, SVGHelper, NEPSize, NEPPoint } from '../element';
 import NEAtom from './atom';
 
-export default class NESequence extends NEAtom {
+export default class NEPSequence extends NEAtom {
   private _slotWidth: number = 0;
   private _slotHeight: number = 0;
 
   constructor(
-    public maxSize: NESize,
+    public maxSize: NEPSize,
     public capacity: number,
     public orientation: 'h'|'v',
   ) {
@@ -26,7 +26,7 @@ export default class NESequence extends NEAtom {
 
   }
 
-  push(child: NEElement) {
+  push(child: NEPElement) {
     if (this.childrenCount === this.capacity) {
       throw new Error('No more slot available');
     }
@@ -35,7 +35,7 @@ export default class NESequence extends NEAtom {
     SVGHelper.setPosition(child.rawElement(), pt.x, pt.y);
   }
 
-  private pointFromIndex(index: number): NEPoint {
+  private pointFromIndex(index: number): NEPPoint {
     if (this.orientation === 'h') {
       return { x: index * this._slotWidth, y: 0 };
     }

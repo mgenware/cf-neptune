@@ -3,10 +3,10 @@ let counter = 0;
 let currentElement = undefined;
 
 function newAtomElement() {
-  const cfn = window.cfn;
+  const nep = window.nep;
   counter++;
-  const textElement = new cfn.Text('level: ' + counter);
-  const newContent = new cfn.Atom({ width: 300, height: 100 });
+  const textElement = new nep.Text('level: ' + counter);
+  const newContent = new nep.Atom({ width: 300, height: 100 });
   newContent.appendChild(textElement);
   return newContent;
 }
@@ -22,10 +22,10 @@ function pushClick() {
 document.addEventListener('DOMContentLoaded', () => {
   checkEnv();
   
-  const cfn = window.cfn;
+  const nep = window.nep;
   const root = document.getElementById('playground');
   const element = newAtomElement();
-  playground = cfn.Playground.create(root, {width: 300, height: 100}, element);
+  playground = nep.Playground.create(root, {width: 300, height: 100}, element);
   playground.layout();
 
   currentElement = element;

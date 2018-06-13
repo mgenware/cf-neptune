@@ -14,12 +14,12 @@ function shortStringClick() {
 document.addEventListener('DOMContentLoaded', () => {
   checkEnv();
   
-  const cfn = window.cfn;
+  const nep = window.nep;
   // Create the text element
-  textElement = new cfn.Text('cf-neptune');
+  textElement = new nep.Text('cf-neptune');
   const root = document.getElementById('playground');
 
   // Mount the text element to playground
-  playground = cfn.Playground.create(root, {width: 300, height: 100}, textElement);
+  playground = nep.Playground.create(root, {width: 300, height: 100}, textElement);
   playground.layout();
 });

@@ -2,9 +2,9 @@ let playground = undefined;
 let sequenceElement = undefined;
 
 function newAtomElement() {
-  const cfn = window.cfn;
-  const textElement = new cfn.Text('🙈');
-  const newContent = new cfn.Atom({ width: 50, height: 50 });
+  const nep = window.nep;
+  const textElement = new nep.Text('🙈');
+  const newContent = new nep.Atom({ width: 50, height: 50 });
   newContent.appendChild(textElement);
   return newContent;
 }
@@ -19,10 +19,10 @@ function pushClick() {
 document.addEventListener('DOMContentLoaded', () => {
   checkEnv();
   
-  const cfn = window.cfn;
+  const nep = window.nep;
   const root = document.getElementById('playground');
-  const element = new cfn.Sequence({ width: 400, height: 100 }, 4, 'h');
-  playground = cfn.Playground.create(root, {width: 400, height: 100}, element);
+  const element = new nep.Sequence({ width: 400, height: 100 }, 4, 'h');
+  playground = nep.Playground.create(root, {width: 400, height: 100}, element);
   playground.layout();
 
   sequenceElement = element;

@@ -1,19 +1,19 @@
-import { NEElement, SVGHelper, NESize } from '../element';
+import { NEPElement, SVGHelper, NEPSize } from '../element';
 
 const DefaultBorderWidth  = 1;
 const DefaultRadius       = 4;
 const DefaultPadding      = 5;
 
-export default class NEAtom extends NEElement {
+export default class NEPAtom extends NEPElement {
   private rawRoot: SVGSVGElement;
   private rawContainer: SVGSVGElement;
   private rawBorder: SVGRectElement;
 
   private _padding: number = DefaultPadding;
-  private _children: NEElement[] = [];
+  private _children: NEPElement[] = [];
 
   constructor(
-    public size: NESize,
+    public size: NEPSize,
   ) {
     super();
 
@@ -88,14 +88,14 @@ export default class NEAtom extends NEElement {
     return this._children.length;
   }
 
-  appendChild(child: NEElement) {
+  appendChild(child: NEPElement) {
     this._children.push(child);
     this.rawContainer.appendChild(child.rawElement());
     this.onChildAdded(child);
     this.layout();
   }
 
-  removeChild(child: NEElement): number {
+  removeChild(child: NEPElement): number {
     const index = this._children.indexOf(child);
     if (index !== -1) {
       this._children.splice(index, 1);
@@ -106,13 +106,13 @@ export default class NEAtom extends NEElement {
     return index;
   }
 
-  private onChildAdded(child: NEElement) {
+  private onChildAdded(child: NEPElement) {
     child.sizeChanged = () => {
       this.layout();
     };
   }
 
-  private onChildRemoved(child: NEElement) {
+  private onChildRemoved(child: NEPElement) {
     child.sizeChanged = undefined;
   }
 }

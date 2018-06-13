@@ -5,7 +5,7 @@ import commonjs from 'rollup-plugin-commonjs';
 export default {
   input: 'lib/main.ts',
   output: {
-    name: 'cfn',
+    name: 'nep',
     file: 'dist/main.js',
     format: 'iife',
   },
