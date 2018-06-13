@@ -63,6 +63,10 @@ export default class NEAtom extends NEElement {
       height: size.height,
     };
 
+    // Remove the 'viewBox' attribute to get consistent values from getBBox()
+    rawContainer.removeAttribute('viewBox');
+    const contentLayoutRect = rawContainer.getBBox();
+
     // Border
     SVGHelper.setRect(rawBorder, SVGHelper.rectInflate(rootRect, -DefaultBorderWidth, -DefaultBorderWidth));
 
