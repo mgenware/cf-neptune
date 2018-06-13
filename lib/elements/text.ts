@@ -7,7 +7,6 @@ export default class NEText extends NEElement {
     super();
 
     const raw = SVGHelper.createElement('text') as SVGTextElement;
-    // raw.style.textAnchor = 'middle';
     raw.style.dominantBaseline = 'text-before-edge';
     raw.style.fontSize = '16px';
     raw.style.color = 'black';
@@ -17,10 +16,6 @@ export default class NEText extends NEElement {
 
   rawElement(): SVGGraphicsElement {
     return this.raw;
-  }
-
-  layout(): SVGRect {
-    return super.layout();
   }
 
   get text(): string|null {
