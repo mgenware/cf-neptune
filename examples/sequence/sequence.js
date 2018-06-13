@@ -1,12 +1,10 @@
 let playground = undefined;
-let counter = 0;
-let currentElement = undefined;
+let sequenceElement = undefined;
 
 function newAtomElement() {
   const cfn = window.cfn;
-  counter++;
-  const textElement = new cfn.Text('level: ' + counter);
-  const newContent = new cfn.Atom({ width: 300, height: 100 });
+  const textElement = new cfn.Text('🙈');
+  const newContent = new cfn.Atom({ width: 50, height: 50 });
   newContent.appendChild(textElement);
   return newContent;
 }
@@ -15,8 +13,7 @@ function pushClick() {
   checkEnv();
 
   const newElement = newAtomElement();
-  currentElement.appendChild(newElement);
-  currentElement = newElement;
+  sequenceElement.push(newElement);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -24,9 +21,9 @@ document.addEventListener('DOMContentLoaded', () => {
   
   const cfn = window.cfn;
   const root = document.getElementById('playground');
-  const element = newAtomElement();
-  playground = cfn.Playground.create(root, {width: 300, height: 100}, element);
+  const element = new cfn.Sequence({ width: 400, height: 100 }, 4, 'h');
+  playground = cfn.Playground.create(root, {width: 400, height: 100}, element);
   playground.layout();
 
-  currentElement = element;
+  sequenceElement = element;
 });

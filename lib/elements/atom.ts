@@ -79,12 +79,15 @@ export default class NEAtom extends NEElement {
     }
 
     // Set the viewBox
-    const contentLayoutRect = rawContainer.getBBox();
     SVGHelper.setViewBox(rawContainer, contentLayoutRect);
     return rootRect;
   }
 
   // ------- Children manipulations -------
+  get childrenCount(): number {
+    return this._children.length;
+  }
+
   appendChild(child: NEElement) {
     this._children.push(child);
     this.rawContainer.appendChild(child.rawElement());

@@ -1,13 +1,6 @@
 let playground = undefined;
 let textElement = undefined;
 
-function checkEnv() {
-  const cfn = window.cfn;
-  if (!cfn) {
-    alert('cf-neptune not found, please build the project and try again');
-  }
-}
-
 function longStringClick() {
   checkEnv();
   textElement.text = 'This is a looooooooooooooooong string 🦁🦁🦁';

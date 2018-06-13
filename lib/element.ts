@@ -3,6 +3,11 @@ export interface NESize {
   height: number;
 }
 
+export interface NEPoint {
+  x: number;
+  y: number;
+}
+
 export const EmptyRect: SVGRect = {
   width: 0,
   height: 0,
