@@ -6,21 +6,20 @@ function newAtomElement() {
   const nep = window.nep;
   counter++;
   const textElement = new nep.Text('level: ' + counter);
-  const newContent = new nep.Atom({ width: 300, height: 100 });
-  newContent.appendChild(textElement);
+  const newContent = new nep.Atom({ width: 300, height: 100 }, textElement);
   return newContent;
 }
 
 function pushClick() {
-  checkEnv();
+  window.checkEnv();
 
   const newElement = newAtomElement();
-  currentElement.appendChild(newElement);
+  currentElement.appendElectron(newElement);
   currentElement = newElement;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  checkEnv();
+  window.checkEnv();
   
   const nep = window.nep;
   const root = document.getElementById('playground');
