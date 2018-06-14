@@ -10,6 +10,7 @@ export default class NEPSequence extends NEAtom {
   private _slotHeight: number = 0;
 
   private _elements: NEPElement[] = [];
+  private _girdLines: SVGGraphicsElement[] = [];
 
   get count(): number {
     return this._elements.length;
@@ -19,6 +20,7 @@ export default class NEPSequence extends NEAtom {
     public maxSize: NEPSize,
     public capacity: number,
     public orientation: 'h'|'v',
+    public noGrid?: boolean,
   ) {
     super(maxSize);
 
@@ -38,7 +40,9 @@ export default class NEPSequence extends NEAtom {
       this._slotHeight = maxSize.height / capacity;
     }
 
-    this.drawGrid();
+    if (!this.noGrid) {
+      this.drawGrid();
+    }
   }
 
   push(child: NEPElement) {
@@ -97,6 +101,7 @@ export default class NEPSequence extends NEAtom {
       }
       SVGHelper.setLinePoz(rawLine, startPt, endPt);
 
+      this._girdLines.push(rawLine);
       this.rawElement().appendChild(rawLine);
     }
   }

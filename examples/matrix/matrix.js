@@ -2,8 +2,8 @@ let playground = undefined;
 let sequenceElement = undefined;
 let lastRowElement = undefined;
 const SIZE = { width: 500, height: 500 };
-const ROW_SIZE = { width: 500, height: 100 };
-const CAP = 5;
+const ROWS = 5;
+const COLS = 5;
 
 function newColumn(index) {
   const num = index + 1;
@@ -27,7 +27,7 @@ function pushRowClick() {
 function pushColClick() {
   window.checkEnv();
 
-  const element = newColumn(lastRowElement.count - 1);
+  const element = newColumn(lastRowElement.count);
   lastRowElement.push(element);
 }
 
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   const nep = window.nep;
   const root = document.getElementById('playground');
-  const element = new nep.Sequence(SIZE, CAP, 'v');
+  const element = new nep.Matrix(SIZE, ROWS, COLS);
   playground = nep.Playground.create(root, SIZE, element);
   playground.layout();
 
