@@ -14,7 +14,7 @@ export default class NEPAtom extends NEPElement {
 
   private _padding: number = DefaultPadding;
   private _borderColor: string = DefaultBorderColor;
-  private _borderWidth: number = DefaultBorderWidth;
+  private _borderWidth: number|string = DefaultBorderWidth;
   private _borderRadius: number = DefaultRadius;
   private _background: string = DefaultBackground;
 
@@ -71,10 +71,10 @@ export default class NEPAtom extends NEPElement {
   }
 
   // border-width
-  get borderWidth(): number {
+  get borderWidth(): number|string {
     return this._borderWidth;
   }
-  set borderWidth(value: number) {
+  set borderWidth(value: number|string) {
     this._borderWidth = value;
     this.rawBorder.setAttribute('stroke-width', `${value}`);
   }
