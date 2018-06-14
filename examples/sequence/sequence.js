@@ -4,7 +4,7 @@ const SIZE = { width: 500, height: 100 };
 const CAP = 5;
 
 function newSequenceElement(index) {
-  return new window.nep.Text('🙈' + index);
+  return new window.nep.Text('🙈' + (index + 1));
 }
 
 function pushClick() {

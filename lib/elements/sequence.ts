@@ -1,5 +1,6 @@
 import { NEPElement, SVGHelper, NEPSize, NEPPoint } from '../element';
 import NEAtom from './atom';
+import NEPAtom from './atom';
 
 export default class NEPSequence extends NEAtom {
   private _slotWidth: number = 0;
@@ -15,6 +16,8 @@ export default class NEPSequence extends NEAtom {
     public orientation: 'h'|'v',
   ) {
     super(maxSize);
+    this.disableScaling = true;
+    this.padding = 0;
 
     if (orientation !== 'h' && orientation !== 'v') {
       throw new Error('orientation can only be "h" or "v"');
@@ -31,12 +34,23 @@ export default class NEPSequence extends NEAtom {
   }
 
   push(child: NEPElement) {
+    console.log(this.childrenCount, this.capacity);
     if (this.childrenCount === this.capacity) {
       throw new Error('No more slot available');
     }
     const pt = this.pointFromIndex(this.childrenCount);
-    this.appendChild(child);
-    SVGHelper.setPosition(child.rawElement(), pt.x, pt.y);
+    console.log(pt);
+
+    const wrappedElement = this.wrapElement(child);
+    const rawWrappedElement = wrappedElement.rawElement();
+    SVGHelper.setPosition(rawWrappedElement, pt.x, pt.y);
+    this.appendChild(wrappedElement);
+  }
+
+  private wrapElement(child: NEPElement): NEPAtom {
+    const atom = new NEPAtom({ width: this._slotWidth, height: this._slotHeight });
+    atom.appendChild(child);
+    return atom;
   }
 
   private pointFromIndex(index: number): NEPPoint {

@@ -5,6 +5,7 @@ const DefaultRadius       = 4;
 const DefaultPadding      = 5;
 
 export default class NEPAtom extends NEPElement {
+  disableScaling: boolean = false;
   private rawRoot: SVGSVGElement;
   private rawContainer: SVGSVGElement;
   private rawBorder: SVGRectElement;
@@ -79,7 +80,9 @@ export default class NEPAtom extends NEPElement {
     }
 
     // Set the viewBox
-    SVGHelper.setViewBox(rawContainer, contentLayoutRect);
+    if (!this.disableScaling) {
+      SVGHelper.setViewBox(rawContainer, contentLayoutRect);
+    }
     return rootRect;
   }
 
