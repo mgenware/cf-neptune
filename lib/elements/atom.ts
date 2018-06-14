@@ -3,6 +3,8 @@ import { NEPElement, SVGHelper, NEPSize } from '../element';
 const DefaultBorderWidth  = 1;
 const DefaultRadius       = 4;
 const DefaultPadding      = 5;
+const DefaultBorderColor  = '#808080';
+const DefaultBackground   = 'none';
 
 export default class NEPAtom extends NEPElement {
   disableScaling: boolean = false;
@@ -11,6 +13,11 @@ export default class NEPAtom extends NEPElement {
   private rawBorder: SVGRectElement;
 
   private _padding: number = DefaultPadding;
+  private _borderColor: string = DefaultBorderColor;
+  private _borderWidth: number = DefaultBorderWidth;
+  private _borderRadius: number = DefaultRadius;
+  private _background: string = DefaultBackground;
+
   private _children: NEPElement[] = [];
 
   constructor(
@@ -27,11 +34,11 @@ export default class NEPAtom extends NEPElement {
     this.rawRoot = rawRoot;
 
     const rawBorder = SVGHelper.createElement('rect') as SVGRectElement;
-    rawBorder.setAttribute('fill', 'none');
-    rawBorder.setAttribute('stroke', '#808080');
-    rawBorder.setAttribute('rx', `${DefaultRadius}`);
-    rawBorder.setAttribute('ry', `${DefaultRadius}`);
-    rawBorder.setAttribute('stroke-width', `${DefaultBorderWidth}`);
+    rawBorder.setAttribute('fill', this.background);
+    rawBorder.setAttribute('stroke', this.borderColor);
+    rawBorder.setAttribute('rx', `${this.borderRadius}`);
+    rawBorder.setAttribute('ry', `${this.borderRadius}`);
+    rawBorder.setAttribute('stroke-width', `${this.borderWidth}`);
     rawRoot.appendChild(rawBorder);
     this.rawBorder = rawBorder;
 
@@ -45,10 +52,44 @@ export default class NEPAtom extends NEPElement {
     return this._padding;
   }
   set padding(value: number) {
-    if (value !== this.padding) {
-      this._padding = value;
-      this.layout();
-    }
+    this._padding = value;
+    this.layout();
+  }
+
+  // border-color property
+  get borderColor(): string {
+    return this._borderColor;
+  }
+  set borderColor(value: string) {
+    this._borderColor = value;
+    this.rawBorder.setAttribute('stroke', value);
+  }
+
+  // border-width
+  get borderWidth(): number {
+    return this._borderWidth;
+  }
+  set borderWidth(value: number) {
+    this._borderWidth = value;
+    this.rawBorder.setAttribute('stroke-width', `${value}`);
+  }
+
+  // border-radius
+  get borderRadius(): number {
+    return this._borderRadius;
+  }
+  set borderRaidus(value: number) {
+    this._borderRadius = value;
+    this.rawBorder.setAttribute('stroke-radius', `${value}`);
+  }
+
+  // background
+  get background(): string {
+    return this._background;
+  }
+  set background(value: string) {
+    this._background = value;
+    this.rawBorder.setAttribute('fill', value);
   }
 
   rawElement(): SVGGraphicsElement {
