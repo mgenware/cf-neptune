@@ -7,7 +7,7 @@ export default class NEPSequence extends NEAtom {
   private _slotHeight: number = 0;
 
   get count(): number {
-    return this.childrenCount;
+    return this.electronsCount;
   }
 
   constructor(
@@ -33,21 +33,30 @@ export default class NEPSequence extends NEAtom {
   }
 
   push(child: NEPElement) {
-    if (this.childrenCount === this.capacity) {
+    if (this.electronsCount === this.capacity) {
       throw new Error('No more slot available');
     }
-    const pt = this.pointFromIndex(this.childrenCount);
+    const pt = this.pointFromIndex(this.electronsCount);
 
     const wrappedElement = this.wrapElement(child);
     const rawWrappedElement = wrappedElement.rawElement();
     SVGHelper.setPosition(rawWrappedElement, pt.x, pt.y);
-    this.appendChild(wrappedElement);
+    this.appendElectron(wrappedElement);
+  }
+
+  childAt(index: number): NEPElement|null {
+    const child = this.electronAt(index);
+    if (child === null) {
+      return null;
+    }
+    // child is a wrapped element, need to unwrap the content
+    const atom = child as NEPAtom;
+    return atom.firstElectron;
   }
 
   private wrapElement(child: NEPElement): NEPAtom {
-    const atom = new NEPAtom({ width: this._slotWidth, height: this._slotHeight });
+    const atom = new NEPAtom({ width: this._slotWidth, height: this._slotHeight }, child);
     atom.borderRadius = 0;
-    atom.appendChild(child);
     return atom;
   }
 

@@ -18,10 +18,11 @@ export default class NEPAtom extends NEPElement {
   private _borderRadius: number = DefaultRadius;
   private _background: string = DefaultBackground;
 
-  private _children: NEPElement[] = [];
+  private _electrons: NEPElement[] = [];
 
   constructor(
     public size: NEPSize,
+    firstChild?: NEPElement,
   ) {
     super();
 
@@ -45,6 +46,10 @@ export default class NEPAtom extends NEPElement {
     const rawContainer = SVGHelper.createElement('svg') as SVGSVGElement;
     rawRoot.appendChild(rawContainer);
     this.rawContainer = rawContainer;
+
+    if (firstChild) {
+      this.appendElectron(firstChild);
+    }
   }
 
   // padding property
@@ -92,6 +97,32 @@ export default class NEPAtom extends NEPElement {
     this.rawBorder.setAttribute('fill', value);
   }
 
+  // ------- Child-related props -------
+  get firstElectron(): NEPElement|null {
+    if (this._electrons.length) {
+      return this._electrons[0];
+    }
+    return null;
+  }
+
+  get lastElectron(): NEPElement|null {
+    if (this._electrons.length) {
+      return this._electrons[this._electrons.length - 1];
+    }
+    return null;
+  }
+
+  get electrons(): NEPElement[] {
+    return this._electrons;
+  }
+
+  electronAt(index: number): NEPElement|null {
+    if (index < 0 || index >= this._electrons.length) {
+      return null;
+    }
+    return this._electrons[index];
+  }
+
   rawElement(): SVGGraphicsElement {
     return this.rawRoot;
   }
@@ -116,7 +147,7 @@ export default class NEPAtom extends NEPElement {
     SVGHelper.setRect(rawContainer, SVGHelper.rectInflate(rootRect, -padding, -padding));
 
     // Layout children
-    for (const child of this._children) {
+    for (const child of this._electrons) {
       child.layout();
     }
 
@@ -128,21 +159,21 @@ export default class NEPAtom extends NEPElement {
   }
 
   // ------- Children manipulations -------
-  get childrenCount(): number {
-    return this._children.length;
+  get electronsCount(): number {
+    return this._electrons.length;
   }
 
-  appendChild(child: NEPElement) {
-    this._children.push(child);
+  appendElectron(child: NEPElement) {
+    this._electrons.push(child);
     this.rawContainer.appendChild(child.rawElement());
     this.onChildAdded(child);
     this.layout();
   }
 
-  removeChild(child: NEPElement): number {
-    const index = this._children.indexOf(child);
+  removeElectron(child: NEPElement): number {
+    const index = this._electrons.indexOf(child);
     if (index !== -1) {
-      this._children.splice(index, 1);
+      this._electrons.splice(index, 1);
       this.rawContainer.removeChild(child.rawElement());
       this.onChildRemoved(child);
     }

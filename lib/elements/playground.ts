@@ -10,8 +10,7 @@ export default class NEPPlayground extends NEAtom {
       throw new Error('The element is required');
     }
 
-    const p = new NEPPlayground(size);
-    p.appendChild(element);
+    const p = new NEPPlayground(size, element);
     domElement.appendChild(p.rawElement());
     p.layout();
     return p;
@@ -19,8 +18,9 @@ export default class NEPPlayground extends NEAtom {
 
   private constructor(
     public size: NEPSize,
+    firstChild?: NEPElement,
   ) {
-    super(size);
+    super(size, firstChild);
 
     SVGHelper.setSize(this.rawElement(), size);
     this.borderWidth = 0;
