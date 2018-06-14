@@ -5,6 +5,10 @@ export default class NEPSequence extends NEAtom {
   private _slotWidth: number = 0;
   private _slotHeight: number = 0;
 
+  get count(): number {
+    return this.childrenCount;
+  }
+
   constructor(
     public maxSize: NEPSize,
     public capacity: number,

@@ -20,7 +20,7 @@
     "t": "jest",
     "build": "yarn lint && rollup -c",
     "compile": "tsc",
-    "dev": "yarn run clean && tsc -w",
+    "dev": "yarn run clean && rollup -c -w",
     "prepublishOnly": "yarn run test",
     "lint": "tslint --project tsconfig.json --config tslint.json",
     "clean": "rimraf dist"
