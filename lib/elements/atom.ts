@@ -1,7 +1,7 @@
 import { NEPElement, SVGHelper, NEPSize } from '../element';
 
 const DefaultBorderWidth  = 1;
-const DefaultRadius       = 4;
+const DefaultRadius       = 0;
 const DefaultPadding      = 5;
 const DefaultBorderColor  = '#808080';
 const DefaultBackground   = 'none';
@@ -78,7 +78,7 @@ export default class NEPAtom extends NEPElement {
   get borderRadius(): number {
     return this._borderRadius;
   }
-  set borderRaidus(value: number) {
+  set borderRadius(value: number) {
     this._borderRadius = value;
     this.rawBorder.setAttribute('stroke-radius', `${value}`);
   }

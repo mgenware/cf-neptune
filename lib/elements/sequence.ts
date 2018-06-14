@@ -30,16 +30,13 @@ export default class NEPSequence extends NEAtom {
       this._slotWidth = maxSize.width;
       this._slotHeight = maxSize.height / capacity;
     }
-
   }
 
   push(child: NEPElement) {
-    console.log(this.childrenCount, this.capacity);
     if (this.childrenCount === this.capacity) {
       throw new Error('No more slot available');
     }
     const pt = this.pointFromIndex(this.childrenCount);
-    console.log(pt);
 
     const wrappedElement = this.wrapElement(child);
     const rawWrappedElement = wrappedElement.rawElement();
@@ -49,6 +46,7 @@ export default class NEPSequence extends NEAtom {
 
   private wrapElement(child: NEPElement): NEPAtom {
     const atom = new NEPAtom({ width: this._slotWidth, height: this._slotHeight });
+    atom.borderRadius = 0;
     atom.appendChild(child);
     return atom;
   }

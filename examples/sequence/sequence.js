@@ -4,18 +4,19 @@ const SIZE = { width: 500, height: 100 };
 const CAP = 5;
 
 function newSequenceElement(index) {
-  return new window.nep.Text('🙈' + (index + 1));
+  const num = index + 1;
+  return new window.nep.Text(num + ' ' + '🙈'.repeat(num));
 }
 
 function pushClick() {
-  checkEnv();
+  window.checkEnv();
 
   const newElement = newSequenceElement(sequenceElement.count);
   sequenceElement.push(newElement);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  checkEnv();
+  window.checkEnv();
   
   const nep = window.nep;
   const root = document.getElementById('playground');

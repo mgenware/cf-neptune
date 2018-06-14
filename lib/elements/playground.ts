@@ -23,5 +23,6 @@ export default class NEPPlayground extends NEAtom {
     super(size);
 
     SVGHelper.setSize(this.rawElement(), size);
+    this.borderWidth = 0;
   }
 }
