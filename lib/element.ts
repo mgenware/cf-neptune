@@ -62,6 +62,18 @@ export class SVGHelper {
     this.setSize(element, rect);
   }
 
+  static setLinePoz(line: SVGLineElement, p1: NEPPoint, p2: NEPPoint) {
+    line.setAttribute('x1', p1.x.toString());
+    line.setAttribute('y1', p1.y.toString());
+    line.setAttribute('x2', p2.x.toString());
+    line.setAttribute('y2', p2.y.toString());
+  }
+
+  static setStroke(element: SVGGraphicsElement, color: string, width: number) {
+    element.setAttribute('stroke', color);
+    element.setAttribute('stroke-width', `${width}`);
+  }
+
   static rectInflate(rect: SVGRect, x: number, y: number): DOMRect {
     return new DOMRect(rect.x - x, rect.y - y, rect.width + x * 2, rect.height + y * 2);
   }
