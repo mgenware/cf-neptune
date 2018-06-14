@@ -3,6 +3,9 @@ import NEAtom from './atom';
 import NEPAtom from './atom';
 
 export default class NEPSequence extends NEAtom {
+  // Whether to disable scaling in child elements, useful when this sequence is used as a 2d-sequence.
+  noElementScaling: boolean = false;
+
   private _slotWidth: number = 0;
   private _slotHeight: number = 0;
 
@@ -18,7 +21,9 @@ export default class NEPSequence extends NEAtom {
     public orientation: 'h'|'v',
   ) {
     super(maxSize);
-    this.disableScaling = true;
+
+    // Disable auto-scaling of Atom element
+    this.noScaling = true;
     this.padding = 0;
 
     if (orientation !== 'h' && orientation !== 'v') {
@@ -61,6 +66,11 @@ export default class NEPSequence extends NEAtom {
 
   private wrapElement(child: NEPElement): NEPAtom {
     const atom = new NEPAtom({ width: this._slotWidth, height: this._slotHeight }, child);
+    atom.noScaling = this.noElementScaling;
+    if (atom.noScaling) {
+      // if scaling is disabled, padding will be cleared
+      atom.padding = 0;
+    }
     atom.borderRadius = 0;
     atom.borderWidth = 0;
     return atom;

@@ -7,7 +7,7 @@ const DefaultBorderColor  = '#808080';
 const DefaultBackground   = 'none';
 
 export default class NEPAtom extends NEPElement {
-  disableScaling: boolean = false;
+  noScaling: boolean = false;
   private rawRoot: SVGSVGElement;
   private rawContainer: SVGSVGElement;
   private rawBorder: SVGRectElement;
@@ -152,7 +152,7 @@ export default class NEPAtom extends NEPElement {
     }
 
     // Set the viewBox
-    if (!this.disableScaling) {
+    if (!this.noScaling) {
       SVGHelper.setViewBox(rawContainer, contentLayoutRect);
     }
     return rootRect;
