@@ -2,17 +2,17 @@ let playground = undefined;
 let textElement = undefined;
 
 function longStringClick() {
-  checkEnv();
+  window.checkEnv();
   textElement.text = 'This is a looooooooooooooooong string 🦁🦁🦁';
 }
 
 function shortStringClick() {
-  checkEnv();
+  window.checkEnv();
   textElement.text = 'A';
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  checkEnv();
+  window.checkEnv();
   
   const nep = window.nep;
   // Create the text element
@@ -21,5 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Mount the text element to playground
   playground = nep.Playground.create(root, {width: 300, height: 100}, textElement);
+  playground.borderWidth = '1px';
   playground.layout();
 });
