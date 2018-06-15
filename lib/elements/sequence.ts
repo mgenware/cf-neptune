@@ -1,6 +1,7 @@
 import { NEPElement, SVGHelper, NEPSize, NEPPoint } from '../element';
 import NEAtom from './atom';
 import NEPAtom from './atom';
+import NEPText from './text';
 
 export default class NEPSequence extends NEAtom {
   // Whether to disable scaling in child elements, useful when this sequence is used as a 2d-sequence.
@@ -46,9 +47,16 @@ export default class NEPSequence extends NEAtom {
   }
 
   push(child: NEPElement) {
+    if (!child) {
+      throw new Error('The child argument cannot be null');
+    }
     if (this.electronsCount === this.capacity) {
       throw new Error('No more slot available');
     }
+    if (typeof child === 'string') {
+      child = new NEPText(child);
+    }
+
     const pt = this.startPointFromIndex(this.electronsCount);
 
     const wrappedElement = this.wrapElement(child);
