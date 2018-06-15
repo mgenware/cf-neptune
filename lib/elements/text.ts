@@ -6,6 +6,7 @@ export default class NEPText extends NEPElement {
   constructor(text?: string) {
     super();
 
+    text = text || '';
     const raw = SVGHelper.createElement('text') as SVGTextElement;
     raw.style.dominantBaseline = 'text-before-edge';
     raw.style.fontSize = '16px';
