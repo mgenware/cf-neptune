@@ -67,7 +67,7 @@ export default class NEPSequence extends NEAtom {
     this.appendElectron(wrappedElement);
   }
 
-  childAt(index: number): NEAtom|null {
+  child(index: number): NEAtom|null {
     if (index < 0 || index >= this.count) {
       return null;
     }
