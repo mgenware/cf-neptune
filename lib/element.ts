@@ -1,3 +1,5 @@
+import defaults from 'defaults';
+
 export interface NEPSize {
   width: number;
   height: number;
@@ -23,6 +25,17 @@ export const EmptySize: NEPSize = {
 export class NEPElement {
   sizeChanged: ((sender: NEPElement) => void)|undefined;
 
+  _animationDuration: number|undefined;
+  get animationDuration(): number {
+    if (this._animationDuration) {
+      return this._animationDuration;
+    }
+    return defaults.animationDuration;
+  }
+  set animationDuration(value: number) {
+    this._animationDuration = value;
+  }
+
   rawElement(): SVGGraphicsElement {
     throw new Error('not implemented yet');
   }
@@ -35,6 +48,17 @@ export class NEPElement {
     if (this.sizeChanged) {
       this.sizeChanged(this);
     }
+  }
+
+  animate(element: Element, effect: AnimationKeyFrame | AnimationKeyFrame[]): Promise<Animation> {
+    if (!element) {
+      throw new Error('The element argument cannot be null');
+    }
+    const animation = element.animate(effect, {
+      duration: this.animationDuration,
+      fill: 'forwards',
+    });
+    return animation.finished;
   }
 }
 

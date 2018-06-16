@@ -67,13 +67,13 @@ export default class NEPSequence extends NEAtom {
     this.appendElectron(wrappedElement);
   }
 
-  childAt(index: number): NEPElement|null {
+  childAt(index: number): NEAtom|null {
     if (index < 0 || index >= this.count) {
       return null;
     }
     // child is a wrapped element, need to unwrap the content
     const atom = this._elements[index] as NEAtom;
-    return atom.firstElectron;
+    return atom;
   }
 
   private wrapElement(child: NEPElement): NEPAtom {

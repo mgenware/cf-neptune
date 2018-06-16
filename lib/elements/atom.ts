@@ -4,7 +4,7 @@ const DefaultBorderWidth  = 1;
 const DefaultRadius       = 0;
 const DefaultPadding      = 5;
 const DefaultBorderColor  = '#808080';
-const DefaultBackground   = 'none';
+const DefaultBackground   = 'white';
 
 export default class NEPAtom extends NEPElement {
   noScaling: boolean = false;
@@ -181,6 +181,16 @@ export default class NEPAtom extends NEPElement {
     return index;
   }
 
+  // ------- Animations -------
+  setBackground(value: string): Promise<Animation> {
+    const raw = this.rawBorder;
+    console.log(raw);
+    return this.animate(raw, {
+      fill: [this.background, value],
+    });
+  }
+
+  // ------- Private members -------
   private onChildAdded(child: NEPElement) {
     child.sizeChanged = () => {
       this.layout();
