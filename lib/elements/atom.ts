@@ -1,4 +1,5 @@
 import { NEPElement, SVGHelper, NEPSize } from '../element';
+import NEPText from './text';
 
 const DefaultBorderWidth  = 1;
 const DefaultRadius       = 0;
@@ -16,7 +17,7 @@ export default class NEPAtom extends NEPElement {
   private _borderColor: string = DefaultBorderColor;
   private _borderWidth: number|string = DefaultBorderWidth;
   private _borderRadius: number = DefaultRadius;
-  private _background: string = DefaultBackground;
+  private _background: string = '';
 
   private _electrons: NEPElement[] = [];
 
@@ -35,7 +36,6 @@ export default class NEPAtom extends NEPElement {
     this.rawRoot = rawRoot;
 
     const rawBorder = SVGHelper.createElement('rect') as SVGRectElement;
-    rawBorder.setAttribute('fill', this.background);
     rawBorder.setAttribute('stroke', this.borderColor);
     rawBorder.setAttribute('rx', `${this.borderRadius}`);
     rawBorder.setAttribute('ry', `${this.borderRadius}`);
@@ -50,6 +50,8 @@ export default class NEPAtom extends NEPElement {
     if (firstChild) {
       this.appendElectron(firstChild);
     }
+
+    this.unsafeSetBackground(DefaultBackground);
   }
 
   // padding property
@@ -92,7 +94,9 @@ export default class NEPAtom extends NEPElement {
   get background(): string {
     return this._background;
   }
-  set background(value: string) {
+
+  unsafeSetBackground(value: string) {
+    this.validateValue(value);
     this._background = value;
     this.rawBorder.setAttribute('fill', value);
   }
@@ -182,12 +186,26 @@ export default class NEPAtom extends NEPElement {
   }
 
   // ------- Animations -------
-  setBackground(value: string): Promise<Animation> {
+  async updateBackground(value: string) {
     const raw = this.rawBorder;
-    console.log(raw);
-    return this.animate(raw, {
+    await this.animate(raw, {
       fill: [this.background, value],
     });
+    this.unsafeSetBackground(value);
+  }
+
+  async updateForeground(value: string) {
+    this.validateValue(value);
+
+    const texts: Array<Promise<void>> = [];
+    for (let i = 0; i < this.electronsCount; i++) {
+      const electron = this.electronAt(i);
+      if (electron instanceof NEPText) {
+        const text = electron as NEPText;
+        texts.push(text.updateColor(value));
+      }
+    }
+    return Promise.all(texts);
   }
 
   // ------- Private members -------

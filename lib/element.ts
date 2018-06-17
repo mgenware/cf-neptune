@@ -60,6 +60,13 @@ export class NEPElement {
     });
     return animation.finished;
   }
+
+  // tslint:disable-next-line no-any
+  validateValue(value: any) {
+    if (!value) {
+      throw new Error('The value argument cannot be null');
+    }
+  }
 }
 
 export class SVGHelper {
