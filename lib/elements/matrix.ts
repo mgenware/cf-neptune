@@ -31,6 +31,14 @@ export default class NEPMatrix extends NEPSequence {
     }
   }
 
+  row(index: number): NEPSequence|null {
+    const child = this.internalChild(index) as NEPSequence;
+    if (!child) {
+      return null;
+    }
+    return child;
+  }
+
   private drawMatrixGrid() {
     const { width, height } = this.size;
     for (let i = 1; i < this.rows; i++) {
