@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
   for (let i = 0; i < ROWS; i++) {
     for (let j = 0; j < COLS; j++) {
       // push a random string
-      matrix.childAt(i).push('🙈'.repeat(j + 1) + i + j);
+      matrix.row(i).push('🙈'.repeat(j + 1) + i + j);
     }
   }
 
