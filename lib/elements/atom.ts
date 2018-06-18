@@ -23,7 +23,7 @@ export default class NEPAtom extends NEPElement {
 
   constructor(
     public size: NEPSize,
-    firstChild?: NEPElement,
+    content?: NEPElement,
   ) {
     super();
 
@@ -47,8 +47,12 @@ export default class NEPAtom extends NEPElement {
     rawRoot.appendChild(rawContainer);
     this.rawContainer = rawContainer;
 
-    if (firstChild) {
-      this.appendElectron(firstChild);
+    // Auto-convert a string content to NEPText
+    if (typeof content === 'string') {
+      content = new NEPText(content);
+    }
+    if (content) {
+      this.appendElectron(content);
     }
 
     this.unsafeSetBackground(DefaultBackground);
