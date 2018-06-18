@@ -18,7 +18,8 @@
         "max-classes-per-file": false,
         "no-any": false,
         "variable-name": false,
-        "interface-name": false
+        "interface-name": false,
+        "max-line-length": false
     },
     "rulesDirectory": []
 }
