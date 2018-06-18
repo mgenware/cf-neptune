@@ -22,5 +22,4 @@ document.addEventListener('DOMContentLoaded', () => {
   // Mount the text element to playground
   playground = nep.Playground.create(root, {width: 300, height: 100}, textElement);
   playground.borderWidth = '1px';
-  playground.layout();
 });

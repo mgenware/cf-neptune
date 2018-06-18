@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const root = document.getElementById('playground');
   const matrix = new nep.Matrix(SIZE, ROWS, COLS);
   playground = nep.Playground.create(root, SIZE, matrix);
-  playground.layout();
 
   // populate the matrix
   for (let i = 0; i < ROWS; i++) {

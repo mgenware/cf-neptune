@@ -22,7 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const root = document.getElementById('playground');
   const element = new nep.Sequence(SIZE, CAP, 'h');
   playground = nep.Playground.create(root, SIZE, element);
-  playground.layout();
 
   sequenceElement = element;
 });
