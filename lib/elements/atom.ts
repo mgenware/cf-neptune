@@ -59,6 +59,7 @@ export default class NEPAtom extends NEPElement {
     }
 
     this.unsafeSetBackground(DefaultBackground);
+    SVGHelper.labelElementInfo(this.rawElement(), 'atom');
   }
 
   // padding property

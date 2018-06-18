@@ -142,4 +142,8 @@ export class SVGHelper {
   static createElement(tagName: string): SVGGraphicsElement {
     return document.createElementNS(this.svgNS, tagName) as any;
   }
+
+  static labelElementInfo(element: SVGGraphicsElement, label: string) {
+    element.setAttribute('data-nep-type', label);
+  }
 }

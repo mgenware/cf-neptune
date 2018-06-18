@@ -29,6 +29,7 @@ export default class NEPMatrix extends NEPSequence {
     if (!noGrid) {
       this.drawMatrixGrid();
     }
+    SVGHelper.labelElementInfo(this.rawElement(), 'matrix');
   }
 
   row(index: number): NEPSequence|null {

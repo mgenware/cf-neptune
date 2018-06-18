@@ -44,6 +44,7 @@ export default class NEPSequence extends NEAtom {
     if (!this.noGrid) {
       this.drawGrid();
     }
+    SVGHelper.labelElementInfo(this.rawElement(), 'sequence');
   }
 
   push(child: NEPElement) {

@@ -18,6 +18,7 @@ export default class DecoratedAtom extends NEPAtom {
     // Set top padding to the height of decorator element
     this.padding.top = decorators.size.height;
     this.rawElement().appendChild(decorators.rawElement());
+    SVGHelper.labelElementInfo(this.rawElement(), 'decorated-atom');
   }
 
   layout(): SVGRect {
