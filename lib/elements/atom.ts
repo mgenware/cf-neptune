@@ -96,7 +96,7 @@ export default class NEPAtom extends NEPElement {
   }
 
   unsafeSetBackground(value: string) {
-    this.validateValue(value);
+    this.checkValueNotEmpty(value, 'value');
     this._background = value;
     this.rawBorder.setAttribute('fill', value);
   }
@@ -168,6 +168,9 @@ export default class NEPAtom extends NEPElement {
   }
 
   appendElectron(child: NEPElement) {
+    this.checkValueNotEmpty(child, 'child');
+    this.checkIsElement(child, 'child');
+
     this._electrons.push(child);
     this.rawContainer.appendChild(child.rawElement());
     this.onChildAdded(child);
@@ -175,6 +178,9 @@ export default class NEPAtom extends NEPElement {
   }
 
   removeElectron(child: NEPElement): number {
+    this.checkValueNotEmpty(child, 'child');
+    this.checkIsElement(child, 'child');
+
     const index = this._electrons.indexOf(child);
     if (index !== -1) {
       this._electrons.splice(index, 1);
@@ -187,6 +193,8 @@ export default class NEPAtom extends NEPElement {
 
   // ------- Animations -------
   async updateBackground(value: string) {
+    this.checkValueNotEmpty(value, 'value');
+
     const raw = this.rawBorder;
     await this.animate(raw, {
       fill: [this.background, value],
@@ -195,7 +203,7 @@ export default class NEPAtom extends NEPElement {
   }
 
   async updateForeground(value: string) {
-    this.validateValue(value);
+    this.checkValueNotEmpty(value, 'value');
 
     const texts: Array<Promise<void>> = [];
     for (let i = 0; i < this.electronsCount; i++) {

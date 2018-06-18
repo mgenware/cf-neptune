@@ -62,9 +62,15 @@ export class NEPElement {
   }
 
   // tslint:disable-next-line no-any
-  validateValue(value: any) {
+  checkValueNotEmpty(value: any, name: string) {
     if (!value) {
-      throw new Error('The value argument cannot be null');
+      throw new Error(`The "${name}" argument cannot be empty`);
+    }
+  }
+
+  checkIsElement(value: NEPElement, name: string) {
+    if (value instanceof NEPElement === false) {
+      throw new Error(`The "${name}" argument is not a NEPElement`);
     }
   }
 }

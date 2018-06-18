@@ -34,13 +34,15 @@ export default class NEPText extends NEPElement {
   }
 
   unsafeSetColor(value: string) {
-    this.validateValue(value);
+    this.checkValueNotEmpty(value, 'value');
+
     this.raw.setAttribute('fill', value);
     this._color = value;
   }
 
   async updateColor(value: string) {
-    this.validateValue(value);
+    this.checkValueNotEmpty(value, 'value');
+
     const raw = this.raw;
     await this.animate(raw, {
       fill: [this.color, value],
