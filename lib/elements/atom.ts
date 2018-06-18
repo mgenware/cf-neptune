@@ -9,8 +9,13 @@ const DefaultBackground   = 'white';
 
 export default class NEPAtom extends NEPElement {
   noScaling: boolean = false;
+  loaded: boolean = false;
+
+  // rawRoot is the outermost SVGElement of this element, therefor it contains all other child SVGElements.
   private rawRoot: SVGSVGElement;
+  // rawContains is the element used to hold content elements, it defines the area inside this element's border and padding.
   private rawContainer: SVGSVGElement;
+  // rawBorder is the SVGRectElement used to define borders of this element.
   private rawBorder: SVGRectElement;
 
   private _padding: number = DefaultPadding;
@@ -19,6 +24,7 @@ export default class NEPAtom extends NEPElement {
   private _borderRadius: number = DefaultRadius;
   private _background: string = '';
 
+  // _electrons contains the internal NEPElements that are added to the content(rawContainer) element.
   private _electrons: NEPElement[] = [];
 
   constructor(
@@ -26,10 +32,7 @@ export default class NEPAtom extends NEPElement {
     content?: NEPElement,
   ) {
     super();
-
-    if (!size) {
-      throw new Error('The size argument cannot be empty');
-    }
+    this.checkValueNotEmpty(size, 'size');
 
     const rawRoot = SVGHelper.createElement('svg') as SVGSVGElement;
     SVGHelper.setSize(rawRoot, this.size);
@@ -64,7 +67,7 @@ export default class NEPAtom extends NEPElement {
   }
   set padding(value: number) {
     this._padding = value;
-    this.layout();
+    this.layoutIfNeeded();
   }
 
   // border-color property
@@ -136,6 +139,8 @@ export default class NEPAtom extends NEPElement {
   }
 
   layout(): SVGRect {
+    this.loaded = true;
+
     const { rawContainer, size, padding, rawBorder } = this;
     const rootRect = {
       x: 0,
@@ -146,7 +151,6 @@ export default class NEPAtom extends NEPElement {
 
     // Remove the 'viewBox' attribute to get consistent values from getBBox()
     rawContainer.removeAttribute('viewBox');
-    const contentLayoutRect = rawContainer.getBBox();
 
     // Border
     SVGHelper.setRect(rawBorder, SVGHelper.rectInflate(rootRect, -DefaultBorderWidth, -DefaultBorderWidth));
@@ -158,6 +162,9 @@ export default class NEPAtom extends NEPElement {
     for (const child of this._electrons) {
       child.layout();
     }
+
+    // Get the bounding box
+    const contentLayoutRect = rawContainer.getBBox();
 
     // Set the viewBox
     if (!this.noScaling) {
@@ -178,7 +185,7 @@ export default class NEPAtom extends NEPElement {
     this._electrons.push(child);
     this.rawContainer.appendChild(child.rawElement());
     this.onChildAdded(child);
-    this.layout();
+    this.layoutIfNeeded();
   }
 
   removeElectron(child: NEPElement): number {
@@ -191,7 +198,7 @@ export default class NEPAtom extends NEPElement {
       this.rawContainer.removeChild(child.rawElement());
       this.onChildRemoved(child);
     }
-    this.layout();
+    this.layoutIfNeeded();
     return index;
   }
 
@@ -220,10 +227,16 @@ export default class NEPAtom extends NEPElement {
     return Promise.all(texts);
   }
 
-  // ------- Private members -------
+  // ------- Private methods -------
+  protected layoutIfNeeded() {
+    if (this.loaded) {
+      this.layout();
+    }
+  }
+
   private onChildAdded(child: NEPElement) {
     child.sizeChanged = () => {
-      this.layout();
+      this.layoutIfNeeded();
     };
   }
 
