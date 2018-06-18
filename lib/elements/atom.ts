@@ -1,4 +1,4 @@
-import { NEPElement, SVGHelper, NEPSize } from '../element';
+import { NEPElement, SVGHelper, NEPSize, NEPPadding, NewPadding } from '../element';
 import NEPText from './text';
 
 const DefaultBorderWidth  = 1;
@@ -18,7 +18,7 @@ export default class NEPAtom extends NEPElement {
   // rawBorder is the SVGRectElement used to define borders of this element.
   private rawBorder: SVGRectElement;
 
-  private _padding: number = DefaultPadding;
+  private _padding: NEPPadding = NewPadding(DefaultPadding, DefaultPadding, DefaultPadding, DefaultPadding);
   private _borderColor: string = DefaultBorderColor;
   private _borderWidth: number|string = DefaultBorderWidth;
   private _borderRadius: number = DefaultRadius;
@@ -62,10 +62,10 @@ export default class NEPAtom extends NEPElement {
   }
 
   // padding property
-  get padding(): number {
+  get padding(): NEPPadding {
     return this._padding;
   }
-  set padding(value: number) {
+  set padding(value: NEPPadding) {
     this._padding = value;
     this.layoutIfNeeded();
   }
@@ -153,10 +153,10 @@ export default class NEPAtom extends NEPElement {
     rawContainer.removeAttribute('viewBox');
 
     // Border
-    SVGHelper.setRect(rawBorder, SVGHelper.rectInflate(rootRect, -DefaultBorderWidth, -DefaultBorderWidth));
+    SVGHelper.setRect(rawBorder, SVGHelper.rectInset(rootRect, DefaultBorderWidth, DefaultBorderWidth));
 
     // Container
-    SVGHelper.setRect(rawContainer, SVGHelper.rectInflate(rootRect, -padding, -padding));
+    SVGHelper.setRect(rawContainer, SVGHelper.rectInsetEx(rootRect, padding));
 
     // Layout children
     for (const child of this._electrons) {

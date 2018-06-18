@@ -10,6 +10,13 @@ export interface NEPPoint {
   y: number;
 }
 
+export interface NEPPadding {
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
+}
+
 export const EmptyRect: SVGRect = {
   width: 0,
   height: 0,
@@ -21,6 +28,19 @@ export const EmptySize: NEPSize = {
   width: 0,
   height: 0,
 };
+
+export const EmptyPadding: NEPPadding = {
+  top: 0,
+  right: 0,
+  bottom: 0,
+  left: 0,
+};
+
+export function NewPadding(top: number, right: number, bottom: number, left: number): NEPPadding {
+  return {
+    top, right, bottom, left,
+  };
+}
 
 export class NEPElement {
   sizeChanged: ((sender: NEPElement) => void)|undefined;
@@ -111,8 +131,12 @@ export class SVGHelper {
     element.setAttribute('stroke-width', `${width}`);
   }
 
-  static rectInflate(rect: SVGRect, x: number, y: number): DOMRect {
-    return new DOMRect(rect.x - x, rect.y - y, rect.width + x * 2, rect.height + y * 2);
+  static rectInset(rect: SVGRect, x: number, y: number): DOMRect {
+    return this.rectInsetEx(rect, { left: x, right: x, top: y, bottom: y});
+  }
+
+  static rectInsetEx(rect: SVGRect, padding: NEPPadding): DOMRect {
+    return new DOMRect(rect.x + padding.left, rect.y + padding.top, rect.width - padding.left - padding.right, rect.height - padding.top - padding.bottom);
   }
 
   static createElement(tagName: string): SVGGraphicsElement {

@@ -1,4 +1,4 @@
-import { NEPElement, SVGHelper, NEPSize, NEPPoint } from '../element';
+import { NEPElement, SVGHelper, NEPSize, NEPPoint, EmptyPadding } from '../element';
 import NEAtom from './atom';
 import NEPAtom from './atom';
 import NEPText from './text';
@@ -27,7 +27,7 @@ export default class NEPSequence extends NEAtom {
 
     // Disable auto-scaling of Atom element
     this.noScaling = true;
-    this.padding = 0;
+    this.padding = EmptyPadding;
 
     if (orientation !== 'h' && orientation !== 'v') {
       throw new Error('orientation can only be "h" or "v"');
@@ -88,7 +88,7 @@ export default class NEPSequence extends NEAtom {
     atom.noScaling = this.noElementScaling;
     if (atom.noScaling) {
       // if scaling is disabled, padding will be cleared
-      atom.padding = 0;
+      atom.padding = EmptyPadding;
     }
     atom.borderRadius = 0;
     atom.borderWidth = 0;
