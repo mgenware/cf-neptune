@@ -15,16 +15,19 @@ export default class DecoratedAtom extends NEPAtom {
       throw new Error('The decorators argument is not a NEPSequence');
     }
 
-    // Set top padding to the height of decorator element
-    this.padding.top = decorators.size.height;
+    // Set decorators' style
+    decorators.borderWidth = 0;
+
     this.rawElement().appendChild(decorators.rawElement());
     SVGHelper.labelElementInfo(this.rawElement(), 'decorated-atom');
   }
 
   layout(): SVGRect {
-    const result = super.layout();
     SVGHelper.setPosition(this.decorators.rawElement(), 1, 1);
+    const result = super.layout();
 
+    // Because decorators are not added to the electron list, we need to manually call the layout method.
+    this.decorators.layout();
     return result;
   }
 }

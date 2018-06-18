@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const size = { width: 300, height: 100 };
   const decoratorsCount = 3;
-  const decoratorsSize = { width: 30, height: 10 };
+  const decoratorsSize = { width: 150, height: 50 };
   const decorators = new nep.Sequence(decoratorsSize, decoratorsCount, 'h', true);
   const atom = new nep.DecoratedAtom(size, decorators, 'Content');
   element = atom;

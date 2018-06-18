@@ -42,6 +42,15 @@ export function NewPadding(top: number, right: number, bottom: number, left: num
   };
 }
 
+export function NewRectFromSize(x: number, y: number, size: NEPSize): SVGRect {
+  return {
+    x,
+    y,
+    width: size.width,
+    height: size.height,
+  };
+}
+
 export class NEPElement {
   sizeChanged: ((sender: NEPElement) => void)|undefined;
 

@@ -1,11 +1,11 @@
-import { NEPElement, SVGHelper, NEPSize, NEPPadding, NewPadding } from '../element';
+import { NEPElement, SVGHelper, NEPSize, NEPPadding, NewPadding, NewRectFromSize } from '../element';
 import NEPText from './text';
 
 const DefaultBorderWidth  = 1;
 const DefaultRadius       = 0;
 const DefaultPadding      = 5;
 const DefaultBorderColor  = '#808080';
-const DefaultBackground   = 'white';
+const DefaultBackground   = 'none';
 
 export default class NEPAtom extends NEPElement {
   noScaling: boolean = false;
@@ -35,7 +35,9 @@ export default class NEPAtom extends NEPElement {
     this.checkValueNotEmpty(size, 'size');
 
     const rawRoot = SVGHelper.createElement('svg') as SVGSVGElement;
-    SVGHelper.setSize(rawRoot, this.size);
+    SVGHelper.setSize(rawRoot, size);
+    // Root <svg>'s viewBox will always be the size passed in, container <svg>'s viewBox will be resolved in layout().
+    SVGHelper.setViewBox(rawRoot, NewRectFromSize(0, 0, size));
     this.rawRoot = rawRoot;
 
     const rawBorder = SVGHelper.createElement('rect') as SVGRectElement;
@@ -47,6 +49,7 @@ export default class NEPAtom extends NEPElement {
     this.rawBorder = rawBorder;
 
     const rawContainer = SVGHelper.createElement('svg') as SVGSVGElement;
+    SVGHelper.labelElementInfo(rawContainer, 'atom-content');
     rawRoot.appendChild(rawContainer);
     this.rawContainer = rawContainer;
 
@@ -168,9 +171,7 @@ export default class NEPAtom extends NEPElement {
     const contentLayoutRect = rawContainer.getBBox();
 
     // Set the viewBox
-    if (!this.noScaling) {
-      SVGHelper.setViewBox(rawContainer, contentLayoutRect);
-    }
+    SVGHelper.setViewBox(rawContainer, this.noScaling ? rootRect : contentLayoutRect);
     return rootRect;
   }
 
