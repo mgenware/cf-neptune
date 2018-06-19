@@ -22,7 +22,6 @@ export default class NEPAtom extends NEPElement {
   private _borderColor: string = DefaultBorderColor;
   private _borderWidth: number|string = DefaultBorderWidth;
   private _borderRadius: number = DefaultRadius;
-  private _background: string = '';
 
   // _electrons contains the internal NEPElements that are added to the content(rawContainer) element.
   private _electrons: NEPElement[] = [];
@@ -61,7 +60,7 @@ export default class NEPAtom extends NEPElement {
       this.appendElectron(content);
     }
 
-    this.unsafeSetBackground(DefaultBackground);
+    this.background = DefaultBackground;
     SVGHelper.labelElementInfo(this.rawElement(), 'atom');
   }
 
@@ -101,14 +100,10 @@ export default class NEPAtom extends NEPElement {
     this.rawBorder.setAttribute('stroke-radius', `${value}`);
   }
 
-  // background
   get background(): string {
-    return this._background;
+    return this.rawBorder.getAttribute('fill') || '';
   }
-
-  unsafeSetBackground(value: string) {
-    this.checkValueNotEmpty(value, 'value');
-    this._background = value;
+  set background(value: string) {
     this.rawBorder.setAttribute('fill', value);
   }
 
@@ -205,28 +200,31 @@ export default class NEPAtom extends NEPElement {
   }
 
   // ------- Animations -------
-  async updateBackground(value: string) {
+  async setBackgroundAsync(value: string, animated = true) {
     this.checkValueNotEmpty(value, 'value');
 
     const raw = this.rawBorder;
-    await this.animate(raw, {
-      fill: [this.background, value],
-    });
-    this.unsafeSetBackground(value);
+    if (animated) {
+      await this.animate(raw, {
+        fill: value,
+      });
+    } else {
+      this.background = value;
+    }
   }
 
-  async updateForeground(value: string) {
+  async setColorAsync(value: string, animated = true) {
     this.checkValueNotEmpty(value, 'value');
 
-    const texts: Array<Promise<void>> = [];
+    const tasks: Array<Promise<void>> = [];
     for (let i = 0; i < this.electronsCount; i++) {
       const electron = this.electronAt(i);
       if (electron instanceof NEPText) {
         const text = electron as NEPText;
-        texts.push(text.updateColor(value));
+        tasks.push(text.setColorAsync(value, animated));
       }
     }
-    return Promise.all(texts);
+    return Promise.all(tasks);
   }
 
   // ------- Private methods -------

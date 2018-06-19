@@ -2,7 +2,6 @@ import { NEPElement, SVGHelper } from '../element';
 
 export default class NEPText extends NEPElement {
   private raw: SVGTextElement;
-  private _color: string = '';
 
   constructor(text?: string) {
     super();
@@ -14,7 +13,7 @@ export default class NEPText extends NEPElement {
     this.raw = raw;
     this.text = text as string|null;
 
-    this.unsafeSetColor('black');
+    this.setColorAttribute('black');
   }
 
   rawElement(): SVGGraphicsElement {
@@ -29,24 +28,22 @@ export default class NEPText extends NEPElement {
     this.onSizeChanged();
   }
 
-  get color(): string {
-    return this._color;
-  }
-
-  unsafeSetColor(value: string) {
-    this.checkValueNotEmpty(value, 'value');
-
-    this.raw.setAttribute('fill', value);
-    this._color = value;
-  }
-
-  async updateColor(value: string) {
+  async setColorAsync(value: string, animated = true) {
     this.checkValueNotEmpty(value, 'value');
 
     const raw = this.raw;
-    await this.animate(raw, {
-      fill: [this.color, value],
-    });
-    this.unsafeSetColor(value);
+    if (animated) {
+      await this.animate(raw, {
+        fill: value,
+      });
+    } else {
+      this.setColorAttribute(value);
+    }
+  }
+
+  private setColorAttribute(value: string) {
+    this.checkValueNotEmpty(value, 'value');
+
+    this.raw.setAttribute('fill', value);
   }
 }
