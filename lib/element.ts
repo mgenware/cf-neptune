@@ -84,7 +84,6 @@ export class NEPElement {
     this.checkValueNotEmpty(element, 'element');
 
     return new Promise<void>((resolve) => {
-      console.log(this.animationDuration);
       const params: TweenConfig = { attr: { ...effect } };
       params.onComplete = resolve;
       TweenLite.to(element, this.animationDuration / 1000, config);
