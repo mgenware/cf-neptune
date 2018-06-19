@@ -18,4 +18,5 @@ export default class Defs {
   static y2 = 'y2';
   static text = 'text';
   static line = 'line';
+  static g = 'g';
 }

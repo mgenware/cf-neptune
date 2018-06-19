@@ -12,6 +12,7 @@ export default class NEPSequence extends NEPAtom {
   private _slotHeight: number = 0;
 
   private _elements: NEPElement[] = [];
+  private _gridGroup: SVGGElement|null = null;
   private _girdLines: SVGGraphicsElement[] = [];
 
   get count(): number {
@@ -144,6 +145,11 @@ export default class NEPSequence extends NEPAtom {
   }
 
   private drawGrid() {
+    const rootRaw = SVGHelper.createElement(Defs.g) as SVGGElement;
+    SVGHelper.labelElementInfo(rootRaw, 'sequence-grid');
+    this.rawElement().appendChild(rootRaw);
+    this._gridGroup = rootRaw;
+
     for (let i = 1; i < this.capacity; i++) {
       const rawLine = SVGHelper.createElement('line') as SVGLineElement;
       SVGHelper.setStroke(rawLine, '#808080', 1);
@@ -158,7 +164,7 @@ export default class NEPSequence extends NEPAtom {
       SVGHelper.setLinePoz(rawLine, startPt, endPt);
 
       this._girdLines.push(rawLine);
-      this.rawElement().appendChild(rawLine);
+      this._gridGroup.appendChild(rawLine);
     }
   }
 
