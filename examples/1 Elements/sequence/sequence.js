@@ -8,11 +8,18 @@ function newSequenceElement(index) {
   return new window.nep.Text(num + ' ' + '🙈'.repeat(num));
 }
 
-function pushClick() {
+async function pushClick() {
   window.checkEnv();
 
   const newElement = newSequenceElement(sequenceElement.count);
-  sequenceElement.push(newElement);
+  await sequenceElement.pushAsync(newElement);
+}
+
+async function pushFrontClick() {
+  window.checkEnv();
+
+  const newElement = newSequenceElement(sequenceElement.count);
+  await sequenceElement.pushFrontAsync(newElement);
 }
 
 document.addEventListener('DOMContentLoaded', () => {

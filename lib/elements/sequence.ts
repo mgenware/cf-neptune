@@ -1,9 +1,8 @@
 import { NEPElement, SVGHelper, NEPSize, NEPPoint, EmptyPadding } from '../element';
-import NEAtom from './atom';
 import NEPAtom from './atom';
 import NEPText from './text';
 
-export default class NEPSequence extends NEAtom {
+export default class NEPSequence extends NEPAtom {
   // Whether to disable scaling in child elements, useful when this sequence is used as a 2d-sequence.
   noElementScaling: boolean = false;
 
@@ -47,32 +46,51 @@ export default class NEPSequence extends NEAtom {
     SVGHelper.labelElementInfo(this.rawElement(), 'sequence');
   }
 
-  push(child: NEPElement) {
-    if (!child) {
-      throw new Error('The child argument cannot be null');
-    }
-    if (this.electronsCount === this.capacity) {
+  async pushFrontAsync(child: NEPElement) {
+    await this.insertAsync(0, child);
+  }
+
+  async pushAsync(child: NEPElement) {
+    await this.insertAsync(this.count, child);
+  }
+
+  async insertAsync(index: number, child: NEPElement) {
+    // Check capacity
+    if (this.count === this.capacity) {
       throw new Error('No more slot available');
     }
+    // Check the child argument
+    this.checkValueNotEmpty(child, 'child');
     if (typeof child === 'string') {
       child = new NEPText(child);
     }
+    // Check the index argument
+    // Note that this is insert, so index can be the end of the array.
+    if (index < 0 || index > this.count) {
+      throw new Error('Index out of range');
+    }
 
-    const pt = this.startPointFromIndex(this.electronsCount);
+    const tasks: Array<Promise<void>> = [];
+    for (let i = index; i < this.count; i++) {
+      tasks.push(this.shiftElement(i, i + 1));
+    }
 
+    await Promise.all(tasks);
+
+    const pt = this.startPointFromIndex(index);
     const wrappedElement = this.wrapElement(child);
     const rawWrappedElement = wrappedElement.rawElement();
     SVGHelper.setPosition(rawWrappedElement, pt.x, pt.y);
 
-    this._elements.push(wrappedElement);
+    this._elements.splice(index, 0, wrappedElement);
     this.appendElectron(wrappedElement);
   }
 
-  child(index: number): NEAtom|null {
+  child(index: number): NEPAtom|null {
     if (index < 0 || index >= this.count) {
       return null;
     }
-    const atom = this._elements[index] as NEAtom;
+    const atom = this._elements[index] as NEPAtom;
     return atom;
   }
 
@@ -120,5 +138,20 @@ export default class NEPSequence extends NEAtom {
       this._girdLines.push(rawLine);
       this.rawElement().appendChild(rawLine);
     }
+  }
+
+  // # Animations
+  private async shiftElement(startIndex: number, endIndex: number) {
+    if (startIndex === endIndex) {
+      return;
+    }
+    const endPoz = this.startPointFromIndex(endIndex);
+
+    const element = this.child(startIndex) as NEPAtom;
+    const rawElement = element.rawElement();
+    const prop = this.orientation === 'h' ? 'x' : 'y';
+    const keyFrame: AnimationKeyFrame = {};
+    keyFrame[prop] = endPoz[prop];
+    await this.animate(rawElement, keyFrame);
   }
 }

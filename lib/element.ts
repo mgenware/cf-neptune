@@ -1,4 +1,5 @@
-import defaults from 'defaults';
+import defaults from './defaults';
+import { TweenConfig, TweenLite } from 'gsap';
 
 export interface NEPSize {
   width: number;
@@ -79,15 +80,14 @@ export class NEPElement {
     }
   }
 
-  animate(element: Element, effect: AnimationKeyFrame | AnimationKeyFrame[]): Promise<Animation> {
-    if (!element) {
-      throw new Error('The element argument cannot be null');
-    }
-    const animation = element.animate(effect, {
-      duration: this.animationDuration,
-      fill: 'forwards',
+  animate(element: SVGGraphicsElement, effect: {}): Promise<void> {
+    this.checkValueNotEmpty(element, 'element');
+
+    return new Promise<void>((resolve) => {
+      const config: TweenConfig = { attr: { ...effect } };
+      config.onComplete = resolve;
+      TweenLite.to(element, this.animationDuration / 1000, config);
     });
-    return animation.finished;
   }
 
   // tslint:disable-next-line no-any
