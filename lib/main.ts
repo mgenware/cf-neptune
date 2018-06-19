@@ -4,4 +4,4 @@ export { default as Sequence } from './elements/sequence';
 export { default as Matrix } from './elements/matrix';
 export { default as Text } from './elements/text';
 export { default as DecoratedAtom } from './elements/decoratedAtom';
-export { default as config } from './config';
+export { default as configs } from './configs';

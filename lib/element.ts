@@ -1,4 +1,4 @@
-import config from './config';
+import configs from './configs';
 import { TweenConfig, TweenLite } from 'gsap';
 
 export interface NEPSize {
@@ -60,7 +60,7 @@ export class NEPElement {
     if (this._animationDuration) {
       return this._animationDuration;
     }
-    return config.animationDuration;
+    return configs.animation.duration;
   }
   set animationDuration(value: number) {
     this._animationDuration = value;
@@ -80,13 +80,13 @@ export class NEPElement {
     }
   }
 
-  animate(element: SVGGraphicsElement, effect: {}): Promise<void> {
+  animate(element: SVGGraphicsElement, effect: {}, multiplier = 1.0): Promise<void> {
     this.checkValueNotEmpty(element, 'element');
 
     return new Promise<void>((resolve) => {
       const params: TweenConfig = { attr: { ...effect } };
       params.onComplete = resolve;
-      TweenLite.to(element, this.animationDuration / 1000, config);
+      TweenLite.to(element, this.animationDuration / 1000 * multiplier, params);
     });
   }
 
