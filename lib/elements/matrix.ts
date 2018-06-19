@@ -4,10 +4,28 @@ import { NEPSize, SVGHelper, NEPPoint } from '../element';
 const DefaultGridColor = '#808080';
 
 export default class NEPMatrix extends NEPSequence {
+  static async createAsync(
+    size: NEPSize,
+    rows: number,
+    cols: number,
+    noGrid?: boolean,
+  ): Promise<NEPMatrix> {
+    const matrix = new NEPMatrix(size, rows, cols, noGrid);
+    const rowSize = { width: size.width, height: size.height / rows };
+
+    for (let i = 0; i < rows; i++) {
+      const row = new NEPSequence(rowSize, cols, 'h', true);
+      row.borderWidth = 0;
+      await matrix.pushAsync(row, false);
+    }
+
+    return matrix;
+  }
+
   private _gridWidth: number;
   private _gridHeight: number;
 
-  constructor(
+  private constructor(
     public size: NEPSize,
     public rows: number,
     public cols: number,
@@ -18,13 +36,6 @@ export default class NEPMatrix extends NEPSequence {
     this.noElementScaling = true;
     this._gridWidth = size.width / cols;
     this._gridHeight = size.height / rows;
-
-    const rowSize = { width: size.width, height: size.height / rows };
-    for (let i = 0; i < rows; i++) {
-      const row = new NEPSequence(rowSize, cols, 'h', true);
-      row.borderWidth = 0;
-      this.push(row);
-    }
 
     if (!noGrid) {
       this.drawMatrixGrid();

@@ -46,15 +46,15 @@ export default class NEPSequence extends NEPAtom {
     SVGHelper.labelElementInfo(this.rawElement(), 'sequence');
   }
 
-  async pushFrontAsync(child: NEPElement) {
-    await this.insertAsync(0, child);
+  async pushFrontAsync(child: NEPElement, animated = true) {
+    await this.insertAsync(0, child, animated);
   }
 
-  async pushAsync(child: NEPElement) {
-    await this.insertAsync(this.count, child);
+  async pushAsync(child: NEPElement, animated = true) {
+    await this.insertAsync(this.count, child, animated);
   }
 
-  async insertAsync(index: number, child: NEPElement) {
+  async insertAsync(index: number, child: NEPElement, animated = true) {
     // Check capacity
     if (this.count === this.capacity) {
       throw new Error('No more slot available');
@@ -72,7 +72,7 @@ export default class NEPSequence extends NEPAtom {
 
     const tasks: Array<Promise<void>> = [];
     for (let i = index; i < this.count; i++) {
-      tasks.push(this.shiftElement(i, i + 1));
+      tasks.push(this.shiftElement(i, i + 1, animated));
     }
 
     await Promise.all(tasks);
@@ -141,7 +141,7 @@ export default class NEPSequence extends NEPAtom {
   }
 
   // # Animations
-  private async shiftElement(startIndex: number, endIndex: number) {
+  private async shiftElement(startIndex: number, endIndex: number, animated: boolean) {
     if (startIndex === endIndex) {
       return;
     }
@@ -150,8 +150,13 @@ export default class NEPSequence extends NEPAtom {
     const element = this.child(startIndex) as NEPAtom;
     const rawElement = element.rawElement();
     const prop = this.orientation === 'h' ? 'x' : 'y';
-    const keyFrame: AnimationKeyFrame = {};
-    keyFrame[prop] = endPoz[prop];
-    await this.animate(rawElement, keyFrame);
+
+    if (animated) {
+      const keyFrame: AnimationKeyFrame = {};
+      keyFrame[prop] = endPoz[prop];
+      await this.animate(rawElement, keyFrame);
+    } else {
+      SVGHelper.setPosition(rawElement, endPoz.x, endPoz.y);
+    }
   }
 }
