@@ -1,6 +1,7 @@
 import typescript from 'rollup-plugin-typescript2';
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
+import replace from 'rollup-plugin-replace';
 import { uglify } from 'rollup-plugin-uglify';
 
 const production = process.env.NODE_ENV === 'production';
@@ -19,6 +20,9 @@ export default {
     }),
     commonjs(),
     typescript({ cacheRoot: (require('unique-temp-dir'))() }),
+    replace({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+    }),
     production && uglify(),
   ],
 };
