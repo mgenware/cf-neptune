@@ -16,7 +16,7 @@ export default class NEPMatrix extends NEPSequence {
     for (let i = 0; i < rows; i++) {
       const row = new NEPSequence(rowSize, cols, 'h', true);
       row.borderWidth = 0;
-      await matrix.pushAsync(row, false);
+      await matrix.pushAsync(row, { disabled: true });
     }
 
     return matrix;

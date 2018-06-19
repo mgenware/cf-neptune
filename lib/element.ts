@@ -80,13 +80,23 @@ export class NEPElement {
     }
   }
 
-  animate(element: SVGGraphicsElement, effect: {}, multiplier = 1.0): Promise<void> {
+  animate(element: SVGGraphicsElement, props: {[key: string]: any}, _opt: NEPAnimationOptions|undefined): Promise<void> {
     this.checkValueNotEmpty(element, 'element');
+    this.checkValueNotEmpty(props, 'props');
+
+    const opt = _opt || {};
+    if (opt.disabled) {
+      Object.keys(props).forEach((key) => element.setAttribute(key, props[key]));
+      return Promise.resolve();
+    }
 
     return new Promise<void>((resolve) => {
-      const params: TweenConfig = { attr: { ...effect } };
+      const params: TweenConfig = { attr: { ...props } };
       params.onComplete = resolve;
-      TweenLite.to(element, this.animationDuration / 1000 * multiplier, params);
+
+      const durationResult = opt.duration === undefined ? this.animationDuration : opt.duration;
+
+      TweenLite.to(element, durationResult / 1000, params);
     });
   }
 
@@ -163,4 +173,9 @@ export class AnimationHelper {
       setTimeout(resolve, ts);
     });
   }
+}
+
+export interface NEPAnimationOptions {
+  disabled?: boolean;
+  duration?: number;
 }

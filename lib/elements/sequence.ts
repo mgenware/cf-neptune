@@ -1,7 +1,8 @@
-import { NEPElement, SVGHelper, NEPSize, NEPPoint, EmptyPadding, AnimationHelper } from '../element';
+import { NEPElement, SVGHelper, NEPSize, NEPPoint, EmptyPadding, AnimationHelper, NEPAnimationOptions } from '../element';
 import NEPAtom from './atom';
 import NEPText from './text';
 import configs from '../configs';
+import Defs from 'defs';
 
 export default class NEPSequence extends NEPAtom {
   // Whether to disable scaling in child elements, useful when this sequence is used as a 2d-sequence.
@@ -55,15 +56,15 @@ export default class NEPSequence extends NEPAtom {
     SVGHelper.labelElementInfo(this.rawElement(), 'sequence');
   }
 
-  async pushFrontAsync(child: NEPElement, animated = true) {
-    await this.insertAsync(0, child, animated);
+  async pushFrontAsync(child: NEPElement, opt?: NEPAnimationOptions) {
+    await this.insertAsync(0, child, opt);
   }
 
-  async pushAsync(child: NEPElement, animated = true) {
-    await this.insertAsync(this.count, child, animated);
+  async pushAsync(child: NEPElement, opt?: NEPAnimationOptions) {
+    await this.insertAsync(this.count, child, opt);
   }
 
-  async insertAsync(index: number, child: NEPElement, animated = true) {
+  async insertAsync(index: number, child: NEPElement, _opt?: NEPAnimationOptions) {
     // Check capacity
     if (this.count === this.capacity) {
       throw new Error('No more slot available');
@@ -79,12 +80,19 @@ export default class NEPSequence extends NEPAtom {
       throw new Error('Index out of range');
     }
 
-    // Shift elements behind the insert position
+    const opt = _opt || {};
+    const duration = opt.duration || this.animationDuration;
+
+    // (1) 0.2: shifting elements
+    // (2) 0.8: showing the newly added element
+
+    // #1 Shift elements behind the insert position
     const tasks: Array<Promise<void>> = [];
     for (let i = index; i < this.count; i++) {
-      tasks.push(this.shiftElement(i, i + 1, animated));
+      const subOpt = { ...opt };
+      subOpt.duration = 0.2 * duration;
+      tasks.push(this.shiftElement(i, i + 1, subOpt));
     }
-
     await Promise.all(tasks);
 
     const pt = this.startPointFromIndex(index);
@@ -96,7 +104,8 @@ export default class NEPSequence extends NEPAtom {
     this.appendElectron(wrappedElement);
 
     // Show the inserted element
-    await this.showElement(index, animated);
+    opt.duration = duration * 0.8;
+    await this.showElement(index, opt);
   }
 
   child(index: number): NEPAtom|null {
@@ -154,7 +163,7 @@ export default class NEPSequence extends NEPAtom {
   }
 
   // # Animations
-  private async shiftElement(startIndex: number, endIndex: number, animated: boolean) {
+  private async shiftElement(startIndex: number, endIndex: number, opt?: NEPAnimationOptions) {
     if (startIndex === endIndex) {
       return;
     }
@@ -163,37 +172,45 @@ export default class NEPSequence extends NEPAtom {
     const element = this.child(startIndex) as NEPAtom;
     const rawElement = element.rawElement();
 
-    if (animated) {
-      const prop = this.orientation === 'h' ? 'x' : 'y';
-      const keyFrame: AnimationKeyFrame = {};
-      keyFrame[prop] = endPoz[prop];
-      await this.animate(rawElement, keyFrame);
-    } else {
-      SVGHelper.setPosition(rawElement, endPoz.x, endPoz.y);
-    }
+    const prop = this.orientation === 'h' ? 'x' : 'y';
+    const props: {[_: string]: string} = {};
+    props[prop] = endPoz[prop].toString();
+    await this.animate(rawElement, props, opt);
   }
 
-  private async showElement(index: number, animated: boolean) {
-    if (animated) {
-      const rawElement = this.rawElement();
-      const element = this.child(index) as NEPAtom;
+  private async showElement(index: number, _opt?: NEPAnimationOptions) {
+    const element = this.child(index) as NEPAtom;
+    const rawElement = element.rawElement();
 
+    const opt = _opt || {};
+    if (opt.disabled) {
+      rawElement.setAttribute(Defs.opacity, '1');
+    } else {
+      const duration = opt.duration || this.animationDuration;
       // (1) 0.2: opacity -> 1, bgColor -> highlighted
       // (2) 0.7: do nothing
       // (3) 0.1: bgColor restore
 
       // # 1
-      const opacityTask = this.animate(rawElement, {
-        opacity: 1.0,
-      }, 0.2);
-      const colorTask = element.setBackgroundAsync(configs.color.added, true);
+      const opacityTask = this.animate(
+        rawElement,
+        { opacity: 1.0 },
+        { duration: duration * 0.2 },
+      );
+      const colorTask = element.setBackgroundAsync(
+        configs.color.added,
+        { duration: duration * 0.2 },
+      );
       await Promise.all([opacityTask, colorTask]);
 
       // # 2
-      await AnimationHelper.delay(0.7 * this.animationDuration);
+      await AnimationHelper.delay(0.7 * duration);
 
       // # 3
-      await element.setBackgroundAsync(configs.color.normal, true);
+      await element.setBackgroundAsync(
+        configs.color.normal,
+        { duration: duration * 0.1 },
+      );
     }
   }
 }

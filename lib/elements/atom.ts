@@ -1,4 +1,4 @@
-import { NEPElement, SVGHelper, NEPSize, NEPPadding, NewPadding, NewRectFromSize } from '../element';
+import { NEPElement, SVGHelper, NEPSize, NEPPadding, NewPadding, NewRectFromSize, NEPAnimationOptions } from '../element';
 import NEPText from './text';
 
 const DefaultBorderWidth  = 1;
@@ -202,20 +202,16 @@ export default class NEPAtom extends NEPElement {
   }
 
   // ------- Animations -------
-  async setBackgroundAsync(value: string, animated = true) {
+  async setBackgroundAsync(value: string, opt?: NEPAnimationOptions) {
     this.checkValueNotEmpty(value, 'value');
 
     const raw = this.rawBorder;
-    if (animated) {
-      await this.animate(raw, {
-        fill: value,
-      });
-    } else {
-      this.background = value;
-    }
+    await this.animate(raw, {
+      fill: value,
+    }, opt);
   }
 
-  async setColorAsync(value: string, animated = true) {
+  async setColorAsync(value: string, opt?: NEPAnimationOptions) {
     this.checkValueNotEmpty(value, 'value');
 
     const tasks: Array<Promise<void>> = [];
@@ -223,7 +219,7 @@ export default class NEPAtom extends NEPElement {
       const electron = this.electronAt(i);
       if (electron instanceof NEPText) {
         const text = electron as NEPText;
-        tasks.push(text.setColorAsync(value, animated));
+        tasks.push(text.setColorAsync(value, opt));
       }
     }
     return Promise.all(tasks);
