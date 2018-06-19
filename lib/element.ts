@@ -1,4 +1,4 @@
-import defaults from './defaults';
+import config from './config';
 import { TweenConfig, TweenLite } from 'gsap';
 
 export interface NEPSize {
@@ -60,7 +60,7 @@ export class NEPElement {
     if (this._animationDuration) {
       return this._animationDuration;
     }
-    return defaults.animationDuration;
+    return config.animationDuration;
   }
   set animationDuration(value: number) {
     this._animationDuration = value;
