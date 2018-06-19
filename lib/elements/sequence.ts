@@ -17,6 +17,14 @@ export default class NEPSequence extends NEPAtom {
     return this._elements.length;
   }
 
+  get firstChild(): NEPAtom|null {
+    return this.child(0);
+  }
+
+  get lastChild(): NEPAtom|null {
+    return this.child(this.count - 1);
+  }
+
   constructor(
     public maxSize: NEPSize,
     public capacity: number,
