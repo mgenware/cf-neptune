@@ -203,7 +203,6 @@ export default class NEPAtom extends NEPElement {
 
   // ------- Animations -------
   async setBackgroundAsync(value: string, animated = true) {
-    console.log(value, animated);
     this.checkValueNotEmpty(value, 'value');
 
     const raw = this.rawBorder;
