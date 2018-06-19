@@ -91,15 +91,15 @@ export class NEPElement {
   }
 
   // tslint:disable-next-line no-any
-  checkValueNotEmpty(value: any, name: string) {
+  checkValueNotEmpty(value: any, name = 'value') {
     if (!value) {
-      throw new Error(`The "${name}" argument cannot be empty`);
+      throw new Error(`"${name}" argument cannot be empty`);
     }
   }
 
   checkIsElement(value: NEPElement, name: string) {
     if (value instanceof NEPElement === false) {
-      throw new Error(`The "${name}" argument is not a NEPElement`);
+      throw new Error(`"${name}" argument is not a NEPElement`);
     }
   }
 }
@@ -154,5 +154,13 @@ export class SVGHelper {
 
   static labelElementInfo(element: SVGGraphicsElement, label: string) {
     element.setAttribute('data-nep-type', label);
+  }
+}
+
+export class AnimationHelper {
+  static async delay(ts: number) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ts);
+    });
   }
 }

@@ -1,6 +1,7 @@
-import { NEPElement, SVGHelper, NEPSize, NEPPoint, EmptyPadding } from '../element';
+import { NEPElement, SVGHelper, NEPSize, NEPPoint, EmptyPadding, AnimationHelper } from '../element';
 import NEPAtom from './atom';
 import NEPText from './text';
+import configs from '../configs';
 
 export default class NEPSequence extends NEPAtom {
   // Whether to disable scaling in child elements, useful when this sequence is used as a 2d-sequence.
@@ -70,6 +71,7 @@ export default class NEPSequence extends NEPAtom {
       throw new Error('Index out of range');
     }
 
+    // Shift elements behind the insert position
     const tasks: Array<Promise<void>> = [];
     for (let i = index; i < this.count; i++) {
       tasks.push(this.shiftElement(i, i + 1, animated));
@@ -84,6 +86,9 @@ export default class NEPSequence extends NEPAtom {
 
     this._elements.splice(index, 0, wrappedElement);
     this.appendElectron(wrappedElement);
+
+    // Show the inserted element
+    await this.showElement(index, animated);
   }
 
   child(index: number): NEPAtom|null {
@@ -149,14 +154,38 @@ export default class NEPSequence extends NEPAtom {
 
     const element = this.child(startIndex) as NEPAtom;
     const rawElement = element.rawElement();
-    const prop = this.orientation === 'h' ? 'x' : 'y';
 
     if (animated) {
+      const prop = this.orientation === 'h' ? 'x' : 'y';
       const keyFrame: AnimationKeyFrame = {};
       keyFrame[prop] = endPoz[prop];
       await this.animate(rawElement, keyFrame);
     } else {
       SVGHelper.setPosition(rawElement, endPoz.x, endPoz.y);
+    }
+  }
+
+  private async showElement(index: number, animated: boolean) {
+    if (animated) {
+      const rawElement = this.rawElement();
+      const element = this.child(index) as NEPAtom;
+
+      // (1) 0.2: opacity -> 1, bgColor -> highlighted
+      // (2) 0.7: do nothing
+      // (3) 0.1: bgColor restore
+
+      // # 1
+      const opacityTask = this.animate(rawElement, {
+        opacity: 1.0,
+      }, 0.2);
+      const colorTask = element.setBackgroundAsync(configs.color.added, true);
+      await Promise.all([opacityTask, colorTask]);
+
+      // # 2
+      await AnimationHelper.delay(0.7 * this.animationDuration);
+
+      // # 3
+      await element.setBackgroundAsync(configs.color.normal, true);
     }
   }
 }

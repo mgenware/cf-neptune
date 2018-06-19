@@ -13,7 +13,7 @@ export default class NEPText extends NEPElement {
     this.raw = raw;
     this.text = text as string|null;
 
-    this.setColorAttribute('black');
+    this.color = 'black';
   }
 
   rawElement(): SVGGraphicsElement {
@@ -28,6 +28,14 @@ export default class NEPText extends NEPElement {
     this.onSizeChanged();
   }
 
+  get color(): string {
+    return this.raw.getAttribute('fill') || '';
+  }
+  set color(value: string) {
+    this.checkValueNotEmpty(value, 'value');
+    this.raw.setAttribute('fill', value);
+  }
+
   async setColorAsync(value: string, animated = true) {
     this.checkValueNotEmpty(value, 'value');
 
@@ -37,13 +45,7 @@ export default class NEPText extends NEPElement {
         fill: value,
       });
     } else {
-      this.setColorAttribute(value);
+      this.color = value;
     }
-  }
-
-  private setColorAttribute(value: string) {
-    this.checkValueNotEmpty(value, 'value');
-
-    this.raw.setAttribute('fill', value);
   }
 }

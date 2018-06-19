@@ -3,6 +3,7 @@ export interface AnimationConfig {
 }
 
 export interface ColorConfig {
+  normal: string;
   added: string;
   removing: string;
 }
@@ -17,6 +18,7 @@ const defaults: Config = {
     duration: 800,
   },
   color: {
+    normal: 'white',
     added: '#e7ffc1',
     removing: '#ffd1de',
   },

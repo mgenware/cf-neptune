@@ -69,6 +69,7 @@ export default class NEPAtom extends NEPElement {
     return this._padding;
   }
   set padding(value: NEPPadding) {
+    this.checkValueNotEmpty(value);
     this._padding = value;
     this.layoutIfNeeded();
   }
@@ -78,6 +79,7 @@ export default class NEPAtom extends NEPElement {
     return this._borderColor;
   }
   set borderColor(value: string) {
+    this.checkValueNotEmpty(value);
     this._borderColor = value;
     this.rawBorder.setAttribute('stroke', value);
   }
@@ -201,6 +203,7 @@ export default class NEPAtom extends NEPElement {
 
   // ------- Animations -------
   async setBackgroundAsync(value: string, animated = true) {
+    console.log(value, animated);
     this.checkValueNotEmpty(value, 'value');
 
     const raw = this.rawBorder;
