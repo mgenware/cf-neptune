@@ -1,5 +1,6 @@
 import NEPSequence from './sequence';
 import { NEPSize, SVGHelper, NEPPoint } from '../element';
+import Defs from '../defs';
 
 const DefaultGridColor = '#808080';
 
@@ -54,7 +55,7 @@ export default class NEPMatrix extends NEPSequence {
   private drawMatrixGrid() {
     const { width, height } = this.size;
     for (let i = 1; i < this.rows; i++) {
-      const rawLine = SVGHelper.createElement('line') as SVGLineElement;
+      const rawLine = SVGHelper.createElement(Defs.line) as SVGLineElement;
       SVGHelper.setStroke(rawLine, DefaultGridColor, 1);
 
       const startPt = { x: 0, y: i * this._gridHeight };

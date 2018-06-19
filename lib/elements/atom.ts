@@ -1,5 +1,6 @@
 import { NEPElement, SVGHelper, NEPSize, NEPPadding, NewPadding, NewRectFromSize, NEPAnimationOptions } from '../element';
 import NEPText from './text';
+import Defs from 'defs';
 
 const DefaultBorderWidth  = 1;
 const DefaultRadius       = 0;
@@ -33,21 +34,21 @@ export default class NEPAtom extends NEPElement {
     super();
     this.checkValueNotEmpty(size, 'size');
 
-    const rawRoot = SVGHelper.createElement('svg') as SVGSVGElement;
+    const rawRoot = SVGHelper.createElement(Defs.svg) as SVGSVGElement;
     SVGHelper.setSize(rawRoot, size);
     // Root <svg>'s viewBox will always be the size passed in, container <svg>'s viewBox will be resolved in layout().
     SVGHelper.setViewBox(rawRoot, NewRectFromSize(0, 0, size));
     this.rawRoot = rawRoot;
 
-    const rawBorder = SVGHelper.createElement('rect') as SVGRectElement;
-    rawBorder.setAttribute('stroke', this.borderColor);
-    rawBorder.setAttribute('rx', `${this.borderRadius}`);
-    rawBorder.setAttribute('ry', `${this.borderRadius}`);
-    rawBorder.setAttribute('stroke-width', `${this.borderWidth}`);
+    const rawBorder = SVGHelper.createElement(Defs.rect) as SVGRectElement;
+    rawBorder.setAttribute(Defs.stroke, this.borderColor);
+    rawBorder.setAttribute(Defs.rx, `${this.borderRadius}`);
+    rawBorder.setAttribute(Defs.ry, `${this.borderRadius}`);
+    rawBorder.setAttribute(Defs.strokeWidth, `${this.borderWidth}`);
     rawRoot.appendChild(rawBorder);
     this.rawBorder = rawBorder;
 
-    const rawContainer = SVGHelper.createElement('svg') as SVGSVGElement;
+    const rawContainer = SVGHelper.createElement(Defs.svg) as SVGSVGElement;
     SVGHelper.labelElementInfo(rawContainer, 'atom-content');
     rawRoot.appendChild(rawContainer);
     this.rawContainer = rawContainer;
@@ -81,7 +82,7 @@ export default class NEPAtom extends NEPElement {
   set borderColor(value: string) {
     this.checkValueNotEmpty(value);
     this._borderColor = value;
-    this.rawBorder.setAttribute('stroke', value);
+    this.rawBorder.setAttribute(Defs.stroke, value);
   }
 
   // border-width
@@ -103,10 +104,10 @@ export default class NEPAtom extends NEPElement {
   }
 
   get background(): string {
-    return this.rawBorder.getAttribute('fill') || '';
+    return this.rawBorder.getAttribute(Defs.fill) || '';
   }
   set background(value: string) {
-    this.rawBorder.setAttribute('fill', value);
+    this.rawBorder.setAttribute(Defs.fill, value);
   }
 
   // ------- Child-related props -------
@@ -151,7 +152,7 @@ export default class NEPAtom extends NEPElement {
     };
 
     // Remove the 'viewBox' attribute to get consistent values from getBBox()
-    rawContainer.removeAttribute('viewBox');
+    rawContainer.removeAttribute(Defs.viewBox);
 
     // Border
     SVGHelper.setRect(rawBorder, SVGHelper.rectInset(rootRect, DefaultBorderWidth, DefaultBorderWidth));

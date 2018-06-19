@@ -1,5 +1,6 @@
 import configs from './configs';
 import { TweenConfig, TweenLite } from 'gsap';
+import Defs from 'defs';
 
 export interface NEPSize {
   width: number;
@@ -120,8 +121,8 @@ export class SVGHelper {
   }
 
   static setSize(element: SVGElement, size: NEPSize) {
-    element.setAttribute('width', `${size.width}`);
-    element.setAttribute('height', `${size.height}`);
+    element.setAttribute(Defs.width, `${size.width}`);
+    element.setAttribute(Defs.height, `${size.height}`);
   }
 
   static setViewBox(svg: SVGSVGElement, rect: SVGRect) {
@@ -129,8 +130,8 @@ export class SVGHelper {
   }
 
   static setPosition(element: SVGGraphicsElement, x: number, y: number) {
-    element.setAttribute('x', `${x}`);
-    element.setAttribute('y', `${y}`);
+    element.setAttribute(Defs.x, `${x}`);
+    element.setAttribute(Defs.y, `${y}`);
   }
 
   static setRect(element: SVGGraphicsElement, rect: SVGRect) {
@@ -139,15 +140,15 @@ export class SVGHelper {
   }
 
   static setLinePoz(line: SVGLineElement, p1: NEPPoint, p2: NEPPoint) {
-    line.setAttribute('x1', p1.x.toString());
-    line.setAttribute('y1', p1.y.toString());
-    line.setAttribute('x2', p2.x.toString());
-    line.setAttribute('y2', p2.y.toString());
+    line.setAttribute(Defs.x1, p1.x.toString());
+    line.setAttribute(Defs.y1, p1.y.toString());
+    line.setAttribute(Defs.x2, p2.x.toString());
+    line.setAttribute(Defs.y2, p2.y.toString());
   }
 
   static setStroke(element: SVGGraphicsElement, color: string, width: number) {
-    element.setAttribute('stroke', color);
-    element.setAttribute('stroke-width', `${width}`);
+    element.setAttribute(Defs.stroke, color);
+    element.setAttribute(Defs.strokeWidth, `${width}`);
   }
 
   static rectInset(rect: SVGRect, x: number, y: number): DOMRect {

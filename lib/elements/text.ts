@@ -1,4 +1,5 @@
 import { NEPElement, SVGHelper, NEPAnimationOptions } from '../element';
+import Defs from '../defs';
 
 export default class NEPText extends NEPElement {
   private raw: SVGTextElement;
@@ -7,7 +8,7 @@ export default class NEPText extends NEPElement {
     super();
 
     text = text || '';
-    const raw = SVGHelper.createElement('text') as SVGTextElement;
+    const raw = SVGHelper.createElement(Defs.text) as SVGTextElement;
     raw.style.dominantBaseline = 'text-before-edge';
     raw.style.fontSize = '16px';
     this.raw = raw;
@@ -29,11 +30,11 @@ export default class NEPText extends NEPElement {
   }
 
   get color(): string {
-    return this.raw.getAttribute('fill') || '';
+    return this.raw.getAttribute(Defs.fill) || '';
   }
   set color(value: string) {
     this.checkValueNotEmpty(value, 'value');
-    this.raw.setAttribute('fill', value);
+    this.raw.setAttribute(Defs.fill, value);
   }
 
   async setColorAsync(value: string, opt?: NEPAnimationOptions) {
