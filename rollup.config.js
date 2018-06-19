@@ -3,7 +3,7 @@ import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import { uglify } from 'rollup-plugin-uglify';
 
-const production = !process.env.ROLLUP_WATCH;
+const production = process.env.NODE_ENV === 'production';
 
 export default {
   input: 'lib/main.ts',
