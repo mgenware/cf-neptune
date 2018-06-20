@@ -8,6 +8,9 @@ export default class NEPSequence extends NEPAtom {
   // Whether to disable scaling in child elements, useful when this sequence is used as a 2d-sequence.
   noElementScaling: boolean = false;
 
+  addingChildCallback?: (sender: NEPSequence, child: NEPAtom) => void;
+  removingChildCallback?: (sender: NEPSequence, child: NEPAtom) => void;
+
   private _slotWidth: number = 0;
   private _slotHeight: number = 0;
 
@@ -312,6 +315,18 @@ export default class NEPSequence extends NEPAtom {
   }
 
   // # Action helper
+  private onAddingChild(child: NEPAtom) {
+    if (this.addingChildCallback) {
+      this.addingChildCallback(this, child);
+    }
+  }
+
+  private onRemovingChild(child: NEPAtom) {
+    if (this.removingChildCallback) {
+      this.removingChildCallback(this, child);
+    }
+  }
+
   private validateInsert(index: number, child: NEPElement): NEPElement {
     // Check capacity
     if (this.count === this.capacity) {
@@ -336,6 +351,7 @@ export default class NEPSequence extends NEPAtom {
     const rawWrappedElement = wrappedElement.rawElement();
     SVGHelper.setPosition(rawWrappedElement, pt.x, pt.y);
 
+    this.onAddingChild(wrappedElement);
     this._elements.splice(index, 0, wrappedElement);
     this.appendElectron(wrappedElement);
   }
@@ -353,6 +369,7 @@ export default class NEPSequence extends NEPAtom {
 
   private executeRemove(index: number) {
     const wrappedAtom = this.child(index) as NEPAtom;
+    this.onRemovingChild(wrappedAtom);
     this._elements.splice(index, 1);
     this.removeElectron(wrappedAtom);
   }
