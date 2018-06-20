@@ -1,27 +1,16 @@
-export interface AnimationConfig {
-  duration: number;
+export class AnimationConfig {
+  duration = 800;
 }
 
-export interface ColorConfig {
-  normal: string;
-  added: string;
-  removing: string;
+export class ColorConfig {
+  normalFill = 'white';
+  addedFill = '#e7ffc1';
+  removingFill = '#ffd1de';
 }
 
-export interface Config {
-  animation: AnimationConfig;
-  color: ColorConfig;
+export class Config {
+  animation = new AnimationConfig();
+  color = new ColorConfig();
 }
 
-const defaults: Config = {
-  animation: {
-    duration: 800,
-  },
-  color: {
-    normal: 'white',
-    added: '#e7ffc1',
-    removing: '#ffd1de',
-  },
-};
-
-export default defaults;
+export default new Config();

@@ -2,8 +2,8 @@ let playground = undefined;
 let element = undefined;
 let decoratorCounter = 1;
 
-function pushDecorator() {
-  element.decorators.push('🙉' + decoratorCounter++);
+async function pushDecorator() {
+  await element.decorators.pushBackAsync('🙉' + decoratorCounter++);
 }
 
 document.addEventListener('DOMContentLoaded', () => {

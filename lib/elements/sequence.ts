@@ -240,7 +240,7 @@ export default class NEPSequence extends NEPAtom {
         { duration: duration * 0.2 },
       );
       const colorTask = element.setBackgroundAsync(
-        configs.color.added,
+        configs.color.addedFill,
         { duration: duration * 0.2 },
       );
       await Promise.all([opacityTask, colorTask]);
@@ -250,7 +250,7 @@ export default class NEPSequence extends NEPAtom {
 
       // # 3
       await element.setBackgroundAsync(
-        configs.color.normal,
+        configs.color.normalFill,
         { duration: duration * 0.1 },
       );
     }
@@ -271,7 +271,7 @@ export default class NEPSequence extends NEPAtom {
 
       // # 1
       await element.setBackgroundAsync(
-        configs.color.removing,
+        configs.color.removingFill,
         { duration: duration * 0.2 },
       );
 
@@ -285,7 +285,7 @@ export default class NEPSequence extends NEPAtom {
         { duration: duration * 0.1 },
       );
       const colorTask = element.setBackgroundAsync(
-        configs.color.normal,
+        configs.color.normalFill,
         { duration: duration * 0.1 },
       );
       await Promise.all([opacityTask, colorTask]);
