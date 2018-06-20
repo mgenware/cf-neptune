@@ -106,8 +106,16 @@ export default class NEPSequence extends NEPAtom {
     await this.removeAsync(0, opt);
   }
 
+  popFront() {
+    this.remove(0);
+  }
+
   async popBackAsync(opt?: NEPAnimationOptions) {
     await this.removeAsync(this.count - 1, opt);
+  }
+
+  popBack() {
+    this.remove(this.count - 1);
   }
 
   async removeAsync(index: number, opt?: NEPAnimationOptions) {
