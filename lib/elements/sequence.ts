@@ -90,9 +90,7 @@ export default class NEPSequence extends NEPAtom {
     // #1 Shift elements behind the insert position
     const tasks: Array<Promise<void>> = [];
     for (let i = index; i < this.count; i++) {
-      const subOpt = { ...opt };
-      subOpt.duration = 0.2 * duration;
-      tasks.push(this.shiftElement(i, i + 1, subOpt));
+      tasks.push(this.shiftElement(i, i + 1, { ...opt, duration: 0.2 * duration }));
     }
     await Promise.all(tasks);
 
@@ -105,8 +103,7 @@ export default class NEPSequence extends NEPAtom {
     this.appendElectron(wrappedElement);
 
     // Show the inserted element
-    opt.duration = duration * 0.8;
-    await this.showElement(index, opt);
+    await this.showElement(index, { ...opt, duration: duration * 0.8 });
   }
 
   async popFrontAsync(opt?: NEPAnimationOptions) {
@@ -134,16 +131,12 @@ export default class NEPSequence extends NEPAtom {
     // (2) 0.2: shifting elements
 
     // #1 Hide the inserted element
-    const hideOpt = { ...opt };
-    hideOpt.duration = duration * 0.8;
-    await this.hideElement(index, hideOpt);
+    await this.hideElement(index, { ...opt, duration: duration * 0.8});
 
     // #2 Shift the remaining elements
     const tasks: Array<Promise<void>> = [];
     for (let i = index; i < this.count; i++) {
-      const subOpt = { ...opt };
-      subOpt.duration = 0.2 * duration;
-      tasks.push(this.shiftElement(i, i - 1, subOpt));
+      tasks.push(this.shiftElement(i, i - 1, { ...opt, duration: 0.2 * duration }));
     }
     await Promise.all(tasks);
 
