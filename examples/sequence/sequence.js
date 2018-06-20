@@ -36,6 +36,34 @@ async function popFrontClick() {
   await sequenceElement.popFrontAsync(newElement);
 }
 
+function pushBackSyncClick() {
+  window.checkEnv();
+
+  const newElement = newSequenceElement(sequenceElement.count);
+  sequenceElement.pushBack(newElement);
+}
+
+function pushFrontSyncClick() {
+  window.checkEnv();
+
+  const newElement = newSequenceElement(sequenceElement.count);
+  sequenceElement.pushFront(newElement);
+}
+
+function popBackSyncClick() {
+  window.checkEnv();
+
+  const newElement = newSequenceElement(sequenceElement.count);
+  sequenceElement.popBack(newElement);
+}
+
+function popFrontSyncClick() {
+  window.checkEnv();
+
+  const newElement = newSequenceElement(sequenceElement.count);
+  sequenceElement.popFront(newElement);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   window.checkEnv();
   
