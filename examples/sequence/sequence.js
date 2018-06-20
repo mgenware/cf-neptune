@@ -8,11 +8,11 @@ function newSequenceElement(index) {
   return new window.nep.Text(num + ' ' + '🙈'.repeat(num));
 }
 
-async function pushClick() {
+async function pushBackClick() {
   window.checkEnv();
 
   const newElement = newSequenceElement(sequenceElement.count);
-  await sequenceElement.pushAsync(newElement);
+  await sequenceElement.pushBackAsync(newElement);
 }
 
 async function pushFrontClick() {
@@ -20,6 +20,20 @@ async function pushFrontClick() {
 
   const newElement = newSequenceElement(sequenceElement.count);
   await sequenceElement.pushFrontAsync(newElement);
+}
+
+async function popBackClick() {
+  window.checkEnv();
+
+  const newElement = newSequenceElement(sequenceElement.count);
+  await sequenceElement.popBackAsync(newElement);
+}
+
+async function popFrontClick() {
+  window.checkEnv();
+
+  const newElement = newSequenceElement(sequenceElement.count);
+  await sequenceElement.popFrontAsync(newElement);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
