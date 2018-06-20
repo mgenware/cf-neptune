@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   const nep = window.nep;
   const root = document.getElementById('playground');
-  const matrix = await nep.Matrix.createAsync(SIZE, ROWS, COLS);
+  const matrix = new nep.Matrix(SIZE, ROWS, COLS);
   playground = nep.Playground.create(root, SIZE, matrix);
 
   // populate the matrix

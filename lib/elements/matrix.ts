@@ -5,28 +5,10 @@ import Defs from '../defs';
 const DefaultGridColor = '#808080';
 
 export default class NEPMatrix extends NEPSequence {
-  static async createAsync(
-    size: NEPSize,
-    rows: number,
-    cols: number,
-    noGrid?: boolean,
-  ): Promise<NEPMatrix> {
-    const matrix = new NEPMatrix(size, rows, cols, noGrid);
-    const rowSize = { width: size.width, height: size.height / rows };
-
-    for (let i = 0; i < rows; i++) {
-      const row = new NEPSequence(rowSize, cols, 'h', true);
-      row.borderWidth = 0;
-      await matrix.pushBack(row);
-    }
-
-    return matrix;
-  }
-
   private _gridWidth: number;
   private _gridHeight: number;
 
-  private constructor(
+  constructor(
     public size: NEPSize,
     public rows: number,
     public cols: number,
@@ -37,11 +19,18 @@ export default class NEPMatrix extends NEPSequence {
     this.noElementScaling = true;
     this._gridWidth = size.width / cols;
     this._gridHeight = size.height / rows;
+    const rowSize = { width: size.width, height: size.height / rows };
 
     if (!noGrid) {
       this.drawMatrixGrid();
     }
     SVGHelper.labelElementInfo(this.rawElement(), 'matrix');
+
+    for (let i = 0; i < rows; i++) {
+      const row = new NEPSequence(rowSize, cols, 'h', true);
+      row.borderWidth = 0;
+      this.pushBack(row);
+    }
   }
 
   row(index: number): NEPSequence|null {
