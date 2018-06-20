@@ -5,8 +5,12 @@ export class AnimationConfig {
 export class ColorConfig {
   normalText = 'black';
   normalFill = 'white';
+
   addedFill = '#e7ffc1';
   removingFill = '#ffd1de';
+
+  decoratorText = 'white';
+  decoratorFill = 'navy';
 }
 
 export class Config {
