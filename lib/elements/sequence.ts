@@ -61,7 +61,7 @@ export default class NEPSequence extends NEPAtom {
     await this.insertAsync(0, child, opt);
   }
 
-  async pushAsync(child: NEPElement, opt?: NEPAnimationOptions) {
+  async pushBackAsync(child: NEPElement, opt?: NEPAnimationOptions) {
     await this.insertAsync(this.count, child, opt);
   }
 
@@ -107,6 +107,49 @@ export default class NEPSequence extends NEPAtom {
     // Show the inserted element
     opt.duration = duration * 0.8;
     await this.showElement(index, opt);
+  }
+
+  async popFrontAsync(opt?: NEPAnimationOptions) {
+    await this.removeAsync(0, opt);
+  }
+
+  async popBackAsync(opt?: NEPAnimationOptions) {
+    await this.removeAsync(this.count - 1, opt);
+  }
+
+  async removeAsync(index: number, _opt?: NEPAnimationOptions) {
+    // Check capacity
+    if (this.count === 0) {
+      throw new Error('Sequence already empty');
+    }
+    // Check the index argument
+    if (index < 0 || index >= this.count) {
+      throw new Error('Index out of range');
+    }
+
+    const opt = _opt || {};
+    const duration = opt.duration || this.animationDuration;
+
+    // (1) 0.8: hiding the element to be removed
+    // (2) 0.2: shifting elements
+
+    // #1 Hide the inserted element
+    const hideOpt = { ...opt };
+    hideOpt.duration = duration * 0.8;
+    await this.hideElement(index, hideOpt);
+
+    // #2 Shift the remaining elements
+    const tasks: Array<Promise<void>> = [];
+    for (let i = index; i < this.count; i++) {
+      const subOpt = { ...opt };
+      subOpt.duration = 0.2 * duration;
+      tasks.push(this.shiftElement(i, i - 1, subOpt));
+    }
+    await Promise.all(tasks);
+
+    const wrappedAtom = this.child(index) as NEPAtom;
+    this._elements.splice(index, 1);
+    this.removeElectron(wrappedAtom);
   }
 
   child(index: number): NEPAtom|null {
@@ -217,6 +260,42 @@ export default class NEPSequence extends NEPAtom {
         configs.color.normal,
         { duration: duration * 0.1 },
       );
+    }
+  }
+
+  private async hideElement(index: number, _opt?: NEPAnimationOptions) {
+    const element = this.child(index) as NEPAtom;
+    const rawElement = element.rawElement();
+
+    const opt = _opt || {};
+    if (opt.disabled) {
+      rawElement.setAttribute(Defs.opacity, '0');
+    } else {
+      const duration = opt.duration || this.animationDuration;
+      // (1) 0.2: bgColor -> highlighted
+      // (2) 0.7: do nothing
+      // (3) 0.1: bgColor restore, opacity -> 0
+
+      // # 1
+      await element.setBackgroundAsync(
+        configs.color.removing,
+        { duration: duration * 0.2 },
+      );
+
+      // # 2
+      await AnimationHelper.delay(0.7 * duration);
+
+      // # 3
+      const opacityTask = this.animate(
+        rawElement,
+        { opacity: 0 },
+        { duration: duration * 0.1 },
+      );
+      const colorTask = element.setBackgroundAsync(
+        configs.color.normal,
+        { duration: duration * 0.1 },
+      );
+      await Promise.all([opacityTask, colorTask]);
     }
   }
 }
