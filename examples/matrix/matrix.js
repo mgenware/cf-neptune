@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   for (let i = 0; i < ROWS; i++) {
     for (let j = 0; j < COLS; j++) {
       // push a random string
-      await matrix.row(i).pushAsync('🙈'.repeat(j + 1) + i + j);
+      await matrix.row(i).pushBackAsync('🙈'.repeat(j + 1) + i + j);
     }
   }
 
