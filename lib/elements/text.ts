@@ -1,5 +1,6 @@
 import { NEPElement, SVGHelper, NEPAnimationOptions } from '../element';
 import Defs from '../defs';
+import configs from '../configs';
 
 export default class NEPText extends NEPElement {
   private raw: SVGTextElement;
@@ -14,7 +15,7 @@ export default class NEPText extends NEPElement {
     this.raw = raw;
     this.text = text as string|null;
 
-    this.color = 'black';
+    this.color = configs.color.normalText;
   }
 
   rawElement(): SVGGraphicsElement {

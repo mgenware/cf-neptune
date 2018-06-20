@@ -56,17 +56,6 @@ export function NewRectFromSize(x: number, y: number, size: NEPSize): SVGRect {
 export class NEPElement {
   sizeChanged: ((sender: NEPElement) => void)|undefined;
 
-  _animationDuration: number|undefined;
-  get animationDuration(): number {
-    if (this._animationDuration) {
-      return this._animationDuration;
-    }
-    return configs.animation.duration;
-  }
-  set animationDuration(value: number) {
-    this._animationDuration = value;
-  }
-
   rawElement(): SVGGraphicsElement {
     throw new Error('not implemented yet');
   }
@@ -81,34 +70,34 @@ export class NEPElement {
     }
   }
 
-  animate(element: SVGGraphicsElement, props: {[key: string]: any}, _opt: NEPAnimationOptions|undefined): Promise<void> {
+  protected animate(element: SVGGraphicsElement, props: {[key: string]: any}, opt: NEPAnimationOptions|undefined): Promise<void> {
     this.checkValueNotEmpty(element, 'element');
     this.checkValueNotEmpty(props, 'props');
-
-    const opt = _opt || {};
-    if (opt.disabled) {
-      Object.keys(props).forEach((key) => element.setAttribute(key, props[key]));
-      return Promise.resolve();
-    }
 
     return new Promise<void>((resolve) => {
       const params: TweenConfig = { attr: { ...props } };
       params.onComplete = resolve;
 
-      const durationResult = opt.duration === undefined ? this.animationDuration : opt.duration;
-
-      TweenLite.to(element, durationResult / 1000, params);
+      const duration = this.getDurationOption(opt);
+      TweenLite.to(element, duration / 1000, params);
     });
   }
 
+  protected getDurationOption(opt: AnimationOptions|undefined): number {
+    if (opt && opt.duration) {
+      return opt.duration;
+    }
+    return configs.animation.duration;
+  }
+
   // tslint:disable-next-line no-any
-  checkValueNotEmpty(value: any, name = 'value') {
+  protected checkValueNotEmpty(value: any, name = 'value') {
     if (!value) {
       throw new Error(`"${name}" argument cannot be empty`);
     }
   }
 
-  checkIsElement(value: NEPElement, name: string) {
+  protected checkIsElement(value: NEPElement, name: string) {
     if (value instanceof NEPElement === false) {
       throw new Error(`"${name}" argument is not a NEPElement`);
     }
@@ -177,6 +166,5 @@ export class AnimationHelper {
 }
 
 export interface NEPAnimationOptions {
-  disabled?: boolean;
   duration?: number;
 }

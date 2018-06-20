@@ -107,6 +107,7 @@ export default class NEPAtom extends NEPElement {
     return this.rawBorder.getAttribute(Defs.fill) || '';
   }
   set background(value: string) {
+    this.checkValueNotEmpty(value);
     this.rawBorder.setAttribute(Defs.fill, value);
   }
 
@@ -202,7 +203,8 @@ export default class NEPAtom extends NEPElement {
     return index;
   }
 
-  // ------- Animations -------
+  // ------- Animatable properties -------
+
   async setBackgroundAsync(value: string, opt?: NEPAnimationOptions) {
     this.checkValueNotEmpty(value, 'value');
 
@@ -212,8 +214,20 @@ export default class NEPAtom extends NEPElement {
     }, opt);
   }
 
-  async setColorAsync(value: string, opt?: NEPAnimationOptions) {
-    this.checkValueNotEmpty(value, 'value');
+  setTextColor(value: string) {
+    this.checkValueNotEmpty(value);
+
+    for (let i = 0; i < this.electronsCount; i++) {
+      const electron = this.electronAt(i);
+      if (electron instanceof NEPText) {
+        const text = electron as NEPText;
+        text.color = value;
+      }
+    }
+  }
+
+  async setTextColorAsync(value: string, opt?: NEPAnimationOptions) {
+    this.checkValueNotEmpty(value);
 
     const tasks: Array<Promise<void>> = [];
     for (let i = 0; i < this.electronsCount; i++) {
