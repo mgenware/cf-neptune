@@ -38,9 +38,20 @@ export const EmptyPadding: NEPPadding = {
   left: 0,
 };
 
-export function NewPadding(top: number, right: number, bottom: number, left: number): NEPPadding {
+export function NewPadding(top: number, right?: number, bottom?: number, left?: number): NEPPadding {
+  if (right === undefined) {
+    return {
+      top,
+      right: top,
+      bottom: top,
+      left: top,
+    };
+  }
   return {
-    top, right, bottom, left,
+    top,
+    right: right as number,
+    bottom: bottom as number,
+    left: left as number,
   };
 }
 
@@ -87,7 +98,7 @@ export class NEPElement {
     if (opt && opt.duration) {
       return opt.duration;
     }
-    return configs.animation.duration;
+    return configs.animationDuration;
   }
 
   // tslint:disable-next-line no-any

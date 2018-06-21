@@ -15,7 +15,7 @@ export default class NEPText extends NEPElement {
     this.raw = raw;
     this.text = text as string|null;
 
-    this.color = configs.color.normalText;
+    this.color = configs.normalTextColor;
   }
 
   rawElement(): SVGGraphicsElement {

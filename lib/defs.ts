@@ -19,4 +19,5 @@ export default class Defs {
   static text = 'text';
   static line = 'line';
   static g = 'g';
+  static none = 'none';
 }

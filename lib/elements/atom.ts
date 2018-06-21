@@ -1,12 +1,7 @@
 import { NEPElement, SVGHelper, NEPSize, NEPPadding, NewPadding, NewRectFromSize, NEPAnimationOptions } from '../element';
 import NEPText from './text';
 import Defs from 'defs';
-
-const DefaultBorderWidth  = 1;
-const DefaultRadius       = 0;
-const DefaultPadding      = 5;
-const DefaultBorderColor  = '#808080';
-const DefaultBackground   = 'none';
+import configs from '../configs';
 
 export default class NEPAtom extends NEPElement {
   noScaling: boolean = false;
@@ -19,10 +14,10 @@ export default class NEPAtom extends NEPElement {
   // rawBorder is the SVGRectElement used to define borders of this element.
   private rawBorder: SVGRectElement;
 
-  private _padding: NEPPadding = NewPadding(DefaultPadding, DefaultPadding, DefaultPadding, DefaultPadding);
-  private _borderColor: string = DefaultBorderColor;
-  private _borderWidth: number|string = DefaultBorderWidth;
-  private _borderRadius: number = DefaultRadius;
+  private _padding: NEPPadding = NewPadding(configs.normalContentPadding);
+  private _borderColor: string = configs.normalBorderColor;
+  private _borderWidth: number|string = configs.normalBorderWidth;
+  private _borderRadius: number = configs.normalBorderRadius;
 
   // _electrons contains the internal NEPElements that are added to the content(rawContainer) element.
   private _electrons: NEPElement[] = [];
@@ -61,7 +56,7 @@ export default class NEPAtom extends NEPElement {
       this.appendElectron(content);
     }
 
-    this.background = DefaultBackground;
+    this.background = configs.normalFillColor;
     SVGHelper.labelElementInfo(this.rawElement(), 'atom');
   }
 
@@ -156,7 +151,7 @@ export default class NEPAtom extends NEPElement {
     rawContainer.removeAttribute(Defs.viewBox);
 
     // Border
-    SVGHelper.setRect(rawBorder, SVGHelper.rectInset(rootRect, DefaultBorderWidth, DefaultBorderWidth));
+    SVGHelper.setRect(rawBorder, SVGHelper.rectInset(rootRect, configs.normalBorderWidth, configs.normalBorderWidth));
 
     // Container
     SVGHelper.setRect(rawContainer, SVGHelper.rectInsetEx(rootRect, padding));

@@ -41,6 +41,7 @@ export default class NEPSequence extends NEPAtom {
     // Disable auto-scaling of Atom element
     this.noScaling = true;
     this.padding = EmptyPadding;
+    this.background = configs.sequenceFillColor;
 
     if (orientation !== 'h' && orientation !== 'v') {
       throw new Error('orientation can only be "h" or "v"');
@@ -262,7 +263,7 @@ export default class NEPSequence extends NEPAtom {
     );
     const originalBackground = element.background;
     const colorTask = element.setBackgroundAsync(
-      configs.color.addedFill,
+      configs.addedFillColor,
       { duration: duration * 0.2 },
     );
     await Promise.all([opacityTask, colorTask]);
@@ -295,7 +296,7 @@ export default class NEPSequence extends NEPAtom {
 
     // # 1
     await element.setBackgroundAsync(
-      configs.color.removingFill,
+      configs.removingFillColor,
       { duration: duration * 0.2 },
     );
 
