@@ -256,26 +256,38 @@ export default class NEPSequence extends NEPAtom {
     // (3) 0.1: bgColor restore
 
     // # 1
-    const opacityTask = this.animate(
-      rawElement,
-      { opacity: 1.0 },
-      { duration: duration * 0.2 },
-    );
+    const opt1 = { duration: duration * 0.2 };
     const originalBackground = element.background;
-    const colorTask = element.setBackgroundAsync(
-      configs.addedFillColor,
-      { duration: duration * 0.2 },
-    );
-    await Promise.all([opacityTask, colorTask]);
+    const originalTextColor = element.textColor;
+
+    await Promise.all([
+      this.animate(
+        rawElement,
+        { opacity: 1.0 }, opt1,
+      ),
+      element.setBackgroundAsync(
+        configs.addedFillColor, opt1,
+      ),
+      element.setTextColorAsync(
+        configs.addedTextColor, opt1,
+      ),
+    ]);
 
     // # 2
     await AnimationHelper.delay(0.7 * duration);
 
     // # 3
-    await element.setBackgroundAsync(
-      originalBackground,
-      { duration: duration * 0.1 },
-    );
+    const opt3 = { duration: duration * 0.1 };
+    await Promise.all([
+      element.setBackgroundAsync(
+        originalBackground,
+        opt3,
+      ),
+      element.setTextColorAsync(
+        originalTextColor,
+        opt3,
+      ),
+    ]);
   }
 
   private async hideElement(index: number) {
@@ -292,13 +304,18 @@ export default class NEPSequence extends NEPAtom {
     const duration = this.getDurationOption(opt);
     // (1) 0.2: bgColor -> highlighted
     // (2) 0.7: do nothing
-    // (3) 0.1: bgColor restore, opacity -> 0
+    // (3) 0.1: opacity -> 0
 
     // # 1
-    await element.setBackgroundAsync(
-      configs.removingFillColor,
-      { duration: duration * 0.2 },
-    );
+    const opt1 = { duration: duration * 0.2 };
+    await Promise.all([
+      element.setBackgroundAsync(
+        configs.removingFillColor, opt1,
+      ),
+      element.setTextColorAsync(
+        configs.removingTextColor, opt1,
+      ),
+    ]);
 
     // # 2
     await AnimationHelper.delay(0.7 * duration);

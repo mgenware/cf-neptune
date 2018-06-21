@@ -98,12 +98,29 @@ export default class NEPAtom extends NEPElement {
     this.rawBorder.setAttribute('stroke-radius', `${value}`);
   }
 
+  // background
   get background(): string {
     return this.rawBorder.getAttribute(Defs.fill) || '';
   }
   set background(value: string) {
     this.checkValueNotEmpty(value);
     this.rawBorder.setAttribute(Defs.fill, value);
+  }
+
+  // textColor
+  get textColor(): string|null {
+    const textContent = this.tryGetTextContent();
+    if (textContent) {
+      return textContent.color;
+    }
+    return null;
+  }
+  // Has no effect if either value is null or this object does not have a text content.
+  set textColor(value: string|null) {
+    const textContent = this.tryGetTextContent();
+    if (textContent && value) {
+      textContent.color = value;
+    }
   }
 
   // ------- Child-related props -------
@@ -198,8 +215,7 @@ export default class NEPAtom extends NEPElement {
     return index;
   }
 
-  // ------- Animatable properties -------
-
+  // ------- Animations -------
   async setBackgroundAsync(value: string, opt?: NEPAnimationOptions) {
     this.checkValueNotEmpty(value, 'value');
 
@@ -209,39 +225,22 @@ export default class NEPAtom extends NEPElement {
     }, opt);
   }
 
-  setTextColor(value: string) {
-    this.checkValueNotEmpty(value);
-
-    for (let i = 0; i < this.electronsCount; i++) {
-      const electron = this.electronAt(i);
-      if (electron instanceof NEPText) {
-        const text = electron as NEPText;
-        text.color = value;
-      }
+  // Has no effect if either value is null or this object does not have a text content.
+  async setTextColorAsync(value: string|null, opt?: NEPAnimationOptions) {
+    const textContent = this.tryGetTextContent();
+    if (textContent && value) {
+      await textContent.setColorAsync(value, opt);
     }
   }
 
-  async setTextColorAsync(value: string, opt?: NEPAnimationOptions) {
-    this.checkValueNotEmpty(value);
-
-    const tasks: Array<Promise<void>> = [];
-    for (let i = 0; i < this.electronsCount; i++) {
-      const electron = this.electronAt(i);
-      if (electron instanceof NEPText) {
-        const text = electron as NEPText;
-        tasks.push(text.setColorAsync(value, opt));
-      }
-    }
-    return Promise.all(tasks);
-  }
-
-  // ------- Private methods -------
+  // # protected methods
   protected layoutIfNeeded() {
     if (this.loaded) {
       this.layout();
     }
   }
 
+  // # private methods
   private onChildAdded(child: NEPElement) {
     child.sizeChanged = () => {
       this.layoutIfNeeded();
@@ -250,5 +249,12 @@ export default class NEPAtom extends NEPElement {
 
   private onChildRemoved(child: NEPElement) {
     child.sizeChanged = undefined;
+  }
+
+  private tryGetTextContent(): NEPText|null {
+    if (this.electronsCount > 0 && this.electronAt(0) instanceof NEPText) {
+      return this.electronAt(0) as NEPText;
+    }
+    return null;
   }
 }

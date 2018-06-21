@@ -6,7 +6,9 @@ export class Config {
   sequenceFillColor = '#f7f7f7';
 
   addedFillColor = '#e7ffc1';
+  addedTextColor = 'black';
   removingFillColor = '#ffd1de';
+  removingTextColor = 'black';
 
   decoratorTextColor = 'white';
   decoratorFillColor = 'navy';
