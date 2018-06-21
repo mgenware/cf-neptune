@@ -2,6 +2,7 @@ import NEPAtom from './atom';
 import NEPSequence from './sequence';
 import configs from '../configs';
 import { NEPElement, NEPSize, SVGHelper } from 'element';
+import Defs from '../defs';
 
 export default class DecoratedAtom extends NEPAtom {
   constructor(
@@ -18,9 +19,10 @@ export default class DecoratedAtom extends NEPAtom {
 
     // Set decorators' style
     decorators.borderWidth = 0;
-    decorators.addingChildCallback = (element) => {
-      element.setTextColor(configs.decoratorTextColor);
-      element.background = configs.decoratorFillColor;
+    decorators.background = Defs.none;
+    decorators.addingChildCallback = (_, child) => {
+      child.setTextColor(configs.decoratorTextColor);
+      child.background = configs.decoratorFillColor;
     };
 
     this.rawElement().appendChild(decorators.rawElement());
