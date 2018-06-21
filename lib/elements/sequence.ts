@@ -260,6 +260,7 @@ export default class NEPSequence extends NEPAtom {
       { opacity: 1.0 },
       { duration: duration * 0.2 },
     );
+    const originalBackground = element.background;
     const colorTask = element.setBackgroundAsync(
       configs.color.addedFill,
       { duration: duration * 0.2 },
@@ -271,7 +272,7 @@ export default class NEPSequence extends NEPAtom {
 
     // # 3
     await element.setBackgroundAsync(
-      configs.color.normalFill,
+      originalBackground,
       { duration: duration * 0.1 },
     );
   }
@@ -302,16 +303,11 @@ export default class NEPSequence extends NEPAtom {
     await AnimationHelper.delay(0.7 * duration);
 
     // # 3
-    const opacityTask = this.animate(
+    await this.animate(
       rawElement,
       { opacity: 0 },
       { duration: duration * 0.1 },
     );
-    const colorTask = element.setBackgroundAsync(
-      configs.color.normalFill,
-      { duration: duration * 0.1 },
-    );
-    await Promise.all([opacityTask, colorTask]);
   }
 
   // # Action helper

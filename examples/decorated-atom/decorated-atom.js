@@ -2,8 +2,17 @@ let playground = undefined;
 let element = undefined;
 let decoratorCounter = 1;
 
-async function pushDecorator() {
+async function pushFront() {
+  await element.decorators.pushFrontAsync('🙉' + decoratorCounter++);
+}
+async function pushBack() {
   await element.decorators.pushBackAsync('🙉' + decoratorCounter++);
+}
+async function popFront() {
+  await element.decorators.popFrontAsync();
+}
+async function popBack() {
+  await element.decorators.popBackAsync();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
