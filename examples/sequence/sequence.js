@@ -64,6 +64,15 @@ function popFrontSyncClick() {
   sequenceElement.popFront(newElement);
 }
 
+async function updateClick() {
+  window.checkEnv();
+
+  if (sequenceElement.count) {
+    const randString = '⏰' + Date.now();
+    await sequenceElement.lastChild.setContentAsync(randString);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   window.checkEnv();
   

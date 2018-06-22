@@ -9,6 +9,8 @@ export class Config {
   addedTextColor = 'black';
   removingFillColor = '#ffd1de';
   removingTextColor = 'black';
+  changedFillColor = '#d8e0ff';
+  changedTextColor = 'black';
 
   decoratorTextColor = 'white';
   decoratorFillColor = 'navy';

@@ -1,4 +1,4 @@
-import { NEPElement, SVGHelper, NEPSize, NEPPadding, NewPadding, NewRectFromSize, NEPAnimationOptions } from '../element';
+import { NEPElement, SVGHelper, NEPSize, NEPPadding, NewPadding, NewRectFromSize, NEPAnimationOptions, AnimationHelper } from '../element';
 import NEPText from './text';
 import Defs from 'defs';
 import configs from '../configs';
@@ -276,14 +276,54 @@ export default class NEPAtom extends NEPElement {
   }
 
   // Has no effect if this atom has no child (electron).
-  async setContentAsync(value: NEPElement|null, opt?: NEPAnimationOptions) {
+  async setContentAsync(value: NEPElement|string|null, opt?: NEPAnimationOptions) {
     const child = this.firstElectron;
     if (child && value) {
-      this.content = value;
+      let valueElement: NEPElement;
+      if (typeof value === 'string') {
+        valueElement = new NEPText(value as string);
+      } else {
+        valueElement = value as NEPElement;
+      }
+      this.content = valueElement;
 
       // Animation details
-      // #1 Highlight background (0.8)
-      // #2 Restore background (0.2)
+      // #1 Highlight the background (0.2)
+      // #2 Do nothing
+      // #3 Restore the background (0.1)
+
+      // # 1
+      const duration = this.getDurationOption(opt);
+      const rawElement = this.rawElement();
+
+      const opt1 = { duration: duration * 0.2 };
+      const originalBackground = this.background;
+      const originalTextColor = this.textColor;
+
+      await Promise.all([
+        this.setBackgroundAsync(
+          configs.changedFillColor, opt1,
+        ),
+        this.setTextColorAsync(
+          configs.changedTextColor, opt1,
+        ),
+      ]);
+
+      // # 2
+      await AnimationHelper.delay(0.7 * duration);
+
+      // # 3
+      const opt3 = { duration: duration * 0.1 };
+      await Promise.all([
+        this.setBackgroundAsync(
+          originalBackground,
+          opt3,
+        ),
+        this.setTextColorAsync(
+          originalTextColor,
+          opt3,
+        ),
+      ]);
     }
   }
 
