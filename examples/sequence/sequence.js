@@ -73,6 +73,14 @@ async function updateClick() {
   }
 }
 
+async function swapClick() {
+  window.checkEnv();
+
+  if (sequenceElement.count > 1) {
+    await sequenceElement.swapAsync(0, sequenceElement.count - 1);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   window.checkEnv();
   

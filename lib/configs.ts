@@ -11,6 +11,8 @@ export class Config {
   removingTextColor = 'black';
   changedFillColor = '#d8e0ff';
   changedTextColor = 'black';
+  swappingFillColor = '#fff4d8';
+  swappingTextColor = 'black';
 
   decoratorTextColor = 'white';
   decoratorFillColor = 'navy';

@@ -152,6 +152,59 @@ export default class NEPSequence extends NEPAtom {
     this.executeRemove(index);
   }
 
+  async swapAsync(index1: number, index2: number, opt?: NEPAnimationOptions) {
+    this.validateIndex(index1, 'index1');
+    this.validateIndex(index2, 'index2');
+    if (index1 === index2) {
+      return;
+    }
+
+    const element1 = this.child(index1) as NEPAtom;
+    const element2 = this.child(index2) as NEPAtom;
+    const duration = this.getDurationOption(opt);
+
+    const opt1 = { duration: 0.2 * duration };
+    const originalTextColor1 = element1.textColor;
+    const originalBackground1 = element1.background;
+    const originalTextColor2 = element2.textColor;
+    const originalBackground2 = element2.background;
+
+    await Promise.all([
+      element1.setColorsAsync(
+        configs.swappingTextColor,
+        configs.swappingFillColor,
+        opt1,
+      ),
+      element2.setColorsAsync(
+        configs.swappingTextColor,
+        configs.swappingFillColor,
+        opt1,
+      ),
+    ]);
+
+    const opt2 = { duration: 0.7 * duration };
+    await Promise.all([
+      this.shiftElementAsync(index1, index2, opt2),
+      this.shiftElementAsync(index2, index1, opt2),
+    ]);
+
+    const opt3 = { duration: duration * 0.1 };
+    await Promise.all([
+      element1.setColorsAsync(
+        originalTextColor1,
+        originalBackground2,
+        opt3,
+      ),
+      element2.setColorsAsync(
+        originalTextColor2,
+        originalBackground2,
+        opt3,
+      ),
+    ]);
+
+    this.executeSwap(index1, index2);
+  }
+
   child(index: number): NEPAtom|null {
     if (index < 0 || index >= this.count) {
       return null;
@@ -265,11 +318,10 @@ export default class NEPSequence extends NEPAtom {
         rawElement,
         { opacity: 1.0 }, opt1,
       ),
-      element.setBackgroundAsync(
-        configs.addedFillColor, opt1,
-      ),
-      element.setTextColorAsync(
-        configs.addedTextColor, opt1,
+      element.setColorsAsync(
+        configs.addedTextColor,
+        configs.addedFillColor,
+        opt1,
       ),
     ]);
 
@@ -277,17 +329,11 @@ export default class NEPSequence extends NEPAtom {
     await AnimationHelper.delay(0.7 * duration);
 
     // # 3
-    const opt3 = { duration: duration * 0.1 };
-    await Promise.all([
-      element.setBackgroundAsync(
-        originalBackground,
-        opt3,
-      ),
-      element.setTextColorAsync(
-        originalTextColor,
-        opt3,
-      ),
-    ]);
+    await element.setColorsAsync(
+      originalTextColor,
+      originalBackground,
+      { duration: duration * 0.1 },
+    );
   }
 
   private async hideElement(index: number) {
@@ -307,15 +353,11 @@ export default class NEPSequence extends NEPAtom {
     // (3) 0.1: opacity -> 0
 
     // # 1
-    const opt1 = { duration: duration * 0.2 };
-    await Promise.all([
-      element.setBackgroundAsync(
-        configs.removingFillColor, opt1,
-      ),
-      element.setTextColorAsync(
-        configs.removingTextColor, opt1,
-      ),
-    ]);
+    await element.setColorsAsync(
+      configs.removingTextColor,
+      configs.removingFillColor,
+      { duration: duration * 0.2 },
+    );
 
     // # 2
     await AnimationHelper.delay(0.7 * duration);
@@ -354,7 +396,7 @@ export default class NEPSequence extends NEPAtom {
     // Check the index argument
     // Note that this is insert, so index can be the end of the array.
     if (index < 0 || index > this.count) {
-      throw new Error('Index out of range');
+      throw new Error('Insertion index out of range');
     }
     return child;
   }
@@ -376,8 +418,12 @@ export default class NEPSequence extends NEPAtom {
       throw new Error('Sequence already empty');
     }
     // Check the index argument
+    this.validateIndex(index);
+  }
+
+  private validateIndex(index: number, name = 'index') {
     if (index < 0 || index >= this.count) {
-      throw new Error('Index out of range');
+      throw new Error(`Index(${index}) out of range`);
     }
   }
 
@@ -386,5 +432,12 @@ export default class NEPSequence extends NEPAtom {
     this.onRemovingChild(wrappedAtom);
     this._elements.splice(index, 1);
     this.removeElectron(wrappedAtom);
+  }
+
+  private executeSwap(index1: number, index2: number) {
+    const elements = this._elements;
+    const t = elements[index1];
+    elements[index1] = elements[index2];
+    elements[index2] = t;
   }
 }

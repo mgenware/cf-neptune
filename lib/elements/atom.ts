@@ -296,35 +296,32 @@ export default class NEPAtom extends NEPElement {
       const duration = this.getDurationOption(opt);
       const rawElement = this.rawElement();
 
-      const opt1 = { duration: duration * 0.2 };
       const originalBackground = this.background;
       const originalTextColor = this.textColor;
 
-      await Promise.all([
-        this.setBackgroundAsync(
-          configs.changedFillColor, opt1,
-        ),
-        this.setTextColorAsync(
-          configs.changedTextColor, opt1,
-        ),
-      ]);
+      await this.setColorsAsync(
+        configs.changedTextColor,
+        configs.changedFillColor,
+        { duration: duration * 0.2 },
+      );
 
       // # 2
       await AnimationHelper.delay(0.7 * duration);
 
       // # 3
-      const opt3 = { duration: duration * 0.1 };
-      await Promise.all([
-        this.setBackgroundAsync(
-          originalBackground,
-          opt3,
-        ),
-        this.setTextColorAsync(
-          originalTextColor,
-          opt3,
-        ),
-      ]);
+      await this.setColorsAsync(
+        originalTextColor,
+        originalBackground,
+        { duration: duration * 0.1 },
+      );
     }
+  }
+
+  async setColorsAsync(textColor: string|null, background: string, opt?: NEPAnimationOptions) {
+    await Promise.all([
+      this.setTextColorAsync(textColor, opt),
+      this.setBackgroundAsync(background, opt),
+    ]);
   }
 
   // # protected methods
