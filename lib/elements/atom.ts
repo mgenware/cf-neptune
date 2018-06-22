@@ -123,6 +123,22 @@ export default class NEPAtom extends NEPElement {
     }
   }
 
+  // textContent property
+  get textContent(): string|null {
+    const textContent = this.tryGetTextContent();
+    if (textContent) {
+      return textContent.text;
+    }
+    return null;
+  }
+
+  set textContent(value: string|null) {
+    const textContent = this.tryGetTextContent();
+    if (textContent && value) {
+      textContent.text = value;
+    }
+  }
+
   // ------- Child-related props -------
   get firstElectron(): NEPElement|null {
     if (this._electrons.length) {
