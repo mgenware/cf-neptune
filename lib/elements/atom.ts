@@ -123,6 +123,17 @@ export default class NEPAtom extends NEPElement {
     }
   }
 
+  // content property
+  get content(): NEPElement|null {
+    return this.firstElectron;
+  }
+
+  set content(value: NEPElement|null) {
+    if (this.firstElectron && value) {
+      this.replaceElectron(this.firstElectron, value);
+    }
+  }
+
   // textContent property
   get textContent(): string|null {
     const textContent = this.tryGetTextContent();
@@ -156,6 +167,10 @@ export default class NEPAtom extends NEPElement {
 
   get electrons(): NEPElement[] {
     return this._electrons;
+  }
+
+  get electronsCount(): number {
+    return this._electrons.length;
   }
 
   electronAt(index: number): NEPElement|null {
@@ -203,10 +218,6 @@ export default class NEPAtom extends NEPElement {
   }
 
   // ------- Children manipulations -------
-  get electronsCount(): number {
-    return this._electrons.length;
-  }
-
   appendElectron(child: NEPElement) {
     this.checkValueNotEmpty(child, 'child');
     this.checkIsElement(child, 'child');
@@ -222,12 +233,27 @@ export default class NEPAtom extends NEPElement {
     this.checkIsElement(child, 'child');
 
     const index = this._electrons.indexOf(child);
-    if (index !== -1) {
+    if (index >= 0) {
       this._electrons.splice(index, 1);
       this.rawContainer.removeChild(child.rawElement());
       this.onChildRemoved(child);
+      this.layoutIfNeeded();
     }
-    this.layoutIfNeeded();
+    return index;
+  }
+
+  replaceElectron(oldChild: NEPElement, newChild: NEPElement): number {
+    this.checkIsElement(oldChild, 'oldChild');
+    this.checkIsElement(newChild, 'newChild');
+
+    const index = this._electrons.indexOf(oldChild);
+    if (index >= 0) {
+      this._electrons[index] = newChild;
+      this.rawContainer.replaceChild(newChild.rawElement(), oldChild.rawElement());
+      this.onChildRemoved(oldChild);
+      this.onChildAdded(newChild);
+      this.layoutIfNeeded();
+    }
     return index;
   }
 
@@ -246,6 +272,18 @@ export default class NEPAtom extends NEPElement {
     const textContent = this.tryGetTextContent();
     if (textContent && value) {
       await textContent.setColorAsync(value, opt);
+    }
+  }
+
+  // Has no effect if this atom has no child (electron).
+  async setContentAsync(value: NEPElement|null, opt?: NEPAnimationOptions) {
+    const child = this.firstElectron;
+    if (child && value) {
+      this.content = value;
+
+      // Animation details
+      // #1 Highlight background (0.8)
+      // #2 Restore background (0.2)
     }
   }
 
