@@ -1,4 +1,3 @@
-let playground = undefined;
 let atomElement = undefined;
 
 // https://stackoverflow.com/questions/1484506/random-color-generator
@@ -13,11 +12,7 @@ function getRandomColor() {
 
 async function update() {
   window.checkEnv();
-  
-  await Promise.all([
-    atomElement.setColorAsync(getRandomColor()),
-    atomElement.setBackgroundAsync(getRandomColor()),
-  ]);
+  await atomElement.setColorsAsync(getRandomColor(), getRandomColor());
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -28,5 +23,5 @@ document.addEventListener('DOMContentLoaded', () => {
   atomElement = new nep.Atom(size, 'Neptune');
   const root = document.getElementById('playground');
 
-  playground = nep.Playground.create(root, {width: 300, height: 100}, atomElement);
+  nep.newPlayground(root, atomElement);
 });

@@ -1,4 +1,3 @@
-let playground = undefined;
 let element = undefined;
 let decoratorCounter = 1;
 
@@ -28,5 +27,5 @@ document.addEventListener('DOMContentLoaded', () => {
   element = atom;
 
   const root = document.getElementById('playground');
-  playground = nep.Playground.create(root, size, atom);
+  nep.newPlayground(root, atom);
 });

@@ -1,14 +1,13 @@
-let playground = undefined;
 let textElement = undefined;
 
 function longStringClick() {
   window.checkEnv();
-  textElement.text = 'This is a looooooooooooooooong string 🦁🦁🦁';
+  textElement.textContent = 'This is a looooooooooooooooong string 🦁🦁🦁';
 }
 
 function shortStringClick() {
   window.checkEnv();
-  textElement.text = 'A';
+  textElement.textContent = 'A';
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -16,10 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
   
   const nep = window.nep;
   // Create the text element
-  textElement = new nep.Text('cf-neptune');
+  textElement = new nep.Atom({width: 300, height: 100}, 'cf-neptune');
   const root = document.getElementById('playground');
 
-  // Mount the text element to playground
-  playground = nep.Playground.create(root, {width: 300, height: 100}, textElement);
-  playground.borderWidth = '1px';
+  // Mount the text element to the playground
+  nep.newPlayground(root, textElement);
 });

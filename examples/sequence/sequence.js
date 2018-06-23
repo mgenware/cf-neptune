@@ -1,4 +1,3 @@
-let playground = undefined;
 let sequenceElement = undefined;
 const SIZE = { width: 500, height: 100 };
 const CAP = 5;
@@ -87,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const nep = window.nep;
   const root = document.getElementById('playground');
   const element = new nep.Sequence(SIZE, CAP, 'h');
-  playground = nep.Playground.create(root, SIZE, element);
+  nep.newPlayground(root, element);
 
   sequenceElement = element;
 });

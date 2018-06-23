@@ -1,4 +1,3 @@
-let playground = undefined;
 let matrixElement = undefined;
 const SIZE = { width: 500, height: 500 };
 const ROWS = 5;
@@ -10,7 +9,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const nep = window.nep;
   const root = document.getElementById('playground');
   const matrix = new nep.Matrix(SIZE, ROWS, COLS);
-  playground = nep.Playground.create(root, SIZE, matrix);
+  nep.newPlayground(root, matrix);
 
   // populate the matrix
   for (let i = 0; i < ROWS; i++) {

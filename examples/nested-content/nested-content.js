@@ -1,4 +1,3 @@
-let playground = undefined;
 let counter = 0;
 let currentElement = undefined;
 
@@ -23,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const nep = window.nep;
   const root = document.getElementById('playground');
   const element = newAtomElement();
-  playground = nep.Playground.create(root, {width: 300, height: 100}, element);
+  nep.newPlayground(root, element);
 
   currentElement = element;
 });
