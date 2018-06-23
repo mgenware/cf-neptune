@@ -135,18 +135,18 @@ export default class NEPAtom extends NEPElement {
   }
 
   // textContent property
-  get textContent(): string|null {
+  get textContent(): any {
     const textContent = this.tryGetTextContent();
     if (textContent) {
-      return textContent.text;
+      return textContent.value;
     }
     return null;
   }
 
-  set textContent(value: string|null) {
+  set textContent(value: any) {
     const textContent = this.tryGetTextContent();
-    if (textContent && value) {
-      textContent.text = value;
+    if (textContent) {
+      textContent.value = value;
     }
   }
 
@@ -276,14 +276,14 @@ export default class NEPAtom extends NEPElement {
   }
 
   // Has no effect if this atom has no child (electron).
-  async setContentAsync(value: NEPElement|string|null, opt?: NEPAnimationOptions) {
+  async setContentAsync(value: any, opt?: NEPAnimationOptions) {
     const child = this.firstElectron;
-    if (child && value) {
+    if (child) {
       let valueElement: NEPElement;
-      if (typeof value === 'string') {
-        valueElement = new NEPText(value as string);
-      } else {
+      if (value instanceof NEPElement) {
         valueElement = value as NEPElement;
+      } else {
+        valueElement = new NEPText(value);
       }
       this.content = valueElement;
 

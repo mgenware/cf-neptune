@@ -4,16 +4,16 @@ import configs from '../configs';
 
 export default class NEPText extends NEPElement {
   private raw: SVGTextElement;
+  private _value: any;
 
-  constructor(text?: string) {
+  constructor(value: any) {
     super();
 
-    text = text || '';
     const raw = SVGHelper.createElement(Defs.text) as SVGTextElement;
     raw.style.dominantBaseline = 'text-before-edge';
     raw.style.fontSize = '16px';
     this.raw = raw;
-    this.text = text as string|null;
+    this.value = value;
 
     this.color = configs.normalTextColor;
   }
@@ -22,11 +22,12 @@ export default class NEPText extends NEPElement {
     return this.raw;
   }
 
-  get text(): string|null {
-    return this.raw.textContent;
+  get value(): any {
+    return this._value;
   }
-  set text(value: string|null) {
-    this.raw.textContent = value;
+  set value(value: any) {
+    this._value = value;
+    this.raw.textContent = `${value}`;
     this.onSizeChanged();
   }
 
