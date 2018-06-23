@@ -109,7 +109,7 @@ export default class NEPAtom extends NEPElement {
 
   // textColor
   get textColor(): string|null {
-    const textContent = this.tryGetTextContent();
+    const textContent = this.tryGetTextObject();
     if (textContent) {
       return textContent.color;
     }
@@ -117,34 +117,29 @@ export default class NEPAtom extends NEPElement {
   }
   // Has no effect if either value is null or this object does not have a text content.
   set textColor(value: string|null) {
-    const textContent = this.tryGetTextContent();
+    const textContent = this.tryGetTextObject();
     if (textContent && value) {
       textContent.color = value;
     }
   }
 
   // content property
-  get content(): NEPElement|null {
-    return this.firstElectron;
-  }
-
-  set content(value: NEPElement|null) {
-    if (this.firstElectron && value) {
-      this.replaceElectron(this.firstElectron, value);
-    }
-  }
-
-  // textContent property
-  get textContent(): any {
-    const textContent = this.tryGetTextContent();
+  get content(): any {
+    const textContent = this.tryGetTextObject();
     if (textContent) {
       return textContent.value;
     }
     return null;
   }
 
-  set textContent(value: any) {
-    const textContent = this.tryGetTextContent();
+  set content(value: any) {
+    // Add a Text object if no children
+    if (this.electronsCount === 0) {
+      this.appendElectron(new NEPText(value));
+      return;
+    }
+
+    const textContent = this.tryGetTextObject();
     if (textContent) {
       textContent.value = value;
     }
@@ -269,7 +264,7 @@ export default class NEPAtom extends NEPElement {
 
   // Has no effect if either value is null or this object does not have a text content.
   async setTextColorAsync(value: string|null, opt?: NEPAnimationOptions) {
-    const textContent = this.tryGetTextContent();
+    const textContent = this.tryGetTextObject();
     if (textContent && value) {
       await textContent.setColorAsync(value, opt);
     }
@@ -341,7 +336,7 @@ export default class NEPAtom extends NEPElement {
     child.sizeChanged = undefined;
   }
 
-  private tryGetTextContent(): NEPText|null {
+  private tryGetTextObject(): NEPText|null {
     if (this.electronsCount > 0 && this.electronAt(0) instanceof NEPText) {
       return this.electronAt(0) as NEPText;
     }

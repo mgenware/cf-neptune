@@ -2,16 +2,16 @@ let element = undefined;
 let decoratorCounter = 1;
 
 async function pushFront() {
-  await element.decorators.pushFrontAsync('🙉' + decoratorCounter++);
+  await element.decorator.pushFrontAsync('🙉' + decoratorCounter++);
 }
 async function pushBack() {
-  await element.decorators.pushBackAsync('🙉' + decoratorCounter++);
+  await element.decorator.pushBackAsync('🙉' + decoratorCounter++);
 }
 async function popFront() {
-  await element.decorators.popFrontAsync();
+  await element.decorator.popFrontAsync();
 }
 async function popBack() {
-  await element.decorators.popBackAsync();
+  await element.decorator.popBackAsync();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -20,10 +20,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const nep = window.nep;
 
   const size = { width: 300, height: 100 };
-  const decoratorsCount = 3;
-  const decoratorsSize = { width: 150, height: 50 };
-  const decorators = new nep.Sequence(decoratorsSize, decoratorsCount, 'h', true);
-  const atom = new nep.DecoratedAtom(size, decorators, 'Content');
+  const decoratorCount = 3;
+  const decoratorSize = { width: 150, height: 50 };
+  const decorator = new nep.Sequence(decoratorSize, decoratorCount, 'h', true);
+  const atom = new nep.DecoratedAtom(size, decorator, 'Content');
   element = atom;
 
   const root = document.getElementById('playground');

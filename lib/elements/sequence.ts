@@ -3,6 +3,7 @@ import NEPAtom from './atom';
 import configs from '../configs';
 import Defs from 'defs';
 import { coerceInputElement } from './helper';
+import NEPDecoratedAtom from './decoratedAtom';
 
 export default class NEPSequence extends NEPAtom {
   // Whether to disable scaling in child elements, useful when this sequence is used as a 2d-sequence.
@@ -17,6 +18,8 @@ export default class NEPSequence extends NEPAtom {
   private _elements: NEPElement[] = [];
   private _gridGroup: SVGGElement|null = null;
   private _girdLines: SVGGraphicsElement[] = [];
+
+  private _pointerMap: {[key: string]: NEPDecoratedAtom} = {};
 
   get count(): number {
     return this._elements.length;
@@ -206,11 +209,17 @@ export default class NEPSequence extends NEPAtom {
   }
 
   child(index: number): NEPAtom|null {
-    if (index < 0 || index >= this.count) {
-      return null;
-    }
+    this.validateIndex(index);
     const atom = this._elements[index] as NEPAtom;
     return atom;
+  }
+
+  childContent(index: number): any {
+    const child = this.child(index);
+    if (child) {
+      return child.content;
+    }
+    return undefined;
   }
 
   internalChild(index: number): NEPElement|null {
@@ -221,8 +230,56 @@ export default class NEPSequence extends NEPAtom {
     return wrappedChild.firstElectron;
   }
 
+  findByContent(content: any): number {
+    for (let i = 0; i < this.count; i++) {
+      const child = this.child(i) as NEPAtom;
+      if (child.content === content) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  async setPointerAsync(index: number, pointer: string, opt?: NEPAnimationOptions) {
+    this.validateIndex(index);
+
+    const oldItem = this._pointerMap[pointer];
+    let oldIndex = -1;
+    if (oldItem) {
+      oldIndex = oldItem.decorator.findByContent(pointer);
+    }
+
+    const newItem = this.child(index) as NEPDecoratedAtom;
+    if (oldItem === newItem) {
+      return;
+    }
+
+    await Promise.all([
+      oldIndex < 0 ? Promise.resolve() : oldItem.decorator.removeAsync(oldIndex, opt),
+      newItem.decorator.pushBackAsync(pointer, opt),
+    ]);
+    this._pointerMap[pointer] = newItem;
+  }
+
+  // # Protected members
+  protected createDecorator(): NEPSequence {
+    const decorator = new NEPSequence(
+      { width: this._slotWidth, height: this._slotWidth / 4},
+      4,
+      'h',
+      true,
+    );
+    return decorator;
+  }
+
+  // # Private members
   private wrapElement(child: NEPElement): NEPAtom {
-    const atom = new NEPAtom({ width: this._slotWidth, height: this._slotHeight }, child);
+    const decorator = this.createDecorator();
+    const atom = new NEPDecoratedAtom(
+      { width: this._slotWidth, height: this._slotHeight },
+      decorator,
+      child,
+    );
     atom.noScaling = this.noElementScaling;
     if (atom.noScaling) {
       // if scaling is disabled, padding will be cleared
