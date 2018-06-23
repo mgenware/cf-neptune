@@ -192,7 +192,7 @@ export default class NEPSequence extends NEPAtom {
     await Promise.all([
       element1.setColorsAsync(
         originalTextColor1,
-        originalBackground2,
+        originalBackground1,
         opt3,
       ),
       element2.setColorsAsync(
@@ -423,7 +423,7 @@ export default class NEPSequence extends NEPAtom {
 
   private validateIndex(index: number, name = 'index') {
     if (index < 0 || index >= this.count) {
-      throw new Error(`Index(${index}) out of range`);
+      throw new Error(`"${name}" argument(${index}) out of range`);
     }
   }
 

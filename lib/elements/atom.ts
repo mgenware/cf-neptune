@@ -294,7 +294,6 @@ export default class NEPAtom extends NEPElement {
 
       // # 1
       const duration = this.getDurationOption(opt);
-      const rawElement = this.rawElement();
 
       const originalBackground = this.background;
       const originalTextColor = this.textColor;
