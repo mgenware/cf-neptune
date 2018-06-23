@@ -101,7 +101,6 @@ export class NEPElement {
     return configs.animationDuration;
   }
 
-  // tslint:disable-next-line no-any
   protected checkValueNotEmpty(value: any, name = 'value') {
     if (!value) {
       throw new Error(`The argument "${name}" cannot be empty`);

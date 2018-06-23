@@ -1,8 +1,8 @@
 import { NEPElement, SVGHelper, NEPSize, NEPPoint, EmptyPadding, AnimationHelper, NEPAnimationOptions } from '../element';
 import NEPAtom from './atom';
-import NEPText from './text';
 import configs from '../configs';
 import Defs from 'defs';
+import { coerceInputElement } from './helper';
 
 export default class NEPSequence extends NEPAtom {
   // Whether to disable scaling in child elements, useful when this sequence is used as a 2d-sequence.
@@ -61,24 +61,24 @@ export default class NEPSequence extends NEPAtom {
     SVGHelper.labelElementInfo(this.rawElement(), 'sequence');
   }
 
-  async pushFrontAsync(child: NEPElement, opt?: NEPAnimationOptions) {
-    await this.insertAsync(0, child, opt);
+  async pushFrontAsync(value: any, opt?: NEPAnimationOptions) {
+    await this.insertAsync(0, value, opt);
   }
 
-  pushFront(child: NEPElement) {
-    this.insert(0, child);
+  pushFront(value: any) {
+    this.insert(0, value);
   }
 
-  async pushBackAsync(child: NEPElement, opt?: NEPAnimationOptions) {
-    await this.insertAsync(this.count, child, opt);
+  async pushBackAsync(value: any, opt?: NEPAnimationOptions) {
+    await this.insertAsync(this.count, value, opt);
   }
 
-  pushBack(child: NEPElement) {
-    this.insert(this.count, child);
+  pushBack(value: any) {
+    this.insert(this.count, value);
   }
 
-  async insertAsync(index: number, child: NEPElement, opt?: NEPAnimationOptions) {
-    child = this.validateInsert(index, child);
+  async insertAsync(index: number, value: any, opt?: NEPAnimationOptions) {
+    const element = coerceInputElement(value);
     const duration = this.getDurationOption(opt);
 
     // Animation details:
@@ -92,17 +92,17 @@ export default class NEPSequence extends NEPAtom {
     }
     await Promise.all(tasks);
 
-    this.executeInsert(index, child);
+    this.executeInsert(index, element);
     await this.showElementAsync(index, { duration: duration * 0.8 });
   }
 
-  insert(index: number, child: NEPElement) {
-    child = this.validateInsert(index, child);
+  insert(index: number, value: any) {
+    const element = coerceInputElement(value);
 
     for (let i = index; i < this.count; i++) {
       this.shiftElement(i, i + 1);
     }
-    this.executeInsert(index, child);
+    this.executeInsert(index, element);
     this.showElement(index);
   }
 
@@ -381,24 +381,6 @@ export default class NEPSequence extends NEPAtom {
     if (this.removingChildCallback) {
       this.removingChildCallback(this, child);
     }
-  }
-
-  private validateInsert(index: number, child: NEPElement): NEPElement {
-    // Check capacity
-    if (this.count === this.capacity) {
-      throw new Error('No more slot available');
-    }
-    // Check the child argument
-    this.checkValueNotEmpty(child, 'child');
-    if (typeof child === 'string') {
-      child = new NEPText(child);
-    }
-    // Check the index argument
-    // Note that this is insert, so index can be the end of the array.
-    if (index < 0 || index > this.count) {
-      throw new Error('Insertion index out of range');
-    }
-    return child;
   }
 
   private executeInsert(index: number, child: NEPElement) {
