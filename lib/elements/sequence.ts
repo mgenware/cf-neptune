@@ -423,7 +423,7 @@ export default class NEPSequence extends NEPAtom {
 
   private validateIndex(index: number, name = 'index') {
     if (index < 0 || index >= this.count) {
-      throw new Error(`"${name}" argument(${index}) out of range`);
+      throw new Error(`"The argument ${name}"(${index}) is out of range`);
     }
   }
 

@@ -14,7 +14,7 @@ export default class DecoratedAtom extends NEPAtom {
 
     this.checkValueNotEmpty(decorators, 'decorators');
     if (decorators instanceof NEPSequence === false) {
-      throw new Error('The decorators argument is not a NEPSequence');
+      throw new Error('The argument "decorators" is not a NEPSequence');
     }
 
     // Set decorators' style

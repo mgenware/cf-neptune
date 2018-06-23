@@ -1,29 +1,19 @@
-import NEAtom from './atom';
-import { SVGHelper, NEPSize, NEPElement } from '../element';
+import NEPAtom from './atom';
+import { SVGHelper } from 'element';
 
-export default class NEPPlayground extends NEAtom {
-  static create(domElement: HTMLElement, size: NEPSize, element: NEPElement): NEPPlayground {
-    if (!domElement) {
-      throw new Error('The domElement argument is required');
-    }
-    if (!element) {
-      throw new Error('The element argument is required');
-    }
-
-    const p = new NEPPlayground(size, element);
-    domElement.appendChild(p.rawElement());
-    p.layout();
-    return p;
+export default function newPlayground(element: HTMLElement, atom: NEPAtom) {
+  if (!element) {
+    throw new Error('The argument "element" cannot be empty');
+  }
+  if (!atom) {
+    throw new Error('The argument "atom" cannot be empty');
   }
 
-  private constructor(
-    public size: NEPSize,
-    firstChild?: NEPElement,
-  ) {
-    super(size, firstChild);
+  const playground = new NEPAtom(atom.size, atom);
+  playground.borderWidth = 0;
+  SVGHelper.labelElementInfo(playground.rawElement(), 'playground');
 
-    SVGHelper.setSize(this.rawElement(), size);
-    this.borderWidth = 0;
-    SVGHelper.labelElementInfo(this.rawElement(), 'playground');
-  }
+  element.appendChild(playground.rawElement());
+  playground.layout();
+  return playground;
 }
