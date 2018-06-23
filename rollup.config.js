@@ -3,6 +3,7 @@ import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import replace from 'rollup-plugin-replace';
 import { uglify } from 'rollup-plugin-uglify';
+import { minify } from 'uglify-es';
 
 const production = process.env.NODE_ENV === 'production';
 
@@ -11,7 +12,7 @@ export default {
   output: {
     name: 'nep',
     file: 'dist/main.js',
-    format: 'iife',
+    format: 'umd',
   },
   plugins: [
     resolve({
@@ -23,6 +24,6 @@ export default {
     replace({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
     }),
-    production && uglify(),
+    production && uglify({}, minify),
   ],
 };

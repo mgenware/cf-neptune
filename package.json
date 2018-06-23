@@ -44,6 +44,7 @@
     "rollup-plugin-uglify": "^4.0.0",
     "tslint": "^5.10.0",
     "typescript": "^2.9.2",
+    "uglify-es": "^3.3.9",
     "unique-temp-dir": "^1.0.0"
   },
   "dependencies": {
