@@ -4,6 +4,7 @@ import configs from '../configs';
 import Defs from 'defs';
 import { coerceInputElement } from './helper';
 import NEPDecoratedAtom from './decoratedAtom';
+import NEPText from './text';
 
 export default class NEPSequence extends NEPAtom {
   // Whether to disable scaling in child elements, useful when this sequence is used as a 2d-sequence.
@@ -18,8 +19,6 @@ export default class NEPSequence extends NEPAtom {
   private _elements: NEPElement[] = [];
   private _gridGroup: SVGGElement|null = null;
   private _girdLines: SVGGraphicsElement[] = [];
-
-  private _pointerMap: {[key: string]: NEPDecoratedAtom} = {};
 
   get count(): number {
     return this._elements.length;
@@ -240,27 +239,6 @@ export default class NEPSequence extends NEPAtom {
     return -1;
   }
 
-  async setPointerAsync(index: number, pointer: string, opt?: NEPAnimationOptions) {
-    this.validateIndex(index);
-
-    const oldItem = this._pointerMap[pointer];
-    let oldIndex = -1;
-    if (oldItem) {
-      oldIndex = oldItem.decorator.findByContent(pointer);
-    }
-
-    const newItem = this.child(index) as NEPDecoratedAtom;
-    if (oldItem === newItem) {
-      return;
-    }
-
-    await Promise.all([
-      oldIndex < 0 ? Promise.resolve() : oldItem.decorator.removeAsync(oldIndex, opt),
-      newItem.decorator.pushBackAsync(pointer, opt),
-    ]);
-    this._pointerMap[pointer] = newItem;
-  }
-
   // # Protected members
   protected createDecorator(): NEPSequence {
     const decorator = new NEPSequence(
@@ -270,6 +248,14 @@ export default class NEPSequence extends NEPAtom {
       true,
     );
     return decorator;
+  }
+
+  protected createPointer(name: string): NEPAtom {
+    const pointer = new NEPAtom(
+      { width: this._slotWidth, height: this._slotWidth / 4},
+      new NEPText(name),
+    );
+    return pointer;
   }
 
   // # Private members
@@ -304,8 +290,8 @@ export default class NEPSequence extends NEPAtom {
     this._gridGroup = rootRaw;
 
     for (let i = 1; i < this.capacity; i++) {
-      const rawLine = SVGHelper.createElement('line') as SVGLineElement;
-      SVGHelper.setStroke(rawLine, '#808080', 1);
+      const rawLine = SVGHelper.createElement(Defs.line) as SVGLineElement;
+      SVGHelper.setStroke(rawLine, configs.normalBorderColor, 1);
 
       const startPt = this.startPointFromIndex(i);
       const endPt: NEPPoint = { ...startPt };
@@ -328,10 +314,12 @@ export default class NEPSequence extends NEPAtom {
     }
     const endPoz = this.startPointFromIndex(endIndex);
     const element = this.child(startIndex) as NEPAtom;
-    const rawElement = element.rawElement();
+    this.shiftRawElement(element.rawElement(), endPoz);
+  }
 
+  private shiftRawElement(element: SVGGraphicsElement, poz: NEPPoint) {
     const prop = this.orientation === 'h' ? 'x' : 'y';
-    rawElement.setAttribute(prop, endPoz[prop].toString());
+    element.setAttribute(prop, poz[prop].toString());
   }
 
   private async shiftElementAsync(startIndex: number, endIndex: number, opt?: NEPAnimationOptions) {
@@ -341,12 +329,14 @@ export default class NEPSequence extends NEPAtom {
     const endPoz = this.startPointFromIndex(endIndex);
 
     const element = this.child(startIndex) as NEPAtom;
-    const rawElement = element.rawElement();
+    await this.shiftRawElementAsync(element.rawElement(), endPoz, opt);
+  }
 
+  private async shiftRawElementAsync(element: SVGGraphicsElement, poz: NEPPoint, opt: NEPAnimationOptions|undefined) {
     const prop = this.orientation === 'h' ? 'x' : 'y';
     const props: {[_: string]: string} = {};
-    props[prop] = endPoz[prop].toString();
-    await this.animate(rawElement, props, opt);
+    props[prop] = poz[prop].toString();
+    await this.animate(element, props, opt);
   }
 
   private showElement(index: number) {
