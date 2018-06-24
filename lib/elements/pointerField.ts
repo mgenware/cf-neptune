@@ -2,7 +2,7 @@ import { NEPElement, NEPPoint, NEPAnimationOptions, NEPSize, SVGHelper } from '.
 import NEPAtom from './atom';
 import NEPText from './text';
 
-export class PointerInfo {
+export class NEPPointerInfo {
   constructor(
     public name: string,
     public position: string,
@@ -11,7 +11,7 @@ export class PointerInfo {
   ) { }
 }
 
-export class PointerField extends NEPElement {
+export class NEPPointerField extends NEPElement {
   constructor(
     public pointerSize: NEPSize,
   ) {
@@ -23,7 +23,7 @@ export class PointerField extends NEPElement {
     this.checkValueNotEmpty(position, 'position');
 
     // Check whether it exists
-    const info = this.pointerInfo(pointerName);
+    let info = this.pointerInfo(pointerName);
     // Do nothing if the position is not changed
     if (info && info.position === position) {
       return;
@@ -44,13 +44,13 @@ export class PointerField extends NEPElement {
       const startPt = this.positionToPoint(info.position);
       // Layout previous array if needed
       for (let i = info.arrayIndex; i < arr.length; i++) {
-        const endPt = {
+        const childEndPt = {
           x: startPt.x + i * this.pointerSize.width,
           y: startPt.y,
         };
 
         const target = arr[i];
-        SVGHelper.setPosition(target.instance.rawElement(), endPt.x, endPt.y);
+        SVGHelper.setPosition(target.instance.rawElement(), childEndPt.x, childEndPt.y);
 
         // Update the pointerInfo
         target.arrayIndex = i;
@@ -59,18 +59,36 @@ export class PointerField extends NEPElement {
 
     // Calculate the end position
     const endPt = this.positionToPoint(position);
-    const destArrLength = this.pointerInfoList(position).length;
+    const destArray = this.pointerInfoList(position);
+    const destArrLength = destArray.length;
     endPt.x = destArrLength * this.pointerSize.width;
 
     // Start the animation
     await this.animate(ptr.rawElement(), endPt, opt);
+
+    // Update info
+    info = new NEPPointerInfo(
+      name,
+      position,
+      destArrLength,
+      ptr,
+    );
+    // Update pointerInfoList map
+    this.pointerInfoList(position).push(info);
+    // Update pointerInfo map
+    this.setPointerInfo(name, info);
   }
 
-  protected pointerInfo(_: string): PointerInfo|null {
+  protected pointerInfo(_name: string): NEPPointerInfo|null {
     throw new Error('Not implemented yet');
   }
 
-  protected pointerInfoList(_: string): PointerInfo[] {
+  protected setPointerInfo(_name: string, _info: NEPPointerInfo) {
+    throw new Error('Not implemented yet');
+  }
+
+  // Unlike pointerInfo and setPointerInfo, there's no setPointerInfoList, pointerInfoList will automatically create an entry if the given name does not exist.
+  protected pointerInfoList(_name: string): NEPPointerInfo[] {
     throw new Error('Not implemented yet');
   }
 
