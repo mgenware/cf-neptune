@@ -4,7 +4,8 @@ import configs from '../configs';
 import Defs from 'defs';
 import { coerceInputElement } from './helper';
 import NEPDecoratedAtom from './decoratedAtom';
-import NEPText from './text';
+import { NEPPointerField } from './pointerField';
+import SequencePointerField from './internal/sequencePointerField';
 
 export default class NEPSequence extends NEPAtom {
   // Whether to disable scaling in child elements, useful when this sequence is used as a 2d-sequence.
@@ -19,6 +20,7 @@ export default class NEPSequence extends NEPAtom {
   private _elements: NEPElement[] = [];
   private _gridGroup: SVGGElement|null = null;
   private _girdLines: SVGGraphicsElement[] = [];
+  private _pointerField: NEPPointerField;
 
   get count(): number {
     return this._elements.length;
@@ -61,6 +63,12 @@ export default class NEPSequence extends NEPAtom {
       this.drawGrid();
     }
     SVGHelper.labelElementInfo(this.rawElement(), 'sequence');
+
+    // Pointer field
+    const ptrField = this.createPointerField();
+    ptrField.rawElement().setAttribute(Defs.fill, Defs.none);
+    this.appendElectron(ptrField);
+    this._pointerField = ptrField;
   }
 
   async pushFrontAsync(value: any, opt?: NEPAnimationOptions) {
@@ -239,6 +247,13 @@ export default class NEPSequence extends NEPAtom {
     return -1;
   }
 
+  async setPointerAsync(index: number, pointerName: string, opt?: NEPAnimationOptions) {
+    this.validateIndex(index);
+    const position = index.toString();
+
+    await this._pointerField.setPointerAsync(pointerName, position, opt);
+  }
+
   // # Protected members
   protected createDecorator(): NEPSequence {
     const decorator = new NEPSequence(
@@ -250,12 +265,15 @@ export default class NEPSequence extends NEPAtom {
     return decorator;
   }
 
-  protected createPointer(name: string): NEPAtom {
-    const pointer = new NEPAtom(
-      { width: this._slotWidth, height: this._slotWidth / 4},
-      new NEPText(name),
-    );
-    return pointer;
+  protected createPointerField(): NEPPointerField {
+    const field = new SequencePointerField({
+      width: this._slotWidth,
+      height: this._slotHeight,
+    }, {
+      width: this._slotWidth * 0.4,
+      height: this._slotHeight * 0.4,
+    });
+    return field;
   }
 
   // # Private members

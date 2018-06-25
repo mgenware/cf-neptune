@@ -158,6 +158,13 @@ export class SVGHelper {
     return new DOMRect(rect.x + padding.left, rect.y + padding.top, rect.width - padding.left - padding.right, rect.height - padding.top - padding.bottom);
   }
 
+  static sizeScale(size: NEPSize, multiplier: number): NEPSize {
+    return {
+      width: size.width * multiplier,
+      height: size.height * multiplier,
+    };
+  }
+
   static createElement(tagName: string): SVGGraphicsElement {
     return document.createElementNS(this.svgNS, tagName) as any;
   }
