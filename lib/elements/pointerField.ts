@@ -51,7 +51,7 @@ export class NEPPointerField extends NEPElement {
       // Remove the element from previous array
       const pointerInfoList = this.pointerInfoListAt(info.position) as NEPPointerInfo[];
       const pointerIndex = pointerInfoList.findIndex(item => item.name === pointerName);
-      pointerInfoList.splice(pointerIndex);
+      pointerInfoList.splice(pointerIndex, 1);
 
       const startPt = this.positionToPoint(info.position);
       // Layout previous array if needed
