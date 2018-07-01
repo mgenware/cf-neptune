@@ -45,6 +45,7 @@ export class NEPPointerField extends NEPElement {
       // Create a new element if it hasn't been added
       ptr = this.createPointer(pointerName);
       this.appendChild(ptr);
+      ptr.layout();
     } else {
       ptr = info.instance;
 
