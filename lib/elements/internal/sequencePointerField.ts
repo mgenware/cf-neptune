@@ -13,20 +13,20 @@ export default class SequencePointerField extends NEPPointerField {
   }
 
   // # protected members
-  protected pointerInfo(name: string): NEPPointerInfo|null {
+  protected pointerInfoBy(name: string): NEPPointerInfo|null {
     return this._keyToInfoMap[name];
   }
 
-  protected setPointerInfo(name: string, info: NEPPointerInfo) {
+  protected setPointerInfoBy(name: string, info: NEPPointerInfo) {
     this._keyToInfoMap[name] = info;
   }
 
-  protected pointerInfoList(position: string): NEPPointerInfo[]|null {
+  protected pointerInfoListAt(position: string): NEPPointerInfo[]|null {
     return this._positionToListMap[position];
   }
 
-  protected setPointerInfoList(name: string, value: NEPPointerInfo[]) {
-    this._positionToListMap[name] = value;
+  protected setPointerInfoListAt(position: string, value: NEPPointerInfo[]) {
+    this._positionToListMap[position] = value;
   }
 
   protected positionToPoint(position: string): NEPPoint {

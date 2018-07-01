@@ -8,7 +8,6 @@ export class NEPPointerInfo {
   constructor(
     public name: string,
     public position: string,
-    public arrayIndex: number,
     public instance: NEPAtom,
   ) { }
 }
@@ -34,7 +33,7 @@ export class NEPPointerField extends NEPElement {
     this.checkValueNotEmpty(position, 'position');
 
     // Check whether it exists
-    let info = this.pointerInfo(pointerName);
+    let info = this.pointerInfoBy(pointerName);
     // Do nothing if the position is not changed
     if (info && info.position === position) {
       return;
@@ -50,31 +49,29 @@ export class NEPPointerField extends NEPElement {
       ptr = info.instance;
 
       // Remove the element from previous array
-      const arr = this.pointerInfoList(pointerName) as NEPPointerInfo[];
-      arr.splice(info.arrayIndex);
+      const pointerInfoList = this.pointerInfoListAt(info.position) as NEPPointerInfo[];
+      const pointerIndex = pointerInfoList.findIndex(item => item.name === pointerName);
+      pointerInfoList.splice(pointerIndex);
 
       const startPt = this.positionToPoint(info.position);
       // Layout previous array if needed
-      for (let i = info.arrayIndex; i < arr.length; i++) {
+      for (let i = pointerIndex; i < pointerInfoList.length; i++) {
         const childEndPt = {
           x: startPt.x + i * this.pointerSize.width,
           y: startPt.y,
         };
 
-        const target = arr[i];
+        const target = pointerInfoList[i];
         SVGHelper.setPosition(target.instance.rawElement(), childEndPt.x, childEndPt.y);
-
-        // Update the pointerInfo
-        target.arrayIndex = i;
       }
     }
 
     // Calculate the end position
     const endPt = this.positionToPoint(position);
-    let destArray = this.pointerInfoList(position);
+    let destArray = this.pointerInfoListAt(position);
     if (!destArray) {
       destArray = [];
-      this.setPointerInfoList(position, destArray);
+      this.setPointerInfoListAt(position, destArray);
     }
     const destArrLength = destArray.length;
     endPt.x += destArrLength * this.pointerSize.width;
@@ -84,30 +81,29 @@ export class NEPPointerField extends NEPElement {
 
     // Update info
     info = new NEPPointerInfo(
-      name,
+      pointerName,
       position,
-      destArrLength,
       ptr,
     );
     // Update pointerInfoList map
     destArray.push(info);
     // Update pointerInfo map
-    this.setPointerInfo(name, info);
+    this.setPointerInfoBy(pointerName, info);
   }
 
-  protected pointerInfo(_name: string): NEPPointerInfo|null {
+  protected pointerInfoBy(_name: string): NEPPointerInfo|null {
     throw new Error('Not implemented yet');
   }
 
-  protected setPointerInfo(_name: string, _info: NEPPointerInfo) {
+  protected setPointerInfoBy(_name: string, _info: NEPPointerInfo) {
     throw new Error('Not implemented yet');
   }
 
-  protected pointerInfoList(_name: string): NEPPointerInfo[]|null {
+  protected pointerInfoListAt(_position: string): NEPPointerInfo[]|null {
     throw new Error('Not implemented yet');
   }
 
-  protected setPointerInfoList(_name: string, _value: NEPPointerInfo[]) {
+  protected setPointerInfoListAt(_position: string, _value: NEPPointerInfo[]) {
     throw new Error('Not implemented yet');
   }
 

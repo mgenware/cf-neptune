@@ -67,7 +67,7 @@ export default class NEPSequence extends NEPAtom {
     // Pointer field
     const ptrField = this.createPointerField();
     ptrField.rawElement().setAttribute(Defs.fill, Defs.none);
-    this.appendElectron(ptrField);
+    this.rawElement().appendChild(ptrField.rawElement());
     this._pointerField = ptrField;
   }
 
