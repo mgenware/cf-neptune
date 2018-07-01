@@ -29,10 +29,5 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-
-  for (let i = 0; i < nums.length; i++) {
-    await element.setPointerAsync(i, 'i');
-  }
-
   sequenceElement = element;
 });
