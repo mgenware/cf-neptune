@@ -1,4 +1,4 @@
-import { NEPElement, NEPPoint, NEPAnimationOptions, NEPSize, SVGHelper } from '../element';
+import { NEPElement, NEPPoint, NEPAnimationOptions, NEPSize, SVGHelper, NewPadding } from '../element';
 import NEPAtom from './atom';
 import NEPText from './text';
 import Defs from '../defs';
@@ -6,7 +6,7 @@ import configs from '../configs';
 
 export class NEPPointerInfo {
   constructor(
-    public name: string,
+    public key: string,
     public position: string,
     public instance: NEPAtom,
   ) { }
@@ -28,29 +28,29 @@ export class NEPPointerField extends NEPElement {
     return this.raw;
   }
 
-  async setPointerAsync(pointerName: string, position: string, opt: NEPAnimationOptions|undefined) {
-    this.checkValueNotEmpty(pointerName, 'pointer');
+  async setPointerAsync(key: string, text: string, position: string, opt: NEPAnimationOptions|undefined) {
+    this.checkValueNotEmpty(key, 'key');
     this.checkValueNotEmpty(position, 'position');
 
     // Check whether it exists
-    let info = this.pointerInfoBy(pointerName);
+    let info = this.pointerInfoBy(key);
     // Do nothing if the position is not changed
     if (info && info.position === position) {
       return;
     }
 
-    let ptr: NEPAtom;
+    let ptrAtom: NEPAtom;
     if (!info) {
       // Create a new element if it hasn't been added
-      ptr = this.createPointer(pointerName);
-      this.appendChild(ptr);
-      ptr.layout();
+      ptrAtom = this.createPointer(key);
+      this.appendChild(ptrAtom);
+      ptrAtom.layout();
     } else {
-      ptr = info.instance;
+      ptrAtom = info.instance;
 
       // Remove the element from previous array
       const pointerInfoList = this.pointerInfoListAt(info.position) as NEPPointerInfo[];
-      const pointerIndex = pointerInfoList.findIndex(item => item.name === pointerName);
+      const pointerIndex = pointerInfoList.findIndex(item => item.key === key);
       pointerInfoList.splice(pointerIndex, 1);
 
       const startPt = this.positionToPoint(info.position);
@@ -77,18 +77,21 @@ export class NEPPointerField extends NEPElement {
     endPt.x += destArrLength * this.pointerSize.width;
 
     // Start the animation
-    await this.animate(ptr.rawElement(), endPt, opt);
+    await this.animate(ptrAtom.rawElement(), endPt, opt);
 
-    // Update info
+    // Update pointer info
     info = new NEPPointerInfo(
-      pointerName,
+      key,
       position,
-      ptr,
+      ptrAtom,
     );
-    // Update pointerInfoList map
+
+    // Update the content
+    ptrAtom.content = text;
+    // Update the pointerInfoList map
     destArray.push(info);
-    // Update pointerInfo map
-    this.setPointerInfoBy(pointerName, info);
+    // Update the pointerInfo map
+    this.setPointerInfoBy(key, info);
   }
 
   protected pointerInfoBy(_name: string): NEPPointerInfo|null {
@@ -115,6 +118,7 @@ export class NEPPointerField extends NEPElement {
     const atom = new NEPAtom(this.pointerSize, new NEPText(name));
     atom.textColor = configs.decoratorTextColor;
     atom.background = configs.decoratorFillColor;
+    atom.padding = NewPadding(configs.decoratorPadding);
     return atom;
   }
 

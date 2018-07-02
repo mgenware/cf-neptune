@@ -247,11 +247,11 @@ export default class NEPSequence extends NEPAtom {
     return -1;
   }
 
-  async setPointerAsync(index: number, pointerName: string, opt?: NEPAnimationOptions) {
+  async setPointerAsync(index: number, pointerKey: string, pointerText: string, opt?: NEPAnimationOptions) {
     this.validateIndex(index);
     const position = index.toString();
 
-    await this._pointerField.setPointerAsync(pointerName, position, opt);
+    await this._pointerField.setPointerAsync(pointerKey, pointerText, position, opt);
   }
 
   // # Protected members
