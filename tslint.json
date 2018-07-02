@@ -19,7 +19,8 @@
         "no-any": false,
         "variable-name": false,
         "interface-name": false,
-        "max-line-length": false
+        "max-line-length": false,
+        "arrow-parens": false
     },
     "rulesDirectory": []
 }
