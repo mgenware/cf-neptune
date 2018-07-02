@@ -270,8 +270,8 @@ export default class NEPSequence extends NEPAtom {
       width: this._slotWidth,
       height: this._slotHeight,
     }, {
-      width: this._slotWidth * 0.4,
-      height: this._slotHeight * 0.4,
+      width: this._slotWidth * 0.25,
+      height: this._slotHeight * 0.25,
     });
     return field;
   }
