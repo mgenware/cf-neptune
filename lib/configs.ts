@@ -14,8 +14,9 @@ export class Config {
   swappingFillColor = '#fff4d8';
   swappingTextColor = 'black';
 
-  decoratorTextColor = 'white';
-  decoratorFillColor = 'navy';
+  decoratorTextColor = 'black';
+  decoratorFillColor = '#ecffdb';
+  decoratorPadding = 4;
 
   normalBorderColor = '#808080';
   normalBorderWidth = 1;
