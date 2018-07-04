@@ -87,7 +87,7 @@ export class NEPPointerField extends NEPElement {
         ptrAtom.textColor = opt.textColor;
       }
       if (opt.backgroundColor) {
-        ptrAtom.background = opt.backgroundColor;
+        ptrAtom.backgroundColor = opt.backgroundColor;
       }
     }
 
@@ -132,7 +132,7 @@ export class NEPPointerField extends NEPElement {
   protected createPointer(name: string): NEPAtom {
     const atom = new NEPAtom(this.pointerSize, new NEPText(name));
     atom.textColor = configs.decoratorTextColor;
-    atom.background = configs.decoratorFillColor;
+    atom.backgroundColor = configs.decoratorFillColor;
     atom.padding = NewPadding(configs.decoratorPadding);
     return atom;
   }

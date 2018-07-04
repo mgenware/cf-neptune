@@ -45,7 +45,7 @@ export default class NEPSequence extends NEPAtom {
     // Disable auto-scaling of Atom element
     this.noScaling = true;
     this.padding = EmptyPadding;
-    this.background = configs.sequenceFillColor;
+    this.backgroundColor = configs.sequenceFillColor;
 
     if (orientation !== 'h' && orientation !== 'v') {
       throw new Error('orientation can only be "h" or "v"');
@@ -175,9 +175,9 @@ export default class NEPSequence extends NEPAtom {
 
     const opt1 = { duration: 0.2 * duration };
     const originalTextColor1 = element1.textColor;
-    const originalBackground1 = element1.background;
+    const originalBackgroundColor1 = element1.backgroundColor;
     const originalTextColor2 = element2.textColor;
-    const originalBackground2 = element2.background;
+    const originalBackgroundColor2 = element2.backgroundColor;
 
     await Promise.all([
       element1.setColorsAsync(
@@ -202,12 +202,12 @@ export default class NEPSequence extends NEPAtom {
     await Promise.all([
       element1.setColorsAsync(
         originalTextColor1,
-        originalBackground1,
+        originalBackgroundColor1,
         opt3,
       ),
       element2.setColorsAsync(
         originalTextColor2,
-        originalBackground2,
+        originalBackgroundColor2,
         opt3,
       ),
     ]);
@@ -375,7 +375,7 @@ export default class NEPSequence extends NEPAtom {
 
     // # 1
     const opt1 = { duration: duration * 0.2 };
-    const originalBackground = element.background;
+    const originalBackgroundColor = element.backgroundColor;
     const originalTextColor = element.textColor;
 
     await Promise.all([
@@ -396,7 +396,7 @@ export default class NEPSequence extends NEPAtom {
     // # 3
     await element.setColorsAsync(
       originalTextColor,
-      originalBackground,
+      originalBackgroundColor,
       { duration: duration * 0.1 },
     );
   }

@@ -56,7 +56,7 @@ export default class NEPAtom extends NEPElement {
       this.appendElectron(content);
     }
 
-    this.background = configs.normalFillColor;
+    this.backgroundColor = configs.normalFillColor;
     SVGHelper.labelElementInfo(this.rawElement(), 'atom');
   }
 
@@ -99,10 +99,10 @@ export default class NEPAtom extends NEPElement {
   }
 
   // background
-  get background(): string {
+  get backgroundColor(): string {
     return this.rawBorder.getAttribute(Defs.fill) || '';
   }
-  set background(value: string) {
+  set backgroundColor(value: string) {
     this.checkValueNotEmpty(value);
     this.rawBorder.setAttribute(Defs.fill, value);
   }
@@ -290,7 +290,7 @@ export default class NEPAtom extends NEPElement {
       // # 1
       const duration = this.getDurationOption(opt);
 
-      const originalBackground = this.background;
+      const originalBackgroundColor = this.backgroundColor;
       const originalTextColor = this.textColor;
 
       await this.setColorsAsync(
@@ -305,16 +305,16 @@ export default class NEPAtom extends NEPElement {
       // # 3
       await this.setColorsAsync(
         originalTextColor,
-        originalBackground,
+        originalBackgroundColor,
         { duration: duration * 0.1 },
       );
     }
   }
 
-  async setColorsAsync(textColor: string|null, background: string, opt?: NEPAnimationOptions) {
+  async setColorsAsync(textColor: string|null, backgroundColor: string, opt?: NEPAnimationOptions) {
     await Promise.all([
       this.setTextColorAsync(textColor, opt),
-      this.setBackgroundAsync(background, opt),
+      this.setBackgroundAsync(backgroundColor, opt),
     ]);
   }
 
