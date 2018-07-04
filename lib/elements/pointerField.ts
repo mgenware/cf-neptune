@@ -4,6 +4,11 @@ import NEPText from './text';
 import Defs from '../defs';
 import configs from '../configs';
 
+export interface NEPPointerFieldOptions extends NEPAnimationOptions {
+  backgroundColor?: string;
+  textColor?: string;
+}
+
 export class NEPPointerInfo {
   constructor(
     public key: string,
@@ -28,7 +33,7 @@ export class NEPPointerField extends NEPElement {
     return this.raw;
   }
 
-  async setPointerAsync(key: string, text: string, position: string, opt: NEPAnimationOptions|undefined) {
+  async setPointerAsync(position: string, key: string, text: string, opt: NEPPointerFieldOptions|undefined) {
     this.checkValueNotEmpty(key, 'key');
     this.checkValueNotEmpty(position, 'position');
 
@@ -75,6 +80,16 @@ export class NEPPointerField extends NEPElement {
     }
     const destArrLength = destArray.length;
     endPt.x += destArrLength * this.pointerSize.width;
+
+    // Apply pointer options
+    if (opt) {
+      if (opt.textColor) {
+        ptrAtom.textColor = opt.textColor;
+      }
+      if (opt.backgroundColor) {
+        ptrAtom.background = opt.backgroundColor;
+      }
+    }
 
     // Start the animation
     await this.animate(ptrAtom.rawElement(), endPt, opt);

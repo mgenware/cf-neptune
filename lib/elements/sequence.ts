@@ -4,7 +4,7 @@ import configs from '../configs';
 import Defs from 'defs';
 import { coerceInputElement } from './helper';
 import NEPDecoratedAtom from './decoratedAtom';
-import { NEPPointerField } from './pointerField';
+import { NEPPointerField, NEPPointerFieldOptions } from './pointerField';
 import SequencePointerField from './internal/sequencePointerField';
 
 export default class NEPSequence extends NEPAtom {
@@ -247,11 +247,11 @@ export default class NEPSequence extends NEPAtom {
     return -1;
   }
 
-  async setPointerAsync(index: number, pointerKey: string, pointerText: string, opt?: NEPAnimationOptions) {
+  async setPointerAsync(index: number, name: string, opt?: NEPPointerFieldOptions) {
     this.validateIndex(index);
     const position = index.toString();
 
-    await this._pointerField.setPointerAsync(pointerKey, pointerText, position, opt);
+    await this._pointerField.setPointerAsync(position, name, name, opt);
   }
 
   // # Protected members
