@@ -71,6 +71,9 @@ export class NEPPointerField extends NEPElement {
       }
     }
 
+    // Bring the pointer view to top
+    SVGHelper.bringToTop(this.raw, ptrAtom.rawElement());
+
     // Calculate the end position
     const endPt = this.positionToPoint(position);
     let destArray = this.pointerInfoListAt(position);

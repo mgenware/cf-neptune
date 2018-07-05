@@ -172,6 +172,11 @@ export class SVGHelper {
   static labelElementInfo(element: SVGGraphicsElement, label: string) {
     element.setAttribute('data-nep-type', label);
   }
+
+  static bringToTop(parent: SVGGraphicsElement, child: SVGGraphicsElement) {
+    parent.removeChild(child);
+    parent.appendChild(child);
+  }
 }
 
 export class AnimationHelper {
