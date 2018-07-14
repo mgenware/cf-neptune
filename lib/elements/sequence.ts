@@ -14,13 +14,13 @@ export default class NEPSequence extends NEPAtom {
   addingChildCallback?: (sender: NEPSequence, child: NEPAtom) => void;
   removingChildCallback?: (sender: NEPSequence, child: NEPAtom) => void;
 
+  protected _pointerField: NEPPointerField|null = null;
   private _slotWidth: number = 0;
   private _slotHeight: number = 0;
 
   private _elements: NEPElement[] = [];
   private _gridGroup: SVGGElement|null = null;
   private _girdLines: SVGGraphicsElement[] = [];
-  private _pointerField: NEPPointerField;
 
   get count(): number {
     return this._elements.length;
@@ -35,12 +35,12 @@ export default class NEPSequence extends NEPAtom {
   }
 
   constructor(
-    public maxSize: NEPSize,
+    public sequenceSize: NEPSize,
     public capacity: number,
     public orientation: 'h'|'v',
     public noGrid?: boolean,
   ) {
-    super(maxSize);
+    super(sequenceSize);
 
     // Disable auto-scaling of Atom element
     this.noScaling = true;
@@ -52,23 +52,17 @@ export default class NEPSequence extends NEPAtom {
     }
 
     if (orientation === 'h') {
-      this._slotWidth = maxSize.width / capacity;
-      this._slotHeight = maxSize.height;
+      this._slotWidth = sequenceSize.width / capacity;
+      this._slotHeight = sequenceSize.height;
     } else {
-      this._slotWidth = maxSize.width;
-      this._slotHeight = maxSize.height / capacity;
+      this._slotWidth = sequenceSize.width;
+      this._slotHeight = sequenceSize.height / capacity;
     }
 
     if (!this.noGrid) {
       this.drawGrid();
     }
     SVGHelper.labelElementInfo(this.rawElement(), 'sequence');
-
-    // Pointer field
-    const ptrField = this.createPointerField();
-    ptrField.rawElement().setAttribute(Defs.fill, Defs.none);
-    this.rawElement().appendChild(ptrField.rawElement());
-    this._pointerField = ptrField;
   }
 
   async pushFrontAsync(value: any, opt?: NEPAnimationOptions) {
@@ -249,9 +243,21 @@ export default class NEPSequence extends NEPAtom {
 
   async setPointerAsync(index: number, name: string, opt?: NEPPointerFieldOptions) {
     this.validateIndex(index);
-    const position = index.toString();
+    const ptrField = this.validatePointerField();
 
-    await this._pointerField.setPointerAsync(position, name, name, opt);
+    const position = index.toString();
+    await ptrField.setPointerAsync(position, name, name, opt);
+  }
+
+  layout(): SVGRect {
+    // Create pointer field if needed
+    if (!this._pointerField) {
+      const ptrField = this.createPointerField();
+      ptrField.rawElement().setAttribute(Defs.fill, Defs.none);
+      this.rawElement().appendChild(ptrField.rawElement());
+      this._pointerField = ptrField;
+    }
+    return super.layout();
   }
 
   // # Protected members
@@ -274,6 +280,13 @@ export default class NEPSequence extends NEPAtom {
       height: this._slotHeight * 0.25,
     });
     return field;
+  }
+
+  protected validatePointerField(): NEPPointerField {
+    if (!this._pointerField) {
+      throw new Error('Pointer field is not initialized (did you forget to call layout() on this element?)');
+    }
+    return this._pointerField;
   }
 
   // # Private members

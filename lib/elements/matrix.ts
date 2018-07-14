@@ -1,6 +1,8 @@
 import NEPSequence from './sequence';
 import { NEPSize, SVGHelper, NEPPoint } from '../element';
 import Defs from '../defs';
+import MatrixPointerField from './internal/matrixPointerField';
+import { NEPPointerField, NEPPointerFieldOptions } from './pointerField';
 
 const DefaultGridColor = '#808080';
 
@@ -9,17 +11,18 @@ export default class NEPMatrix extends NEPSequence {
   private _gridHeight: number;
 
   constructor(
-    public size: NEPSize,
+    public matrixSize: NEPSize,
     public rows: number,
     public cols: number,
     public noGrid?: boolean,
    ) {
-    super(size, rows, 'v', true);
+    super(matrixSize, rows, 'v', true);
+
     this.noGrid = true;
     this.noElementScaling = true;
-    this._gridWidth = size.width / cols;
-    this._gridHeight = size.height / rows;
-    const rowSize = { width: size.width, height: size.height / rows };
+    this._gridWidth = matrixSize.width / cols;
+    this._gridHeight = matrixSize.height / rows;
+    const rowSize = { width: matrixSize.width, height: matrixSize.height / rows };
 
     if (!noGrid) {
       this.drawMatrixGrid();
@@ -39,6 +42,25 @@ export default class NEPMatrix extends NEPSequence {
       return null;
     }
     return child;
+  }
+
+  async set2DPointerAsync(row: number, col: number, name: string, opt?: NEPPointerFieldOptions) {
+    this.validateIndices(row, col);
+    const ptrField = this.validatePointerField();
+    const position = `${row}:${col}`;
+
+    await ptrField.setPointerAsync(position, name, name, opt);
+  }
+
+  protected createPointerField(): NEPPointerField {
+    const field = new MatrixPointerField({
+      width: this._gridWidth,
+      height: this._gridHeight,
+    }, {
+      width: this._gridWidth * 0.25,
+      height: this._gridHeight * 0.25,
+    });
+    return field;
   }
 
   private drawMatrixGrid() {
@@ -63,6 +85,15 @@ export default class NEPMatrix extends NEPSequence {
       SVGHelper.setLinePoz(rawLine, startPt, endPt);
 
       this.rawElement().appendChild(rawLine);
+    }
+  }
+
+  private validateIndices(row: number, col: number) {
+    if (row < 0 || row >= this.rows) {
+      throw new Error(`The argument "row" ${row} out of range`);
+    }
+    if (col < 0 || col >= this.cols) {
+      throw new Error(`The argument "col" ${col} out of range`);
     }
   }
 }
