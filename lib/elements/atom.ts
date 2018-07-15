@@ -274,13 +274,7 @@ export default class NEPAtom extends NEPElement {
   async setContentAsync(value: any, opt?: NEPAnimationOptions) {
     const child = this.firstElectron;
     if (child) {
-      let valueElement: NEPElement;
-      if (value instanceof NEPElement) {
-        valueElement = value as NEPElement;
-      } else {
-        valueElement = new NEPText(value);
-      }
-      this.content = valueElement;
+      this.content = value;
 
       // Animation details
       // #1 Highlight the background (0.2)

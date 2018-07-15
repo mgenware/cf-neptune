@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     for (let j = 0; j < n - i - 1; j++) {
       await element.setPointerAsync(j, 'j');
       await element.setPointerAsync(n - i - 2, 'j\'', { backgroundColor: 'orange' });
-      if (element.childContent(j) > element.childContent(j + 1)) {
+      if (element.elementContent(j) > element.elementContent(j + 1)) {
         await element.swapAsync(j, j + 1);
       }
     }

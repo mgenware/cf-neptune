@@ -11,8 +11,8 @@ export default class NEPSequence extends NEPAtom {
   // Whether to disable scaling in child elements, useful when this sequence is used as a 2d-sequence.
   noElementScaling: boolean = false;
 
-  addingChildCallback?: (sender: NEPSequence, child: NEPAtom) => void;
-  removingChildCallback?: (sender: NEPSequence, child: NEPAtom) => void;
+  addingElementCallback?: (sender: NEPSequence, element: NEPAtom) => void;
+  removingElementCallback?: (sender: NEPSequence, element: NEPAtom) => void;
 
   protected _pointerField: NEPPointerField|null = null;
   private _slotWidth: number = 0;
@@ -26,12 +26,12 @@ export default class NEPSequence extends NEPAtom {
     return this._elements.length;
   }
 
-  get firstChild(): NEPAtom|null {
-    return this.child(0);
+  get firstElement(): NEPAtom|null {
+    return this.element(0);
   }
 
-  get lastChild(): NEPAtom|null {
-    return this.child(this.count - 1);
+  get lastElement(): NEPAtom|null {
+    return this.element(this.count - 1);
   }
 
   constructor(
@@ -163,8 +163,8 @@ export default class NEPSequence extends NEPAtom {
       return;
     }
 
-    const element1 = this.child(index1) as NEPAtom;
-    const element2 = this.child(index2) as NEPAtom;
+    const element1 = this.element(index1) as NEPAtom;
+    const element2 = this.element(index2) as NEPAtom;
     const duration = this.getDurationOption(opt);
 
     const opt1 = { duration: 0.2 * duration };
@@ -209,32 +209,32 @@ export default class NEPSequence extends NEPAtom {
     this.executeSwap(index1, index2);
   }
 
-  child(index: number): NEPAtom|null {
+  element(index: number): NEPAtom|null {
     this.validateIndex(index);
     const atom = this._elements[index] as NEPAtom;
     return atom;
   }
 
-  childContent(index: number): any {
-    const child = this.child(index);
-    if (child) {
-      return child.content;
+  elementContent(index: number): any {
+    const element = this.element(index);
+    if (element) {
+      return element.content;
     }
     return undefined;
   }
 
-  internalChild(index: number): NEPElement|null {
-    const wrappedChild = this.child(index);
-    if (wrappedChild === null) {
+  internalElement(index: number): NEPElement|null {
+    const wrappedElement = this.element(index);
+    if (wrappedElement === null) {
       return null;
     }
-    return wrappedChild.firstElectron;
+    return wrappedElement.firstElectron;
   }
 
   findByContent(content: any): number {
     for (let i = 0; i < this.count; i++) {
-      const child = this.child(i) as NEPAtom;
-      if (child.content === content) {
+      const element = this.element(i) as NEPAtom;
+      if (element.content === content) {
         return i;
       }
     }
@@ -344,7 +344,7 @@ export default class NEPSequence extends NEPAtom {
       return;
     }
     const endPoz = this.startPointFromIndex(endIndex);
-    const element = this.child(startIndex) as NEPAtom;
+    const element = this.element(startIndex) as NEPAtom;
     this.shiftRawElement(element.rawElement(), endPoz);
   }
 
@@ -359,7 +359,7 @@ export default class NEPSequence extends NEPAtom {
     }
     const endPoz = this.startPointFromIndex(endIndex);
 
-    const element = this.child(startIndex) as NEPAtom;
+    const element = this.element(startIndex) as NEPAtom;
     await this.shiftRawElementAsync(element.rawElement(), endPoz, opt);
   }
 
@@ -371,14 +371,14 @@ export default class NEPSequence extends NEPAtom {
   }
 
   private showElement(index: number) {
-    const element = this.child(index) as NEPAtom;
+    const element = this.element(index) as NEPAtom;
     const rawElement = element.rawElement();
 
     rawElement.setAttribute(Defs.opacity, '1');
   }
 
   private async showElementAsync(index: number, opt?: NEPAnimationOptions) {
-    const element = this.child(index) as NEPAtom;
+    const element = this.element(index) as NEPAtom;
     const rawElement = element.rawElement();
 
     const duration = this.getDurationOption(opt);
@@ -415,14 +415,14 @@ export default class NEPSequence extends NEPAtom {
   }
 
   private async hideElement(index: number) {
-    const element = this.child(index) as NEPAtom;
+    const element = this.element(index) as NEPAtom;
     const rawElement = element.rawElement();
 
     rawElement.setAttribute(Defs.opacity, '0');
   }
 
   private async hideElementAsync(index: number, opt?: NEPAnimationOptions) {
-    const element = this.child(index) as NEPAtom;
+    const element = this.element(index) as NEPAtom;
     const rawElement = element.rawElement();
 
     const duration = this.getDurationOption(opt);
@@ -449,25 +449,25 @@ export default class NEPSequence extends NEPAtom {
   }
 
   // # Action helper
-  private onAddingChild(child: NEPAtom) {
-    if (this.addingChildCallback) {
-      this.addingChildCallback(this, child);
+  private onAddingElement(element: NEPAtom) {
+    if (this.addingElementCallback) {
+      this.addingElementCallback(this, element);
     }
   }
 
-  private onRemovingChild(child: NEPAtom) {
-    if (this.removingChildCallback) {
-      this.removingChildCallback(this, child);
+  private onRemovingElement(element: NEPAtom) {
+    if (this.removingElementCallback) {
+      this.removingElementCallback(this, element);
     }
   }
 
-  private executeInsert(index: number, child: NEPElement) {
+  private executeInsert(index: number, element: NEPElement) {
     const pt = this.startPointFromIndex(index);
-    const wrappedElement = this.wrapElement(child);
+    const wrappedElement = this.wrapElement(element);
     const rawWrappedElement = wrappedElement.rawElement();
     SVGHelper.setPosition(rawWrappedElement, pt.x, pt.y);
 
-    this.onAddingChild(wrappedElement);
+    this.onAddingElement(wrappedElement);
     this._elements.splice(index, 0, wrappedElement);
     this.appendElectron(wrappedElement);
   }
@@ -488,8 +488,8 @@ export default class NEPSequence extends NEPAtom {
   }
 
   private executeRemove(index: number) {
-    const wrappedAtom = this.child(index) as NEPAtom;
-    this.onRemovingChild(wrappedAtom);
+    const wrappedAtom = this.element(index) as NEPAtom;
+    this.onRemovingElement(wrappedAtom);
     this._elements.splice(index, 1);
     this.removeElectron(wrappedAtom);
   }

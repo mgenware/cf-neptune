@@ -68,7 +68,7 @@ async function updateClick() {
 
   if (sequenceElement.count) {
     const randString = '⏰' + Date.now();
-    await sequenceElement.lastChild.setContentAsync(randString);
+    await sequenceElement.lastElement.setContentAsync(randString);
   }
 }
 
