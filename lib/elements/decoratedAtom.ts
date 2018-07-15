@@ -20,7 +20,7 @@ export default class NEPDecoratedAtom extends NEPAtom {
     // Set decorator style
     decorator.borderWidth = 0;
     decorator.backgroundColor = Defs.none;
-    decorator.addingChildCallback = (_, child) => {
+    decorator.addingElementCallback = (_, child) => {
       child.textColor = configs.decoratorTextColor;
       child.backgroundColor = configs.decoratorFillColor;
     };

@@ -48,7 +48,7 @@ export default class NEPMatrix extends NEPSequence {
    * @memberof NEPMatrix
    */
   row(index: number): NEPSequence|null {
-    const child = this.internalChild(index) as NEPSequence;
+    const child = this.internalElement(index) as NEPSequence;
     if (!child) {
       return null;
     }
@@ -68,7 +68,23 @@ export default class NEPMatrix extends NEPSequence {
     if (!rowSequence) {
       return null;
     }
-    return rowSequence.child(col);
+    return rowSequence.element(col);
+  }
+
+  /**
+   * Return the cell content by the specified row and col, or null if index out of range.
+   *
+   * @param {number} row
+   * @param {number} col
+   * @returns {*}
+   * @memberof NEPMatrix
+   */
+  cellContent(row: number, col: number): any {
+    const cell = this.cell(row, col);
+    if (!cell) {
+      return null;
+    }
+    return cell.content;
   }
 
   /**
