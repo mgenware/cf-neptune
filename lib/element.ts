@@ -112,6 +112,12 @@ export class NEPElement {
       throw new Error(`The argument "${name}" is not a NEPElement`);
     }
   }
+
+  protected checkPositiveNumber(value: number, name: string) {
+    if (value < 0) {
+      throw new Error(`The argument "${name}" could not be negative`);
+    }
+  }
 }
 
 export class SVGHelper {

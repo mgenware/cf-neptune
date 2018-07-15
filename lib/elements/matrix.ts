@@ -3,6 +3,7 @@ import { NEPSize, SVGHelper, NEPPoint } from '../element';
 import Defs from '../defs';
 import MatrixPointerField from './internal/matrixPointerField';
 import { NEPPointerField, NEPPointerFieldOptions } from './pointerField';
+import NEPAtom from './atom';
 
 const DefaultGridColor = '#808080';
 
@@ -17,6 +18,9 @@ export default class NEPMatrix extends NEPSequence {
     public noGrid?: boolean,
    ) {
     super(matrixSize, rows, 'v', true);
+
+    this.checkPositiveNumber(rows, 'rows');
+    this.checkPositiveNumber(cols, 'cols');
 
     this.noGrid = true;
     this.noElementScaling = true;
@@ -36,12 +40,51 @@ export default class NEPMatrix extends NEPSequence {
     }
   }
 
+  /**
+   * Returns the row sequence by the specified index, or null if index out of range.
+   *
+   * @param {number} index
+   * @returns {(NEPSequence|null)}
+   * @memberof NEPMatrix
+   */
   row(index: number): NEPSequence|null {
     const child = this.internalChild(index) as NEPSequence;
     if (!child) {
       return null;
     }
     return child;
+  }
+
+  /**
+   * Return the cell atom by the specified row and col, or null if index out of range.
+   *
+   * @param {number} row
+   * @param {number} col
+   * @returns {(NEPAtom|null)}
+   * @memberof NEPMatrix
+   */
+  cell(row: number, col: number): NEPAtom|null {
+    const rowSequence = this.row(row);
+    if (!rowSequence) {
+      return null;
+    }
+    return rowSequence.child(col);
+  }
+
+  /**
+   * Populates the matrix with the given valueFn.
+   *
+   * @param {(row: number, col: number) => any} valueFn
+   * @memberof NEPMatrix
+   */
+  fill(valueFn: (row: number, col: number) => any) {
+    this.checkValueNotEmpty(valueFn, 'valueFn');
+
+    for (let i = 0; i < this.rows; i++) {
+      for (let j = 0; j < this.cols; j++) {
+        (this.row(i) as NEPSequence).pushBack(valueFn(i, j));
+      }
+    }
   }
 
   async set2DPointerAsync(row: number, col: number, name: string, opt?: NEPPointerFieldOptions) {
