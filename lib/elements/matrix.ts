@@ -56,7 +56,7 @@ export default class NEPMatrix extends NEPSequence {
   }
 
   /**
-   * Return the cell atom by the specified row and col, or null if index out of range.
+   * Returns the cell atom by the specified row and col, or null if index out of range.
    *
    * @param {number} row
    * @param {number} col
@@ -72,7 +72,7 @@ export default class NEPMatrix extends NEPSequence {
   }
 
   /**
-   * Return the cell content by the specified row and col, or null if index out of range.
+   * Returns the cell content by the specified row and col, or null if index out of range.
    *
    * @param {number} row
    * @param {number} col
@@ -103,6 +103,15 @@ export default class NEPMatrix extends NEPSequence {
     }
   }
 
+  /**
+   * Sets a pointer at the specified row and col with animation.
+   *
+   * @param {number} row
+   * @param {number} col
+   * @param {string} name
+   * @param {NEPPointerFieldOptions} [opt]
+   * @memberof NEPMatrix
+   */
   async set2DPointerAsync(row: number, col: number, name: string, opt?: NEPPointerFieldOptions) {
     this.validateIndices(row, col);
     const ptrField = this.validatePointerField();
