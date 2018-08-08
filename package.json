@@ -17,12 +17,9 @@
   },
   "license": "MIT",
   "scripts": {
-    "test": "yarn run clean && yarn run compile && yarn run lint && yarn run t",
-    "t": "jest",
-    "build": "yarn lint && cross-env NODE_ENV=production rollup -c",
+    "build": "yarn run lint && yarn run clean && cross-env NODE_ENV=production rollup -c",
     "compile": "tsc",
     "dev": "yarn run clean && cross-env NODE_ENV=development rollup -c -w",
-    "prepublishOnly": "yarn run test",
     "lint": "tslint --project tsconfig.json --config tslint.json",
     "clean": "rimraf dist"
   },
