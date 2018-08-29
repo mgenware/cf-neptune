@@ -19,7 +19,14 @@ export interface NEPPadding {
   left: number;
 }
 
-export const EmptyRect: SVGRect = {
+export interface NEPRect {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+export const EmptyRect: NEPRect = {
   width: 0,
   height: 0,
   x: 0,
@@ -55,7 +62,7 @@ export function NewPadding(top: number, right?: number, bottom?: number, left?: 
   };
 }
 
-export function NewRectFromSize(x: number, y: number, size: NEPSize): SVGRect {
+export function NewRectFromSize(x: number, y: number, size: NEPSize): NEPRect {
   return {
     x,
     y,
@@ -71,7 +78,7 @@ export class NEPElement {
     throw new Error('not implemented yet');
   }
 
-  layout(): SVGRect {
+  layout(): NEPRect {
     return this.rawElement().getBBox();
   }
 
@@ -94,7 +101,7 @@ export class NEPElement {
     });
   }
 
-  protected getDurationOption(opt: AnimationOptions|undefined): number {
+  protected getDurationOption(opt: NEPAnimationOptions|undefined): number {
     if (opt && opt.duration) {
       return opt.duration;
     }
@@ -130,7 +137,7 @@ export class SVGHelper {
     element.setAttribute(Defs.height, `${size.height}`);
   }
 
-  static setViewBox(svg: SVGSVGElement, rect: SVGRect) {
+  static setViewBox(svg: SVGSVGElement, rect: NEPRect) {
     svg.setAttribute('viewBox', `${rect.x} ${rect.y} ${rect.width} ${rect.height}`);
   }
 
@@ -139,7 +146,7 @@ export class SVGHelper {
     element.setAttribute(Defs.y, `${y}`);
   }
 
-  static setRect(element: SVGGraphicsElement, rect: SVGRect) {
+  static setRect(element: SVGGraphicsElement, rect: NEPRect) {
     this.setPosition(element, rect.x, rect.y);
     this.setSize(element, rect);
   }
@@ -156,11 +163,11 @@ export class SVGHelper {
     element.setAttribute(Defs.strokeWidth, `${width}`);
   }
 
-  static rectInset(rect: SVGRect, x: number, y: number): DOMRect {
+  static rectInset(rect: NEPRect, x: number, y: number): NEPRect {
     return this.rectInsetEx(rect, { left: x, right: x, top: y, bottom: y});
   }
 
-  static rectInsetEx(rect: SVGRect, padding: NEPPadding): DOMRect {
+  static rectInsetEx(rect: NEPRect, padding: NEPPadding): NEPRect {
     return new DOMRect(rect.x + padding.left, rect.y + padding.top, rect.width - padding.left - padding.right, rect.height - padding.top - padding.bottom);
   }
 

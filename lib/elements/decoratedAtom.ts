@@ -1,7 +1,7 @@
 import NEPAtom from './atom';
 import NEPSequence from './sequence';
 import configs from '../configs';
-import { NEPElement, NEPSize, SVGHelper } from 'element';
+import { NEPElement, NEPSize, SVGHelper, NEPRect } from 'element';
 import Defs from '../defs';
 
 export default class NEPDecoratedAtom extends NEPAtom {
@@ -29,7 +29,7 @@ export default class NEPDecoratedAtom extends NEPAtom {
     SVGHelper.labelElementInfo(this.rawElement(), 'decorated-atom');
   }
 
-  layout(): SVGRect {
+  layout(): NEPRect {
     SVGHelper.setPosition(this.decorator.rawElement(), 1, 1);
     const result = super.layout();
 

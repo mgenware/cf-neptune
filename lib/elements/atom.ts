@@ -1,4 +1,4 @@
-import { NEPElement, SVGHelper, NEPSize, NEPPadding, NewPadding, NewRectFromSize, NEPAnimationOptions, AnimationHelper } from '../element';
+import { NEPElement, SVGHelper, NEPSize, NEPPadding, NewPadding, NewRectFromSize, NEPAnimationOptions, AnimationHelper, NEPRect } from '../element';
 import NEPText from './text';
 import Defs from 'defs';
 import configs from '../configs';
@@ -179,7 +179,7 @@ export default class NEPAtom extends NEPElement {
     return this.rawRoot;
   }
 
-  layout(): SVGRect {
+  layout(): NEPRect {
     this.loaded = true;
 
     const { rawContainer, size, padding, rawBorder } = this;

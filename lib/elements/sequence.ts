@@ -1,4 +1,4 @@
-import { NEPElement, SVGHelper, NEPSize, NEPPoint, EmptyPadding, AnimationHelper, NEPAnimationOptions } from '../element';
+import { NEPElement, SVGHelper, NEPSize, NEPPoint, EmptyPadding, AnimationHelper, NEPAnimationOptions, NEPRect } from '../element';
 import NEPAtom from './atom';
 import configs from '../configs';
 import Defs from 'defs';
@@ -249,7 +249,7 @@ export default class NEPSequence extends NEPAtom {
     await ptrField.setPointerAsync(position, name, name, opt);
   }
 
-  layout(): SVGRect {
+  layout(): NEPRect {
     // Create pointer field if needed
     if (!this._pointerField) {
       const ptrField = this.createPointerField();
