@@ -2,12 +2,12 @@ let textElement = undefined;
 
 function longStringClick() {
   window.checkEnv();
-  textElement.textContent = 'This is a looooooooooooooooong string 🦁🦁🦁';
+  textElement.content = 'This is a looooooooooooooooong string 🦁🦁🦁';
 }
 
 function shortStringClick() {
   window.checkEnv();
-  textElement.textContent = 'A';
+  textElement.content = 'A';
 }
 
 document.addEventListener('DOMContentLoaded', () => {
