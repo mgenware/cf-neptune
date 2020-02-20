@@ -82,7 +82,7 @@ async function swapClick() {
 
 document.addEventListener('DOMContentLoaded', () => {
   window.checkEnv();
-  
+
   const nep = window.nep;
   const root = document.getElementById('playground');
   const element = new nep.Sequence(SIZE, CAP, 'h');

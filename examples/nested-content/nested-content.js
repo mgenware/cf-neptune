@@ -4,7 +4,10 @@ let currentElement = undefined;
 function newAtomElement() {
   const nep = window.nep;
   counter++;
-  const newContent = new nep.Atom({ width: 300, height: 100 }, 'level: ' + counter);
+  const newContent = new nep.Atom(
+    { width: 300, height: 100 },
+    'level: ' + counter,
+  );
   return newContent;
 }
 
@@ -18,7 +21,7 @@ function pushClick() {
 
 document.addEventListener('DOMContentLoaded', () => {
   window.checkEnv();
-  
+
   const nep = window.nep;
   const root = document.getElementById('playground');
   const element = newAtomElement();

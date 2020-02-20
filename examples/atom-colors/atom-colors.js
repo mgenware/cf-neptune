@@ -17,7 +17,7 @@ async function update() {
 
 document.addEventListener('DOMContentLoaded', () => {
   window.checkEnv();
-  
+
   const nep = window.nep;
   const size = { width: 300, height: 100 };
   atomElement = new nep.Atom(size, 'Neptune');

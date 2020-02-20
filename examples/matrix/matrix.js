@@ -5,7 +5,7 @@ const COLS = 5;
 
 document.addEventListener('DOMContentLoaded', async () => {
   window.checkEnv();
-  
+
   const nep = window.nep;
   const root = document.getElementById('playground');
   const matrix = new nep.Matrix(SIZE, ROWS, COLS);

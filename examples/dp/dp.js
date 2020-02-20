@@ -13,7 +13,7 @@ function getCellValue(value) {
 
 document.addEventListener('DOMContentLoaded', async () => {
   window.checkEnv();
-  
+
   const nep = window.nep;
   const root = document.getElementById('playground');
   const matrix = new nep.Matrix(SIZE, ROWS + 1, COLS + 1);
@@ -54,7 +54,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       const cell = matrix.cell(i, j);
       if (cell.content !== -1) {
-        const value = getCellValue(matrix.cellContent(i, j + 1)) + getCellValue(matrix.cellContent(i + 1, j));
+        const value =
+          getCellValue(matrix.cellContent(i, j + 1)) +
+          getCellValue(matrix.cellContent(i + 1, j));
         cell.setContentAsync(value);
       }
     }
