@@ -2,18 +2,15 @@ import { NEPPointerInfo, NEPPointerField } from '../pointerField';
 import { NEPSize, NEPPoint } from 'element';
 
 export default class SequencePointerField extends NEPPointerField {
-  private _keyToInfoMap: {[name: string]: NEPPointerInfo} = {};
-  private _positionToListMap: {[position: string]: NEPPointerInfo[]} = {};
+  private _keyToInfoMap: { [name: string]: NEPPointerInfo } = {};
+  private _positionToListMap: { [position: string]: NEPPointerInfo[] } = {};
 
-  constructor(
-    public slotSize: NEPSize,
-    pointerSize: NEPSize,
-  ) {
+  constructor(public slotSize: NEPSize, pointerSize: NEPSize) {
     super(pointerSize);
   }
 
   // # protected members
-  protected pointerInfoBy(name: string): NEPPointerInfo|null {
+  protected pointerInfoBy(name: string): NEPPointerInfo | null {
     return this._keyToInfoMap[name];
   }
 
@@ -21,7 +18,7 @@ export default class SequencePointerField extends NEPPointerField {
     this._keyToInfoMap[name] = info;
   }
 
-  protected pointerInfoListAt(position: string): NEPPointerInfo[]|null {
+  protected pointerInfoListAt(position: string): NEPPointerInfo[] | null {
     return this._positionToListMap[position];
   }
 

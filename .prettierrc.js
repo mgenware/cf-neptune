@@ -1,13 +1,13 @@
 module.exports = {
   singleQuote: true,
-  trailingComma: "all",
-  endOfLine: "lf",
+  trailingComma: 'all',
+  endOfLine: 'lf',
   overrides: [
     {
-      files: "*.html",
+      files: '*.html',
       options: {
-        parser: "html"
-      }
-    }
-  ]
+        parser: 'html',
+      },
+    },
+  ],
 };
