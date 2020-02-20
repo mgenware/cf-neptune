@@ -26,6 +26,11 @@
   "engines": {
     "node": ">=6.0.0"
   },
+  "files": [
+    "/dist/**/*.js",
+    "/dist/**/*.ts",
+    "/dist/**/*.map"
+  ],
   "devDependencies": {
     "@types/gsap": "^1.20.2",
     "@types/jest": "^25.1.3",
