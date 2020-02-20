@@ -1,4 +1,13 @@
-import { NEPElement, SVGHelper, NEPSize, NEPPoint, EmptyPadding, AnimationHelper, NEPAnimationOptions, NEPRect } from '../element';
+import {
+  NEPElement,
+  SVGHelper,
+  NEPSize,
+  NEPPoint,
+  EmptyPadding,
+  AnimationHelper,
+  NEPAnimationOptions,
+  NEPRect,
+} from '../element';
 import NEPAtom from './atom';
 import configs from '../configs';
 import Defs from 'defs';
@@ -9,35 +18,35 @@ import SequencePointerField from './internal/sequencePointerField';
 
 export default class NEPSequence extends NEPAtom {
   // Whether to disable scaling in child elements, useful when this sequence is used as a 2d-sequence.
-  noElementScaling: boolean = false;
+  noElementScaling = false;
 
   addingElementCallback?: (sender: NEPSequence, element: NEPAtom) => void;
   removingElementCallback?: (sender: NEPSequence, element: NEPAtom) => void;
 
-  protected _pointerField: NEPPointerField|null = null;
-  private _slotWidth: number = 0;
-  private _slotHeight: number = 0;
+  protected _pointerField: NEPPointerField | null = null;
+  private _slotWidth = 0;
+  private _slotHeight = 0;
 
   private _elements: NEPElement[] = [];
-  private _gridGroup: SVGGElement|null = null;
+  private _gridGroup: SVGGElement | null = null;
   private _girdLines: SVGGraphicsElement[] = [];
 
   get count(): number {
     return this._elements.length;
   }
 
-  get firstElement(): NEPAtom|null {
+  get firstElement(): NEPAtom | null {
     return this.element(0);
   }
 
-  get lastElement(): NEPAtom|null {
+  get lastElement(): NEPAtom | null {
     return this.element(this.count - 1);
   }
 
   constructor(
     public sequenceSize: NEPSize,
     public capacity: number,
-    public orientation: 'h'|'v',
+    public orientation: 'h' | 'v',
     public noGrid?: boolean,
   ) {
     super(sequenceSize);
@@ -65,23 +74,23 @@ export default class NEPSequence extends NEPAtom {
     SVGHelper.labelElementInfo(this.rawElement(), 'sequence');
   }
 
-  async pushFrontAsync(value: any, opt?: NEPAnimationOptions) {
+  async pushFrontAsync(value: unknown, opt?: NEPAnimationOptions) {
     await this.insertAsync(0, value, opt);
   }
 
-  pushFront(value: any) {
+  pushFront(value: unknown) {
     this.insert(0, value);
   }
 
-  async pushBackAsync(value: any, opt?: NEPAnimationOptions) {
+  async pushBackAsync(value: unknown, opt?: NEPAnimationOptions) {
     await this.insertAsync(this.count, value, opt);
   }
 
-  pushBack(value: any) {
+  pushBack(value: unknown) {
     this.insert(this.count, value);
   }
 
-  async insertAsync(index: number, value: any, opt?: NEPAnimationOptions) {
+  async insertAsync(index: number, value: unknown, opt?: NEPAnimationOptions) {
     const element = coerceInputElement(value);
     const duration = this.getDurationOption(opt);
 
@@ -92,7 +101,9 @@ export default class NEPSequence extends NEPAtom {
     // #1 Shift elements behind the insert position
     const tasks: Array<Promise<void>> = [];
     for (let i = index; i < this.count; i++) {
-      tasks.push(this.shiftElementAsync(i, i + 1, { duration: 0.2 * duration }));
+      tasks.push(
+        this.shiftElementAsync(i, i + 1, { duration: 0.2 * duration }),
+      );
     }
     await Promise.all(tasks);
 
@@ -100,7 +111,7 @@ export default class NEPSequence extends NEPAtom {
     await this.showElementAsync(index, { duration: duration * 0.8 });
   }
 
-  insert(index: number, value: any) {
+  insert(index: number, value: unknown) {
     const element = coerceInputElement(value);
 
     for (let i = index; i < this.count; i++) {
@@ -135,12 +146,14 @@ export default class NEPSequence extends NEPAtom {
     // (2) 0.2: shifting elements
 
     // #1 Hide the inserted element
-    await this.hideElementAsync(index, { duration: duration * 0.8});
+    await this.hideElementAsync(index, { duration: duration * 0.8 });
 
     // #2 Shift the remaining elements
     const tasks: Array<Promise<void>> = [];
     for (let i = index; i < this.count; i++) {
-      tasks.push(this.shiftElementAsync(i, i - 1, { duration: 0.2 * duration }));
+      tasks.push(
+        this.shiftElementAsync(i, i - 1, { duration: 0.2 * duration }),
+      );
     }
     await Promise.all(tasks);
 
@@ -209,13 +222,13 @@ export default class NEPSequence extends NEPAtom {
     this.executeSwap(index1, index2);
   }
 
-  element(index: number): NEPAtom|null {
+  element(index: number): NEPAtom | null {
     this.validateIndex(index);
     const atom = this._elements[index] as NEPAtom;
     return atom;
   }
 
-  elementContent(index: number): any {
+  elementContent(index: number): unknown {
     const element = this.element(index);
     if (element) {
       return element.content;
@@ -223,7 +236,7 @@ export default class NEPSequence extends NEPAtom {
     return undefined;
   }
 
-  internalElement(index: number): NEPElement|null {
+  internalElement(index: number): NEPElement | null {
     const wrappedElement = this.element(index);
     if (wrappedElement === null) {
       return null;
@@ -231,7 +244,7 @@ export default class NEPSequence extends NEPAtom {
     return wrappedElement.firstElectron;
   }
 
-  findByContent(content: any): number {
+  findByContent(content: unknown): number {
     for (let i = 0; i < this.count; i++) {
       const element = this.element(i) as NEPAtom;
       if (element.content === content) {
@@ -241,7 +254,11 @@ export default class NEPSequence extends NEPAtom {
     return -1;
   }
 
-  async setPointerAsync(index: number, name: string, opt?: NEPPointerFieldOptions) {
+  async setPointerAsync(
+    index: number,
+    name: string,
+    opt?: NEPPointerFieldOptions,
+  ) {
     this.validateIndex(index);
     const ptrField = this.validatePointerField();
 
@@ -263,7 +280,7 @@ export default class NEPSequence extends NEPAtom {
   // # Protected members
   protected createDecorator(): NEPSequence {
     const decorator = new NEPSequence(
-      { width: this._slotWidth, height: this._slotWidth / 4},
+      { width: this._slotWidth, height: this._slotWidth / 4 },
       4,
       'h',
       true,
@@ -272,19 +289,24 @@ export default class NEPSequence extends NEPAtom {
   }
 
   protected createPointerField(): NEPPointerField {
-    const field = new SequencePointerField({
-      width: this._slotWidth,
-      height: this._slotHeight,
-    }, {
-      width: this._slotWidth * 0.25,
-      height: this._slotHeight * 0.25,
-    });
+    const field = new SequencePointerField(
+      {
+        width: this._slotWidth,
+        height: this._slotHeight,
+      },
+      {
+        width: this._slotWidth * 0.25,
+        height: this._slotHeight * 0.25,
+      },
+    );
     return field;
   }
 
   protected validatePointerField(): NEPPointerField {
     if (!this._pointerField) {
-      throw new Error('Pointer field is not initialized (did you forget to call layout() on this element?)');
+      throw new Error(
+        'Pointer field is not initialized (did you forget to call layout() on this element?)',
+      );
     }
     return this._pointerField;
   }
@@ -353,7 +375,11 @@ export default class NEPSequence extends NEPAtom {
     element.setAttribute(prop, poz[prop].toString());
   }
 
-  private async shiftElementAsync(startIndex: number, endIndex: number, opt?: NEPAnimationOptions) {
+  private async shiftElementAsync(
+    startIndex: number,
+    endIndex: number,
+    opt?: NEPAnimationOptions,
+  ) {
     if (startIndex === endIndex) {
       return;
     }
@@ -363,9 +389,13 @@ export default class NEPSequence extends NEPAtom {
     await this.shiftRawElementAsync(element.rawElement(), endPoz, opt);
   }
 
-  private async shiftRawElementAsync(element: SVGGraphicsElement, poz: NEPPoint, opt: NEPAnimationOptions|undefined) {
+  private async shiftRawElementAsync(
+    element: SVGGraphicsElement,
+    poz: NEPPoint,
+    opt: NEPAnimationOptions | undefined,
+  ) {
     const prop = this.orientation === 'h' ? 'x' : 'y';
-    const props: {[_: string]: string} = {};
+    const props: { [_: string]: string } = {};
     props[prop] = poz[prop].toString();
     await this.animate(element, props, opt);
   }
@@ -392,10 +422,7 @@ export default class NEPSequence extends NEPAtom {
     const originalTextColor = element.textColor;
 
     await Promise.all([
-      this.animate(
-        rawElement,
-        { opacity: 1.0 }, opt1,
-      ),
+      this.animate(rawElement, { opacity: 1.0 }, opt1),
       element.setColorsAsync(
         configs.addedTextColor,
         configs.addedFillColor,
@@ -407,11 +434,9 @@ export default class NEPSequence extends NEPAtom {
     await AnimationHelper.delay(0.7 * duration);
 
     // # 3
-    await element.setColorsAsync(
-      originalTextColor,
-      originalBackgroundColor,
-      { duration: duration * 0.1 },
-    );
+    await element.setColorsAsync(originalTextColor, originalBackgroundColor, {
+      duration: duration * 0.1,
+    });
   }
 
   private async hideElement(index: number) {

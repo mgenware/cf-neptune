@@ -1,4 +1,11 @@
-import { NEPElement, NEPPoint, NEPAnimationOptions, NEPSize, SVGHelper, NewPadding } from '../element';
+import {
+  NEPElement,
+  NEPPoint,
+  NEPAnimationOptions,
+  NEPSize,
+  SVGHelper,
+  NewPadding,
+} from '../element';
 import NEPAtom from './atom';
 import NEPText from './text';
 import Defs from '../defs';
@@ -14,14 +21,12 @@ export class NEPPointerInfo {
     public key: string,
     public position: string,
     public instance: NEPAtom,
-  ) { }
+  ) {}
 }
 
 export class NEPPointerField extends NEPElement {
   private raw: SVGGElement;
-  constructor(
-    public pointerSize: NEPSize,
-  ) {
+  constructor(public pointerSize: NEPSize) {
     super();
 
     const raw = SVGHelper.createElement(Defs.g) as SVGGElement;
@@ -33,7 +38,12 @@ export class NEPPointerField extends NEPElement {
     return this.raw;
   }
 
-  async setPointerAsync(position: string, key: string, text: string, opt: NEPPointerFieldOptions|undefined) {
+  async setPointerAsync(
+    position: string,
+    key: string,
+    text: string,
+    opt: NEPPointerFieldOptions | undefined,
+  ) {
     this.checkValueNotEmpty(key, 'key');
     this.checkValueNotEmpty(position, 'position');
 
@@ -54,7 +64,9 @@ export class NEPPointerField extends NEPElement {
       ptrAtom = info.instance;
 
       // Remove the element from previous array
-      const pointerInfoList = this.pointerInfoListAt(info.position) as NEPPointerInfo[];
+      const pointerInfoList = this.pointerInfoListAt(
+        info.position,
+      ) as NEPPointerInfo[];
       const pointerIndex = pointerInfoList.findIndex(item => item.key === key);
       pointerInfoList.splice(pointerIndex, 1);
 
@@ -67,7 +79,11 @@ export class NEPPointerField extends NEPElement {
         };
 
         const target = pointerInfoList[i];
-        SVGHelper.setPosition(target.instance.rawElement(), childEndPt.x, childEndPt.y);
+        SVGHelper.setPosition(
+          target.instance.rawElement(),
+          childEndPt.x,
+          childEndPt.y,
+        );
       }
     }
 
@@ -95,14 +111,11 @@ export class NEPPointerField extends NEPElement {
     }
 
     // Start the animation
-    await this.animate(ptrAtom.rawElement(), endPt, opt);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await this.animate(ptrAtom.rawElement(), endPt as any, opt);
 
     // Update pointer info
-    info = new NEPPointerInfo(
-      key,
-      position,
-      ptrAtom,
-    );
+    info = new NEPPointerInfo(key, position, ptrAtom);
 
     // Update the content
     ptrAtom.content = text;
@@ -112,7 +125,7 @@ export class NEPPointerField extends NEPElement {
     this.setPointerInfoBy(key, info);
   }
 
-  protected pointerInfoBy(_name: string): NEPPointerInfo|null {
+  protected pointerInfoBy(_name: string): NEPPointerInfo | null {
     throw new Error('Not implemented yet');
   }
 
@@ -120,7 +133,7 @@ export class NEPPointerField extends NEPElement {
     throw new Error('Not implemented yet');
   }
 
-  protected pointerInfoListAt(_position: string): NEPPointerInfo[]|null {
+  protected pointerInfoListAt(_position: string): NEPPointerInfo[] | null {
     throw new Error('Not implemented yet');
   }
 

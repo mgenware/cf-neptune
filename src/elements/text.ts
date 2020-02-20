@@ -4,9 +4,9 @@ import configs from '../configs';
 
 export default class NEPText extends NEPElement {
   private raw: SVGTextElement;
-  private _value: any;
+  private _value: unknown;
 
-  constructor(value: any) {
+  constructor(value: unknown) {
     super();
 
     const raw = SVGHelper.createElement(Defs.text) as SVGTextElement;
@@ -22,10 +22,10 @@ export default class NEPText extends NEPElement {
     return this.raw;
   }
 
-  get value(): any {
+  get value(): unknown {
     return this._value;
   }
-  set value(value: any) {
+  set value(value: unknown) {
     this._value = value;
     this.raw.textContent = `${value}`;
     this.onSizeChanged();
@@ -43,8 +43,12 @@ export default class NEPText extends NEPElement {
     this.checkValueNotEmpty(value, 'value');
 
     const raw = this.raw;
-    await this.animate(raw, {
-      fill: value,
-    }, opt);
+    await this.animate(
+      raw,
+      {
+        fill: value,
+      },
+      opt,
+    );
   }
 }

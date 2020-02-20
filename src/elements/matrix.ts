@@ -16,7 +16,7 @@ export default class NEPMatrix extends NEPSequence {
     public rows: number,
     public cols: number,
     public noGrid?: boolean,
-   ) {
+  ) {
     super(matrixSize, rows, 'v', true);
 
     this.checkPositiveNumber(rows, 'rows');
@@ -26,7 +26,10 @@ export default class NEPMatrix extends NEPSequence {
     this.noElementScaling = true;
     this._gridWidth = matrixSize.width / cols;
     this._gridHeight = matrixSize.height / rows;
-    const rowSize = { width: matrixSize.width, height: matrixSize.height / rows };
+    const rowSize = {
+      width: matrixSize.width,
+      height: matrixSize.height / rows,
+    };
 
     if (!noGrid) {
       this.drawMatrixGrid();
@@ -47,7 +50,7 @@ export default class NEPMatrix extends NEPSequence {
    * @returns {(NEPSequence|null)}
    * @memberof NEPMatrix
    */
-  row(index: number): NEPSequence|null {
+  row(index: number): NEPSequence | null {
     const child = this.internalElement(index) as NEPSequence;
     if (!child) {
       return null;
@@ -63,7 +66,7 @@ export default class NEPMatrix extends NEPSequence {
    * @returns {(NEPAtom|null)}
    * @memberof NEPMatrix
    */
-  cell(row: number, col: number): NEPAtom|null {
+  cell(row: number, col: number): NEPAtom | null {
     const rowSequence = this.row(row);
     if (!rowSequence) {
       return null;
@@ -79,7 +82,7 @@ export default class NEPMatrix extends NEPSequence {
    * @returns {*}
    * @memberof NEPMatrix
    */
-  cellContent(row: number, col: number): any {
+  cellContent(row: number, col: number): unknown {
     const cell = this.cell(row, col);
     if (!cell) {
       return null;
@@ -90,10 +93,10 @@ export default class NEPMatrix extends NEPSequence {
   /**
    * Populates the matrix with the given valueFn.
    *
-   * @param {(row: number, col: number) => any} valueFn
+   * @param {(row: number, col: number) => unknown} valueFn
    * @memberof NEPMatrix
    */
-  fill(valueFn: (row: number, col: number) => any) {
+  fill(valueFn: (row: number, col: number) => unknown) {
     this.checkValueNotEmpty(valueFn, 'valueFn');
 
     for (let i = 0; i < this.rows; i++) {
@@ -112,7 +115,12 @@ export default class NEPMatrix extends NEPSequence {
    * @param {NEPPointerFieldOptions} [opt]
    * @memberof NEPMatrix
    */
-  async set2DPointerAsync(row: number, col: number, name: string, opt?: NEPPointerFieldOptions) {
+  async set2DPointerAsync(
+    row: number,
+    col: number,
+    name: string,
+    opt?: NEPPointerFieldOptions,
+  ) {
     this.validateIndices(row, col);
     const ptrField = this.validatePointerField();
     const position = `${row}:${col}`;
@@ -121,13 +129,16 @@ export default class NEPMatrix extends NEPSequence {
   }
 
   protected createPointerField(): NEPPointerField {
-    const field = new MatrixPointerField({
-      width: this._gridWidth,
-      height: this._gridHeight,
-    }, {
-      width: this._gridWidth * 0.25,
-      height: this._gridHeight * 0.25,
-    });
+    const field = new MatrixPointerField(
+      {
+        width: this._gridWidth,
+        height: this._gridHeight,
+      },
+      {
+        width: this._gridWidth * 0.25,
+        height: this._gridHeight * 0.25,
+      },
+    );
     return field;
   }
 

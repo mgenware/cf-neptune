@@ -45,7 +45,12 @@ export const EmptyPadding: NEPPadding = {
   left: 0,
 };
 
-export function NewPadding(top: number, right?: number, bottom?: number, left?: number): NEPPadding {
+export function NewPadding(
+  top: number,
+  right?: number,
+  bottom?: number,
+  left?: number,
+): NEPPadding {
   if (right === undefined) {
     return {
       top,
@@ -72,7 +77,7 @@ export function NewRectFromSize(x: number, y: number, size: NEPSize): NEPRect {
 }
 
 export class NEPElement {
-  sizeChanged: ((sender: NEPElement) => void)|undefined;
+  sizeChanged: ((sender: NEPElement) => void) | undefined;
 
   rawElement(): SVGGraphicsElement {
     throw new Error('not implemented yet');
@@ -88,11 +93,15 @@ export class NEPElement {
     }
   }
 
-  protected animate(element: SVGGraphicsElement, props: {[key: string]: any}, opt: NEPAnimationOptions|undefined): Promise<void> {
+  protected animate(
+    element: SVGGraphicsElement,
+    props: { [key: string]: unknown },
+    opt: NEPAnimationOptions | undefined,
+  ): Promise<void> {
     this.checkValueNotEmpty(element, 'element');
     this.checkValueNotEmpty(props, 'props');
 
-    return new Promise<void>((resolve) => {
+    return new Promise<void>(resolve => {
       const params: TweenConfig = { attr: { ...props } };
       params.onComplete = resolve;
 
@@ -101,14 +110,14 @@ export class NEPElement {
     });
   }
 
-  protected getDurationOption(opt: NEPAnimationOptions|undefined): number {
+  protected getDurationOption(opt: NEPAnimationOptions | undefined): number {
     if (opt && opt.duration) {
       return opt.duration;
     }
     return configs.animationDuration;
   }
 
-  protected checkValueNotEmpty(value: any, name = 'value') {
+  protected checkValueNotEmpty(value: unknown, name = 'value') {
     if (!value) {
       throw new Error(`The argument "${name}" cannot be empty`);
     }
@@ -138,7 +147,10 @@ export class SVGHelper {
   }
 
   static setViewBox(svg: SVGSVGElement, rect: NEPRect) {
-    svg.setAttribute('viewBox', `${rect.x} ${rect.y} ${rect.width} ${rect.height}`);
+    svg.setAttribute(
+      'viewBox',
+      `${rect.x} ${rect.y} ${rect.width} ${rect.height}`,
+    );
   }
 
   static setPosition(element: SVGGraphicsElement, x: number, y: number) {
@@ -164,11 +176,16 @@ export class SVGHelper {
   }
 
   static rectInset(rect: NEPRect, x: number, y: number): NEPRect {
-    return this.rectInsetEx(rect, { left: x, right: x, top: y, bottom: y});
+    return this.rectInsetEx(rect, { left: x, right: x, top: y, bottom: y });
   }
 
   static rectInsetEx(rect: NEPRect, padding: NEPPadding): NEPRect {
-    return new DOMRect(rect.x + padding.left, rect.y + padding.top, rect.width - padding.left - padding.right, rect.height - padding.top - padding.bottom);
+    return new DOMRect(
+      rect.x + padding.left,
+      rect.y + padding.top,
+      rect.width - padding.left - padding.right,
+      rect.height - padding.top - padding.bottom,
+    );
   }
 
   static sizeScale(size: NEPSize, multiplier: number): NEPSize {
@@ -179,7 +196,7 @@ export class SVGHelper {
   }
 
   static createElement(tagName: string): SVGGraphicsElement {
-    return document.createElementNS(this.svgNS, tagName) as any;
+    return document.createElementNS(this.svgNS, tagName) as SVGGraphicsElement;
   }
 
   static labelElementInfo(element: SVGGraphicsElement, label: string) {
@@ -194,7 +211,7 @@ export class SVGHelper {
 
 export class AnimationHelper {
   static async delay(ts: number) {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       setTimeout(resolve, ts);
     });
   }

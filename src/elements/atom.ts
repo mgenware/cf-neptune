@@ -1,11 +1,21 @@
-import { NEPElement, SVGHelper, NEPSize, NEPPadding, NewPadding, NewRectFromSize, NEPAnimationOptions, AnimationHelper, NEPRect } from '../element';
+import {
+  NEPElement,
+  SVGHelper,
+  NEPSize,
+  NEPPadding,
+  NewPadding,
+  NewRectFromSize,
+  NEPAnimationOptions,
+  AnimationHelper,
+  NEPRect,
+} from '../element';
 import NEPText from './text';
 import Defs from 'defs';
 import configs from '../configs';
 
 export default class NEPAtom extends NEPElement {
-  noScaling: boolean = false;
-  loaded: boolean = false;
+  noScaling = false;
+  loaded = false;
 
   // rawRoot is the outermost SVGElement of this element, therefor it contains all other child SVGElements.
   private rawRoot: SVGSVGElement;
@@ -16,16 +26,13 @@ export default class NEPAtom extends NEPElement {
 
   private _padding: NEPPadding = NewPadding(configs.normalContentPadding);
   private _borderColor: string = configs.normalBorderColor;
-  private _borderWidth: number|string = configs.normalBorderWidth;
+  private _borderWidth: number | string = configs.normalBorderWidth;
   private _borderRadius: number = configs.normalBorderRadius;
 
   // _electrons contains the internal NEPElements that are added to the content(rawContainer) element.
   private _electrons: NEPElement[] = [];
 
-  constructor(
-    public size: NEPSize,
-    content?: NEPElement,
-  ) {
+  constructor(public size: NEPSize, content?: NEPElement) {
     super();
     this.checkValueNotEmpty(size, 'size');
 
@@ -81,10 +88,10 @@ export default class NEPAtom extends NEPElement {
   }
 
   // border-width
-  get borderWidth(): number|string {
+  get borderWidth(): number | string {
     return this._borderWidth;
   }
-  set borderWidth(value: number|string) {
+  set borderWidth(value: number | string) {
     this._borderWidth = value;
     this.rawBorder.setAttribute('stroke-width', `${value}`);
   }
@@ -108,7 +115,7 @@ export default class NEPAtom extends NEPElement {
   }
 
   // textColor
-  get textColor(): string|null {
+  get textColor(): string | null {
     const textContent = this.tryGetTextObject();
     if (textContent) {
       return textContent.color;
@@ -116,7 +123,7 @@ export default class NEPAtom extends NEPElement {
     return null;
   }
   // Has no effect if either value is null or this object does not have a text content.
-  set textColor(value: string|null) {
+  set textColor(value: string | null) {
     const textContent = this.tryGetTextObject();
     if (textContent && value) {
       textContent.color = value;
@@ -124,7 +131,7 @@ export default class NEPAtom extends NEPElement {
   }
 
   // content property
-  get content(): any {
+  get content(): unknown {
     const textContent = this.tryGetTextObject();
     if (textContent) {
       return textContent.value;
@@ -132,7 +139,7 @@ export default class NEPAtom extends NEPElement {
     return null;
   }
 
-  set content(value: any) {
+  set content(value: unknown) {
     // Add a Text object if no children
     if (this.electronsCount === 0) {
       this.appendElectron(new NEPText(value));
@@ -146,14 +153,14 @@ export default class NEPAtom extends NEPElement {
   }
 
   // ------- Child-related props -------
-  get firstElectron(): NEPElement|null {
+  get firstElectron(): NEPElement | null {
     if (this._electrons.length) {
       return this._electrons[0];
     }
     return null;
   }
 
-  get lastElectron(): NEPElement|null {
+  get lastElectron(): NEPElement | null {
     if (this._electrons.length) {
       return this._electrons[this._electrons.length - 1];
     }
@@ -168,7 +175,7 @@ export default class NEPAtom extends NEPElement {
     return this._electrons.length;
   }
 
-  electronAt(index: number): NEPElement|null {
+  electronAt(index: number): NEPElement | null {
     if (index < 0 || index >= this._electrons.length) {
       return null;
     }
@@ -194,7 +201,14 @@ export default class NEPAtom extends NEPElement {
     rawContainer.removeAttribute(Defs.viewBox);
 
     // Border
-    SVGHelper.setRect(rawBorder, SVGHelper.rectInset(rootRect, configs.normalBorderWidth, configs.normalBorderWidth));
+    SVGHelper.setRect(
+      rawBorder,
+      SVGHelper.rectInset(
+        rootRect,
+        configs.normalBorderWidth,
+        configs.normalBorderWidth,
+      ),
+    );
 
     // Container
     SVGHelper.setRect(rawContainer, SVGHelper.rectInsetEx(rootRect, padding));
@@ -208,7 +222,10 @@ export default class NEPAtom extends NEPElement {
     const contentLayoutRect = rawContainer.getBBox();
 
     // Set the viewBox
-    SVGHelper.setViewBox(rawContainer, this.noScaling ? rootRect : contentLayoutRect);
+    SVGHelper.setViewBox(
+      rawContainer,
+      this.noScaling ? rootRect : contentLayoutRect,
+    );
     return rootRect;
   }
 
@@ -244,7 +261,10 @@ export default class NEPAtom extends NEPElement {
     const index = this._electrons.indexOf(oldChild);
     if (index >= 0) {
       this._electrons[index] = newChild;
-      this.rawContainer.replaceChild(newChild.rawElement(), oldChild.rawElement());
+      this.rawContainer.replaceChild(
+        newChild.rawElement(),
+        oldChild.rawElement(),
+      );
       this.onChildRemoved(oldChild);
       this.onChildAdded(newChild);
       this.layoutIfNeeded();
@@ -257,13 +277,17 @@ export default class NEPAtom extends NEPElement {
     this.checkValueNotEmpty(value, 'value');
 
     const raw = this.rawBorder;
-    await this.animate(raw, {
-      fill: value,
-    }, opt);
+    await this.animate(
+      raw,
+      {
+        fill: value,
+      },
+      opt,
+    );
   }
 
   // Has no effect if either value is null or this object does not have a text content.
-  async setTextColorAsync(value: string|null, opt?: NEPAnimationOptions) {
+  async setTextColorAsync(value: string | null, opt?: NEPAnimationOptions) {
     const textContent = this.tryGetTextObject();
     if (textContent && value) {
       await textContent.setColorAsync(value, opt);
@@ -271,7 +295,7 @@ export default class NEPAtom extends NEPElement {
   }
 
   // Has no effect if this atom has no child (electron).
-  async setContentAsync(value: any, opt?: NEPAnimationOptions) {
+  async setContentAsync(value: unknown, opt?: NEPAnimationOptions) {
     const child = this.firstElectron;
     if (child) {
       this.content = value;
@@ -297,15 +321,17 @@ export default class NEPAtom extends NEPElement {
       await AnimationHelper.delay(0.7 * duration);
 
       // # 3
-      await this.setColorsAsync(
-        originalTextColor,
-        originalBackgroundColor,
-        { duration: duration * 0.1 },
-      );
+      await this.setColorsAsync(originalTextColor, originalBackgroundColor, {
+        duration: duration * 0.1,
+      });
     }
   }
 
-  async setColorsAsync(textColor: string|null, backgroundColor: string, opt?: NEPAnimationOptions) {
+  async setColorsAsync(
+    textColor: string | null,
+    backgroundColor: string,
+    opt?: NEPAnimationOptions,
+  ) {
     await Promise.all([
       this.setTextColorAsync(textColor, opt),
       this.setBackgroundAsync(backgroundColor, opt),
@@ -330,7 +356,7 @@ export default class NEPAtom extends NEPElement {
     child.sizeChanged = undefined;
   }
 
-  private tryGetTextObject(): NEPText|null {
+  private tryGetTextObject(): NEPText | null {
     if (this.electronsCount > 0 && this.electronAt(0) instanceof NEPText) {
       return this.electronAt(0) as NEPText;
     }
